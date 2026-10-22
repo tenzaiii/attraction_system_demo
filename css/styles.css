@@ -1848,6 +1848,10 @@ img {
   justify-content: center;
 }
 
+.side-navigation.collapsed .sidebar-logo {
+  cursor: pointer;
+}
+
 .side-navigation.collapsed .sidebar-menu-link {
   justify-content: center;
   padding: 0.85rem 0;

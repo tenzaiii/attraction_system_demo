@@ -450,6 +450,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Click logo to expand if collapsed
+  const sidebarLogo = document.querySelector('.sidebar-logo');
+  if (sidebarLogo) {
+    sidebarLogo.addEventListener('click', (e) => {
+      if (sideNav?.classList.contains('collapsed')) {
+        e.preventDefault();
+        sideNav?.classList.remove('collapsed');
+        showToast('Sidebar expanded');
+      }
+    });
+  }
+
   // Sidebar link active highlight & navigation
   sidebarLinks.forEach(link => {
     link.addEventListener('click', () => {
