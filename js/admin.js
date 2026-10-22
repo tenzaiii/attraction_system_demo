@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   //  1. Central Data Store
   // ==========================================================================
 
-  // Attraction & Event Catalog Data Store
-  let catalogData = [
+  // Attraction & Event Catalog Data Store (Synchronized with TourismHubStore)
+  let catalogData = (window.TourismHubStore && typeof TourismHubStore.getCatalog === 'function')
+    ? TourismHubStore.getCatalog()
+    : [
     {
       id: 'rizal-monument',
       title: 'Rizal Monument & Luneta Park',
@@ -98,7 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   // Capacity & Schedule Time-Slots Store (Mapped by attraction ID)
-  let capacityScheduleData = {
+  let capacityScheduleData = (window.TourismHubStore && typeof TourismHubStore.getCapacityData === 'function')
+    ? TourismHubStore.getCapacityData()
+    : {
     'rizal-monument': [
       { id: 'rm-1', time: '08:00 AM - 10:00 AM', booked: 45, max: 150, status: 'open' },
       { id: 'rm-2', time: '10:00 AM - 12:00 PM', booked: 132, max: 150, status: 'near-full' },
@@ -192,8 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
     { time: '09:30 AM', code: 'PASS-3310-USD', name: 'Sofia Delgado', attraction: 'Rizal Monument', pax: 4, gate: 'Main Arch Gate', status: 'Rejected' }
   ];
 
-  // Announcements & Dispatch Store
-  let announcementsList = [
+  // Announcements & Dispatch Store (Synchronized with TourismHubStore)
+  let announcementsList = (window.TourismHubStore && typeof TourismHubStore.getAnnouncements === 'function')
+    ? TourismHubStore.getAnnouncements()
+    : [
     {
       id: 'ann-1',
       type: 'weather',
@@ -439,19 +445,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (id) {
       // Edit existing
-      const item = catalogData.find(a => a.id === id);
-      if (item) {
-        item.title = title;
-        item.category = category;
-        item.type = type;
-        item.location = location;
-        item.operatingHours = hours;
-        item.admission = priceStr;
-        item.capacityPerSlot = capacity;
-        item.status = status;
-        item.description = desc;
-        showToast(`Updated profile for "${title}"`);
+      const updates = {
+        title,
+        category,
+        type,
+        location,
+        operatingHours: hours,
+        admission: priceStr,
+        capacityPerSlot: capacity,
+        status,
+        description: desc
+      };
+      if (window.TourismHubStore) {
+        TourismHubStore.updateAttraction(id, updates);
+        catalogData = TourismHubStore.getCatalog();
+      } else {
+        const item = catalogData.find(a => a.id === id);
+        if (item) Object.assign(item, updates);
       }
+      showToast(`Updated profile for "${title}"`);
     } else {
       // Create new
       const newId = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
@@ -469,14 +481,19 @@ document.addEventListener('DOMContentLoaded', () => {
         image: 'assets/hero-banner.jpg',
         description: desc
       };
-      catalogData.unshift(newAttr);
 
-      // Generate default capacity slots
-      capacityScheduleData[newId] = [
-        { id: `${newId}-1`, time: '08:00 AM - 11:00 AM', booked: 0, max: capacity, status: 'open' },
-        { id: `${newId}-2`, time: '11:00 AM - 02:00 PM', booked: 0, max: capacity, status: 'open' },
-        { id: `${newId}-3`, time: '02:00 PM - 05:00 PM', booked: 0, max: capacity, status: 'open' }
-      ];
+      if (window.TourismHubStore) {
+        TourismHubStore.addAttraction(newAttr);
+        catalogData = TourismHubStore.getCatalog();
+        capacityScheduleData = TourismHubStore.getCapacityData();
+      } else {
+        catalogData.unshift(newAttr);
+        capacityScheduleData[newId] = [
+          { id: `${newId}-1`, time: '08:00 AM - 11:00 AM', booked: 0, max: capacity, status: 'open' },
+          { id: `${newId}-2`, time: '11:00 AM - 02:00 PM', booked: 0, max: capacity, status: 'open' },
+          { id: `${newId}-3`, time: '02:00 PM - 05:00 PM', booked: 0, max: capacity, status: 'open' }
+        ];
+      }
 
       showToast(`Successfully cataloged "${title}"`);
     }
@@ -489,8 +506,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Delete attraction
   window.deleteAttraction = function(id, name) {
     if (confirm(`Are you sure you want to archive / delete "${name}" from the active catalog?`)) {
-      catalogData = catalogData.filter(a => a.id !== id);
-      delete capacityScheduleData[id];
+      if (window.TourismHubStore) {
+        TourismHubStore.deleteAttraction(id);
+        catalogData = TourismHubStore.getCatalog();
+        capacityScheduleData = TourismHubStore.getCapacityData();
+      } else {
+        catalogData = catalogData.filter(a => a.id !== id);
+        delete capacityScheduleData[id];
+      }
       showToast(`Archived "${name}"`);
       renderCatalog();
       updateOverviewStats();
@@ -624,13 +647,17 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const slot = capacityScheduleData[attrId]?.find(s => s.id === slotId);
-    if (slot) {
-      slot.max = maxVal;
-      showToast(`Updated capacity threshold to ${maxVal}`);
-      renderCapacitySlots();
-      updateOverviewStats();
+    if (window.TourismHubStore) {
+      TourismHubStore.updateSlot(attrId, slotId, { max: maxVal });
+      capacityScheduleData = TourismHubStore.getCapacityData();
+    } else {
+      const slot = capacityScheduleData[attrId]?.find(s => s.id === slotId);
+      if (slot) slot.max = maxVal;
     }
+
+    showToast(`Updated capacity threshold to ${maxVal}`);
+    renderCapacitySlots();
+    updateOverviewStats();
   };
 
   // Simulate a visitor entry
@@ -641,7 +668,14 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Cannot add entry. This time-slot is at maximum allowable capacity to prevent overcrowding.');
       return;
     }
-    slot.booked += 1;
+
+    if (window.TourismHubStore) {
+      TourismHubStore.recordSlotWalkIn(attrId, slotId, 1);
+      capacityScheduleData = TourismHubStore.getCapacityData();
+    } else {
+      slot.booked += 1;
+    }
+
     showToast(`Logged visitor entry into slot (${slot.booked}/${slot.max})`);
     renderCapacitySlots();
     updateOverviewStats();
@@ -662,7 +696,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const record = touristPassesDB[code];
+    const allPasses = window.TourismHubStore ? TourismHubStore.getPasses() : touristPassesDB;
+    const record = allPasses[code] || touristPassesDB[code];
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -692,79 +727,86 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const displayName = record.touristName || record.visitorName || 'Tourist Guest';
+    const displayPax = record.pax || record.partySize || 1;
+    const isAlreadyUsed = record.status === 'already-used' || record.status === 'already_used';
+
     if (record.status === 'valid') {
-      // Valid pass
+      if (window.TourismHubStore) {
+        TourismHubStore.validatePass(code);
+      } else {
+        record.status = 'already_used';
+      }
+
       displayValidationUI({
         valid: true,
         title: 'Entry Approved — Valid Tourist Pass',
         code: record.code,
-        name: record.touristName,
+        name: displayName,
         attraction: record.attraction,
-        slot: record.slot,
-        pax: record.pax,
+        slot: record.slot || 'Current Slot',
+        pax: displayPax,
         statusLabel: 'Verified & Admitted'
       });
 
       // Update capacity slot for that attraction
       if (capacityScheduleData[record.attractionId]) {
         const slot = capacityScheduleData[record.attractionId][0];
-        if (slot) slot.booked = Math.min(slot.max, slot.booked + record.pax);
+        if (slot) slot.booked = Math.min(slot.max, slot.booked + displayPax);
       }
 
       recentScansList.unshift({
         time: timeStr,
         code: record.code,
-        name: record.touristName,
+        name: displayName,
         attraction: record.attraction,
-        pax: record.pax,
+        pax: displayPax,
         gate: 'Turnstile A1 Express',
         status: 'Approved'
       });
 
-      showToast(`Pass verified! Admitted ${record.pax} pax for ${record.touristName}.`);
+      showToast(`Pass verified! Admitted ${displayPax} pax for ${displayName}.`);
 
     } else if (record.status === 'expired') {
-      // Expired
       displayValidationUI({
         valid: false,
         title: 'Entry Denied — Pass Expired',
         code: record.code,
-        name: record.touristName,
+        name: displayName,
         attraction: record.attraction,
-        slot: record.slot,
-        pax: record.pax,
+        slot: record.slot || 'Expired Window',
+        pax: displayPax,
         statusLabel: 'Reservation Expired'
       });
 
       recentScansList.unshift({
         time: timeStr,
         code: record.code,
-        name: record.touristName,
+        name: displayName,
         attraction: record.attraction,
-        pax: record.pax,
+        pax: displayPax,
         gate: 'Turnstile A1 Express',
         status: 'Rejected'
       });
 
-    } else if (record.status === 'already-used') {
-      // Already scanned
+    } else if (isAlreadyUsed) {
       displayValidationUI({
         valid: false,
         title: 'Entry Denied — Pass Already Scanned',
         code: record.code,
-        name: record.touristName,
+        name: displayName,
         attraction: record.attraction,
-        slot: record.slot,
-        pax: record.pax,
+        slot: record.slot || 'Earlier Slot',
+        pax: displayPax,
         statusLabel: 'Duplicate Scan Detected'
       });
 
       recentScansList.unshift({
         time: timeStr,
         code: record.code,
-        name: record.touristName,
+        name: displayName,
         attraction: record.attraction,
-        pax: record.pax,
+        pax: displayPax,
         gate: 'Turnstile A1 Express',
         status: 'Rejected'
       });
@@ -996,14 +1038,25 @@ document.addEventListener('DOMContentLoaded', () => {
       active: true
     };
 
-    announcementsList.unshift(newAnnouncement);
+    if (window.TourismHubStore) {
+      TourismHubStore.addAnnouncement(newAnnouncement);
+      announcementsList = TourismHubStore.getAnnouncements();
+    } else {
+      announcementsList.unshift(newAnnouncement);
+    }
+
     showToast(`Broadcasted announcement: "${title}"`);
     dispatchForm.reset();
     renderAnnouncementsFeed();
   });
 
   window.deactivateAnnouncement = function(id) {
-    announcementsList = announcementsList.filter(a => a.id !== id);
+    if (window.TourismHubStore) {
+      TourismHubStore.dismissAnnouncement(id);
+      announcementsList = TourismHubStore.getAnnouncements();
+    } else {
+      announcementsList = announcementsList.filter(a => a.id !== id);
+    }
     showToast('Announcement dismissed from tourist feeds.');
     renderAnnouncementsFeed();
   };
@@ -1065,7 +1118,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================================
-  //  9. Initial Execution
+  //  9. Cross-Tab Real-Time Sync Listener
+  // ==========================================================================
+  if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
+    TourismHubStore.onSync(() => {
+      catalogData = TourismHubStore.getCatalog();
+      capacityScheduleData = TourismHubStore.getCapacityData();
+      announcementsList = TourismHubStore.getAnnouncements();
+      renderCatalog();
+      renderCapacitySlots();
+      renderAnnouncementsFeed();
+      updateOverviewStats();
+    });
+  }
+
+  // ==========================================================================
+  //  10. Initial Execution
   // ==========================================================================
   renderCatalog();
   renderCapacitySlots();
