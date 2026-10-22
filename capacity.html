@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TourismHub Capacity & Schedule Management - Manage attraction and event capacities, schedules, and availability in real-time.">
+  <title>Capacity & Schedule Management — TourismHub Portal</title>
+  
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'%3E%3Cpolygon points='12,2 24,28 0,28' fill='%2310b981'/%3E%3Cpolygon points='26,8 38,28 14,28' fill='%230284c7'/%3E%3C/svg%3E">
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/portal-pages.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       Collapsible Side Navigation Bar
+       ========================================================================== -->
+  <aside class="side-navigation" id="sideNav" aria-label="Portal Navigation">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg class="sidebar-logo-icon" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <polygon points="12,4 23,32 1,32" fill="#10B981" />
+          <polygon points="28,10 41,32 15,32" fill="#0284C7" />
+          <polygon points="12,4 16,13 8,13" fill="#ffffff" />
+          <polygon points="28,10 32,18 24,18" fill="#ffffff" />
+        </svg>
+        <span class="sidebar-logo-text">TourismHub</span>
+      </a>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Collapse Sidebar" title="Collapse / Expand Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-menu-wrapper" aria-label="Sidebar Menu">
+      <ul class="sidebar-menu">
+        <!-- 1. Dashboard -->
+        <li class="sidebar-menu-item">
+          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Dashboard">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- 2. Attractions & Events -->
+        <li class="sidebar-menu-item">
+          <a href="attractions.html" class="sidebar-menu-link" data-nav="attractions" title="Attractions & Events">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z"/>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Attractions & Events</span>
+          </a>
+        </li>
+
+        <!-- 3. Capacity & Schedule (ACTIVE) -->
+        <li class="sidebar-menu-item">
+          <a href="capacity.html" class="sidebar-menu-link active" data-nav="capacity" title="Capacity & Schedule">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Capacity & Schedule</span>
+          </a>
+        </li>
+
+
+
+        <!-- 5. QR Scanner -->
+        <li class="sidebar-menu-item">
+          <a href="scanner.html" class="sidebar-menu-link" data-nav="scanner" title="QR Scanner">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 8V5a1 1 0 0 1 1-1h3"></path>
+                <path d="M16 4h3a1 1 0 0 1 1 1v3"></path>
+                <path d="M20 16v3a1 1 0 0 1-1 1h-3"></path>
+                <path d="M8 20H5a1 1 0 0 1-1-1v-3"></path>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">QR Scanner</span>
+          </a>
+        </li>
+
+        <!-- 6. Analytics -->
+        <li class="sidebar-menu-item">
+          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="analytics" title="Analytics" onclick="alert('Occupancy Rate: 78.4% across all registered attractions.')">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Analytics</span>
+          </a>
+        </li>
+
+        <!-- 7. Notifications -->
+        <li class="sidebar-menu-item">
+          <a href="notifications.html" class="sidebar-menu-link" data-nav="notifications" title="Notifications">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Notifications</span>
+            <span class="sidebar-item-badge-dot"></span>
+          </a>
+        </li>
+
+        <!-- 8. Settings -->
+        <li class="sidebar-menu-item">
+          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="settings" title="Settings" onclick="alert('Settings configured.')">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Settings</span>
+          </a>
+        </li>
+
+        <!-- 9. Admin Dashboard -->
+        <li class="sidebar-menu-item">
+          <a href="admin.html" class="sidebar-menu-link" style="color: #38bdf8;" title="Admin Dashboard">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Admin Dashboard</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Sidebar Backdrop -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Top Header Bar -->
+  <header class="portal-topbar">
+    <div class="portal-topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Open Sidebar Navigation">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="portal-search-bar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="capacitySearchInput" class="portal-search-input" placeholder="Search attractions or events...">
+      </div>
+    </div>
+
+    <div class="portal-topbar-right">
+      <a href="notifications.html" class="portal-notif-btn" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="sidebar-item-badge-dot" style="position: absolute; top: 8px; right: 8px;"></span>
+      </a>
+
+      <div class="portal-user-profile" onclick="location.href='admin.html'" title="Switch to Admin Profile">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Maria Santos" class="portal-avatar-img">
+        <div class="portal-user-meta">
+          <span class="portal-user-name">Maria Santos</span>
+          <span class="portal-user-role">Operator</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Capacity Content -->
+  <main class="portal-main-wrapper">
+    
+    <!-- Title & Controls Header (Matching Image 3) -->
+    <div class="portal-section-header">
+      <div class="portal-title-group">
+        <div class="portal-title-icon-box">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div>
+          <h1 class="portal-page-heading">Capacity & Schedule Management</h1>
+          <p class="portal-page-subtext">Manage attraction and event capacities, schedules, and availability in real-time.</p>
+        </div>
+      </div>
+
+      <!-- Right Controls: Date Range Dropdown + Add Schedule Button -->
+      <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.55rem 0.95rem; font-size: 0.85rem; font-weight: 600; color: #334155;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+          <span>Apr 28, 2025 – May 27, 2025</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+
+        <button class="btn-primary-blue" onclick="openPortalModal('addScheduleModal')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Add Schedule</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Tabs (Matching Image 3) -->
+    <div class="portal-filter-bar" style="margin-bottom: 1.25rem;">
+      <div class="portal-filter-tabs">
+        <button class="portal-filter-tab active" data-filter="all">All Attractions</button>
+        <button class="portal-filter-tab" data-filter="attraction">Attractions</button>
+        <button class="portal-filter-tab" data-filter="event">Events</button>
+        <button class="portal-filter-tab" data-filter="workshop">Workshops</button>
+        <button class="portal-filter-tab" data-filter="festival">Festivals</button>
+      </div>
+    </div>
+
+    <!-- Data Table Container (Exact Match from Image 3) -->
+    <div class="portal-table-container">
+      <table class="portal-data-table" id="capacityTable">
+        <thead>
+          <tr>
+            <th>Attraction / Event</th>
+            <th>Type</th>
+            <th>Capacity</th>
+            <th>Booked</th>
+            <th>Available</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="capacityTableBody">
+          
+          <!-- Row 1: Resort Pool -->
+          <tr data-type="attraction">
+            <td>
+              <div class="attraction-cell-content">
+                <img src="https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=150&q=80" alt="Resort Pool" class="attraction-cell-thumb">
+                <div class="attraction-cell-info">
+                  <span class="attraction-cell-title">Resort Pool</span>
+                  <div class="attraction-cell-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    <span>Main Wing • Pool Area</span>
+                  </div>
+                  <div class="attraction-cell-meta" style="color: #94a3b8;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>8:00 AM – 10:00 PM</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td><span class="portal-pill-badge blue">Attraction</span></td>
+            <td><strong>120</strong></td>
+            <td>80</td>
+            <td><span class="avail-count-green">40</span></td>
+            <td><span class="portal-pill-badge status-normal">Normal</span></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('Resort Pool', 120, 80, 40, 'Normal')">View</button></td>
+          </tr>
+
+          <!-- Row 2: Wellness Spa -->
+          <tr data-type="attraction">
+            <td>
+              <div class="attraction-cell-content">
+                <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=150&q=80" alt="Wellness Spa" class="attraction-cell-thumb">
+                <div class="attraction-cell-info">
+                  <span class="attraction-cell-title">Wellness Spa</span>
+                  <div class="attraction-cell-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    <span>Main Wing • Spa Center</span>
+                  </div>
+                  <div class="attraction-cell-meta" style="color: #94a3b8;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>9:00 AM – 9:00 PM</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td><span class="portal-pill-badge blue">Attraction</span></td>
+            <td><strong>100</strong></td>
+            <td>100</td>
+            <td><span class="avail-count-red">0</span></td>
+            <td><span class="portal-pill-badge status-full">Full</span></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('Wellness Spa', 100, 100, 0, 'Full')">View</button></td>
+          </tr>
+
+          <!-- Row 3: Riverside Restaurant -->
+          <tr data-type="attraction">
+            <td>
+              <div class="attraction-cell-content">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=150&q=80" alt="Riverside Restaurant" class="attraction-cell-thumb">
+                <div class="attraction-cell-info">
+                  <span class="attraction-cell-title">Riverside Restaurant</span>
+                  <div class="attraction-cell-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    <span>Main Wing • Ground Floor</span>
+                  </div>
+                  <div class="attraction-cell-meta" style="color: #94a3b8;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>6:00 AM – 11:00 PM</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td><span class="portal-pill-badge blue">Attraction</span></td>
+            <td><strong>200</strong></td>
+            <td>150</td>
+            <td><span class="avail-count-green">50</span></td>
+            <td><span class="portal-pill-badge status-normal">Normal</span></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('Riverside Restaurant', 200, 150, 50, 'Normal')">View</button></td>
+          </tr>
+
+          <!-- Row 4: Kids Club -->
+          <tr data-type="event">
+            <td>
+              <div class="attraction-cell-content">
+                <img src="https://images.unsplash.com/photo-1566454544259-f4b94c3d758c?auto=format&fit=crop&w=150&q=80" alt="Kids Club" class="attraction-cell-thumb">
+                <div class="attraction-cell-info">
+                  <span class="attraction-cell-title">Kids Club</span>
+                  <div class="attraction-cell-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    <span>Family Wing • 2nd Floor</span>
+                  </div>
+                  <div class="attraction-cell-meta" style="color: #94a3b8;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>8:00 AM – 8:00 PM</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td><span class="portal-pill-badge purple">Event</span></td>
+            <td><strong>50</strong></td>
+            <td>50</td>
+            <td><span class="avail-count-red">0</span></td>
+            <td><span class="portal-pill-badge status-full">Full</span></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('Kids Club', 50, 50, 0, 'Full')">View</button></td>
+          </tr>
+
+          <!-- Row 5: Beach Festival -->
+          <tr data-type="event festival">
+            <td>
+              <div class="attraction-cell-content">
+                <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=150&q=80" alt="Beach Festival" class="attraction-cell-thumb">
+                <div class="attraction-cell-info">
+                  <span class="attraction-cell-title">Beach Festival</span>
+                  <div class="attraction-cell-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    <span>Beach Area</span>
+                  </div>
+                  <div class="attraction-cell-meta" style="color: #94a3b8;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>4:00 PM – 11:00 PM</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td><span class="portal-pill-badge purple">Event</span></td>
+            <td><strong>500</strong></td>
+            <td>320</td>
+            <td><span class="avail-count-green">180</span></td>
+            <td><span class="portal-pill-badge status-normal">Normal</span></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('Beach Festival', 500, 320, 180, 'Normal')">View</button></td>
+          </tr>
+
+          <!-- Row 6: Nature Trail -->
+          <tr data-type="attraction workshop">
+            <td>
+              <div class="attraction-cell-content">
+                <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=150&q=80" alt="Nature Trail" class="attraction-cell-thumb">
+                <div class="attraction-cell-info">
+                  <span class="attraction-cell-title">Nature Trail</span>
+                  <div class="attraction-cell-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    <span>Eco Park</span>
+                  </div>
+                  <div class="attraction-cell-meta" style="color: #94a3b8;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>7:00 AM – 5:00 PM</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td><span class="portal-pill-badge blue">Attraction</span></td>
+            <td><strong>80</strong></td>
+            <td>60</td>
+            <td><span class="avail-count-green">20</span></td>
+            <td><span class="portal-pill-badge status-normal">Normal</span></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('Nature Trail', 80, 60, 20, 'Normal')">View</button></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- Add Schedule Modal -->
+  <div class="modal-overlay" id="addScheduleModal" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Add / Update Capacity Schedule</h3>
+        <button class="modal-close" onclick="closePortalModal('addScheduleModal')">&times;</button>
+      </div>
+      <form id="newScheduleForm" style="padding: 1.5rem;" onsubmit="handleScheduleSubmit(event)">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Attraction or Event Name</label>
+          <input type="text" id="schedTitle" required placeholder="e.g. Scuba Diving Reef" style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Type</label>
+            <select id="schedType" style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+              <option value="Attraction">Attraction</option>
+              <option value="Event">Event</option>
+              <option value="Workshop">Workshop</option>
+              <option value="Festival">Festival</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Location</label>
+            <input type="text" id="schedLocation" required placeholder="e.g. South Beach" style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Max Capacity</label>
+            <input type="number" id="schedCapacity" min="1" required value="100" style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+          </div>
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Booked Visitors</label>
+            <input type="number" id="schedBooked" min="0" required value="20" style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary-blue" style="width: 100%; justify-content: center;">Save Capacity Schedule</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared State Store & Sidebar Script -->
+  <script src="js/store.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/portal-sync.js"></script>
+  <script>
+    // Search filter for Capacity table
+    const searchInput = document.getElementById('capacitySearchInput');
+    const filterTabs = document.querySelectorAll('.portal-filter-tab');
+
+    function filterTable() {
+      const q = (searchInput?.value || '').toLowerCase().trim();
+      const activeFilter = document.querySelector('.portal-filter-tab.active')?.getAttribute('data-filter') || 'all';
+      const rows = document.querySelectorAll('#capacityTableBody tr');
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const typeAttr = (row.getAttribute('data-type') || '').toLowerCase();
+        
+        const matchesQuery = !q || text.includes(q);
+        const matchesTab = (activeFilter === 'all') || typeAttr.includes(activeFilter);
+
+        if (matchesQuery && matchesTab) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    searchInput?.addEventListener('input', filterTable);
+
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        filterTable();
+      });
+    });
+
+    window.openCapacityDetails = function(name, cap, booked, avail, status) {
+      alert(`Capacity Report for ${name}:\n- Total Limit: ${cap}\n- Confirmed Bookings: ${booked}\n- Available Remaining: ${avail}\n- Operational Status: ${status}`);
+    };
+
+    function handleScheduleSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById('schedTitle').value;
+      const type = document.getElementById('schedType').value;
+      const loc = document.getElementById('schedLocation').value;
+      const cap = parseInt(document.getElementById('schedCapacity').value, 10);
+      const booked = parseInt(document.getElementById('schedBooked').value, 10);
+
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const newAttr = {
+        id: slug + '-' + Math.floor(100 + Math.random() * 900),
+        title: title,
+        category: type === 'Event' || type === 'Festival' ? 'Festival' : 'Tourist Spot',
+        type: type.toLowerCase(),
+        status: 'active',
+        operatingHours: '08:00 AM – 06:00 PM',
+        admission: 'Standard Pass',
+        capacityPerSlot: cap,
+        image: 'assets/hero-banner.jpg',
+        location: loc,
+        badge: 'Scheduled',
+        description: `Scheduled ${type} located at ${loc}.`
+      };
+
+      if (window.TourismHubStore) {
+        TourismHubStore.addAttraction(newAttr);
+        const capacityData = TourismHubStore.getCapacityData();
+        capacityData[newAttr.id] = [
+          { id: `${newAttr.id}-1`, time: '08:00 AM - 01:00 PM', booked: booked, max: cap, status: (cap - booked <= 0) ? 'sold-out' : 'open' }
+        ];
+        TourismHubStore.saveCapacityData(capacityData);
+      }
+
+      closePortalModal('addScheduleModal');
+      document.getElementById('newScheduleForm').reset();
+      alert(`Schedule added for "${title}". Synchronized live with Admin Control.`);
+    }
+  </script>
+</body>
+</html>

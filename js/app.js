@@ -537,74 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // --- 11. Collapsible Side Navigation Bar Logic ---
-  const sideNav = document.getElementById('sideNav');
-  const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-  const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
-  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
-  const sidebarLinks = document.querySelectorAll('.sidebar-menu-link');
-
-  function openSidebar() {
-    sideNav?.classList.add('active');
-    sidebarBackdrop?.classList.add('active');
-  }
-
-  function closeSidebar() {
-    sideNav?.classList.remove('active');
-    sidebarBackdrop?.classList.remove('active');
-  }
-
-  if (sidebarToggleBtn) {
-    sidebarToggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (sideNav?.classList.contains('active')) {
-        closeSidebar();
-      } else {
-        openSidebar();
-      }
-    });
-  }
-
-  if (sidebarBackdrop) {
-    sidebarBackdrop.addEventListener('click', closeSidebar);
-  }
-
-  // Collapse / Expand to Icon-Only Rail
-  if (sidebarCollapseBtn) {
-    sidebarCollapseBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      sideNav?.classList.toggle('collapsed');
-      const isCollapsed = sideNav?.classList.contains('collapsed');
-      const icon = sidebarCollapseBtn.querySelector('svg');
-      if (icon) {
-        icon.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
-      }
-      showToast(isCollapsed ? 'Sidebar collapsed to icon rail' : 'Sidebar expanded');
-    });
-  }
-
-  // Click logo to expand if collapsed
-  const sidebarLogo = document.querySelector('.sidebar-logo');
-  if (sidebarLogo) {
-    sidebarLogo.addEventListener('click', (e) => {
-      if (sideNav?.classList.contains('collapsed')) {
-        e.preventDefault();
-        sideNav?.classList.remove('collapsed');
-        showToast('Sidebar expanded');
-      }
-    });
-  }
-
-  // Sidebar link active highlight & navigation
-  sidebarLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      sidebarLinks.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-
-      if (window.innerWidth < 1024 && link.getAttribute('href')?.startsWith('#')) {
-        closeSidebar();
-      }
-    });
-  });
+  // Managed by js/sidebar.js to avoid duplicate event listeners across pages
 
   // Modal Handlers for Sidebar Features
   window.openScannerModal = function() {
