@@ -3,7 +3,7 @@
  * Connects the Operator Admin Dashboard (admin.html) and Client Portal (index.html) in real-time.
  */
 
-(function(window) {
+(function (window) {
   'use strict';
 
   // Storage Keys
@@ -12,8 +12,63 @@
     CAPACITY: 'tourismhub_capacity_v1',
     ANNOUNCEMENTS: 'tourismhub_announcements_v1',
     PASSES: 'tourismhub_passes_v1',
-    LOGS: 'tourismhub_logs_v1'
+    LOGS: 'tourismhub_logs_v1',
+    ADMIN_AUTH: 'tourismhub_admin_auth_v1',
+    CLIENT_AUTH: 'tourismhub_client_auth_v1',
+    CLIENT_USERS: 'tourismhub_client_users_v1'
   };
+
+  // Default Seed Admin & Operator Accounts
+  const DEFAULT_ADMIN_USERS = [
+    {
+      id: 'admin-001',
+      name: 'Juan Miguel Repas',
+      email: 'admin@tourismhub.gov.ph',
+      password: 'admin123',
+      role: 'Head of Tourism Ops',
+      roleKey: 'admin',
+      department: 'Department of Tourism • National Operations',
+      badge: 'Chief Operator',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+      terminal: 'MNL-HQ-01'
+    },
+    {
+      id: 'admin-002',
+      name: 'Carlos Mendoza',
+      email: 'turnstile@tourismhub.gov.ph',
+      password: 'gate2026',
+      role: 'Turnstile Gate Officer',
+      roleKey: 'officer',
+      department: 'Luneta & Intramuros Entry Stations',
+      badge: 'Field Security',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+      terminal: 'LNT-GATE-04'
+    }
+  ];
+
+  // Default Seed Client / Tourist Accounts
+  const DEFAULT_CLIENT_USERS = [
+    {
+      id: 'client-001',
+      name: 'Maria Santos',
+      email: 'maria.santos@email.com',
+      password: 'tourist123',
+      country: 'Philippines',
+      phone: '+63 917 555 0192',
+      badge: 'Verified Resident Tourist',
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80'
+    },
+    {
+      id: 'client-002',
+      name: 'Alex Tan',
+      email: 'alex.tan@visitor.sg',
+      password: 'tourist123',
+      country: 'Singapore',
+      phone: '+65 9123 4567',
+      badge: 'International Explorer',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+    }
+  ];
 
   // Default Seed Data: Attractions & Events Catalog
   const DEFAULT_CATALOG = [
@@ -504,6 +559,88 @@
       });
     },
 
+    // 7. Authentication APIs
+    getAdminUsers() {
+      return DEFAULT_ADMIN_USERS;
+    },
+    getClientUsers() {
+      return getItem(KEYS.CLIENT_USERS, DEFAULT_CLIENT_USERS);
+    },
+    getAdminAuth() {
+      return getItem(KEYS.ADMIN_AUTH, null);
+    },
+    setAdminAuth(user) {
+      setItem(KEYS.ADMIN_AUTH, user);
+    },
+    adminLogin(email, password) {
+      const users = this.getAdminUsers();
+      const match = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
+      if (!match) {
+        return { success: false, message: 'Operator ID or email address not found in system directory.' };
+      }
+      if (match.password !== password) {
+        return { success: false, message: 'Incorrect operator password. Please re-enter credentials.' };
+      }
+      const sessionUser = { ...match };
+      delete sessionUser.password;
+      sessionUser.authenticatedAt = new Date().toISOString();
+      this.setAdminAuth(sessionUser);
+      return { success: true, user: sessionUser };
+    },
+    adminLogout() {
+      setItem(KEYS.ADMIN_AUTH, null);
+      return { success: true };
+    },
+    getClientAuth() {
+      return getItem(KEYS.CLIENT_AUTH, null);
+    },
+    setClientAuth(user) {
+      setItem(KEYS.CLIENT_AUTH, user);
+    },
+    clientLogin(email, password) {
+      const users = this.getClientUsers();
+      const match = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
+      if (!match) {
+        return { success: false, message: 'No registered tourist account found with this email.' };
+      }
+      if (match.password !== password) {
+        return { success: false, message: 'Invalid password. Please check your spelling and try again.' };
+      }
+      const sessionUser = { ...match };
+      delete sessionUser.password;
+      sessionUser.authenticatedAt = new Date().toISOString();
+      this.setClientAuth(sessionUser);
+      return { success: true, user: sessionUser };
+    },
+    clientRegister(name, email, password, country, phone) {
+      const users = this.getClientUsers();
+      const existing = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
+      if (existing) {
+        return { success: false, message: 'An account with this email address already exists. Please log in.' };
+      }
+      const newUser = {
+        id: 'client-' + Date.now(),
+        name: (name || '').trim(),
+        email: (email || '').trim().toLowerCase(),
+        password: password,
+        country: country || 'Philippines',
+        phone: phone || '',
+        badge: 'New Tourist Member',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
+      };
+      users.push(newUser);
+      setItem(KEYS.CLIENT_USERS, users);
+      const sessionUser = { ...newUser };
+      delete sessionUser.password;
+      sessionUser.authenticatedAt = new Date().toISOString();
+      this.setClientAuth(sessionUser);
+      return { success: true, user: sessionUser };
+    },
+    clientLogout() {
+      setItem(KEYS.CLIENT_AUTH, null);
+      return { success: true };
+    },
+
     // Reset to initial seed state
     resetAll() {
       setItem(KEYS.CATALOG, DEFAULT_CATALOG);
@@ -511,6 +648,9 @@
       setItem(KEYS.ANNOUNCEMENTS, DEFAULT_ANNOUNCEMENTS);
       setItem(KEYS.PASSES, DEFAULT_PASSES);
       setItem(KEYS.LOGS, DEFAULT_LOGS);
+      setItem(KEYS.ADMIN_AUTH, null);
+      setItem(KEYS.CLIENT_AUTH, null);
+      setItem(KEYS.CLIENT_USERS, DEFAULT_CLIENT_USERS);
     }
   };
 

@@ -9,46 +9,46 @@ document.addEventListener('DOMContentLoaded', () => {
   let attractionsData = (window.TourismHubStore && typeof TourismHubStore.getCatalog === 'function')
     ? TourismHubStore.getCatalog()
     : [
-        {
-          id: 'rizal-monument',
-          title: 'Rizal Monument & Luneta Park',
-          category: 'Historical Site',
-          type: 'historical',
-          rating: '4.8',
-          reviews: '1.2k',
-          price: 15,
-          priceLabel: 'Free / Guided $15',
-          image: 'assets/rizal-monument.jpg',
-          badge: 'Iconic Landmark',
-          description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines.'
-        },
-        {
-          id: 'white-beach-boracay',
-          title: 'White Beach Eco-Tourism Reserve',
-          category: 'Tourist Spot',
-          type: 'beach',
-          rating: '4.7',
-          reviews: '980',
-          price: 25,
-          priceLabel: 'Day Pass $25',
-          image: 'assets/white-beach.jpg',
-          badge: 'Tropical Haven',
-          description: 'Pristine powdery white sand, azure waters, and vibrant island activities with legendary sunsets.'
-        },
-        {
-          id: 'pahiyas-festival',
-          title: 'Pahiyas Harvest Festival',
-          category: 'Festival',
-          type: 'festival',
-          rating: '4.9',
-          reviews: '850',
-          price: 35,
-          priceLabel: 'Event Access $35',
-          image: 'assets/pahiyas-festival.jpg',
-          badge: 'Annual Celebration',
-          description: 'A colorful harvest festival in Lucban featuring houses decorated with vibrant kiping rice wafers and fruits.'
-        }
-      ];
+      {
+        id: 'rizal-monument',
+        title: 'Rizal Monument & Luneta Park',
+        category: 'Historical Site',
+        type: 'historical',
+        rating: '4.8',
+        reviews: '1.2k',
+        price: 15,
+        priceLabel: 'Free / Guided $15',
+        image: 'assets/rizal-monument.jpg',
+        badge: 'Iconic Landmark',
+        description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines.'
+      },
+      {
+        id: 'white-beach-boracay',
+        title: 'White Beach Eco-Tourism Reserve',
+        category: 'Tourist Spot',
+        type: 'beach',
+        rating: '4.7',
+        reviews: '980',
+        price: 25,
+        priceLabel: 'Day Pass $25',
+        image: 'assets/white-beach.jpg',
+        badge: 'Tropical Haven',
+        description: 'Pristine powdery white sand, azure waters, and vibrant island activities with legendary sunsets.'
+      },
+      {
+        id: 'pahiyas-festival',
+        title: 'Pahiyas Harvest Festival',
+        category: 'Festival',
+        type: 'festival',
+        rating: '4.9',
+        reviews: '850',
+        price: 35,
+        priceLabel: 'Event Access $35',
+        image: 'assets/pahiyas-festival.jpg',
+        badge: 'Annual Celebration',
+        description: 'A colorful harvest festival in Lucban featuring houses decorated with vibrant kiping rice wafers and fruits.'
+      }
+    ];
 
   // User Wishlist
   const savedAttractions = new Set();
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchBtn = document.getElementById('heroSearchBtn');
   const filterTabs = document.querySelectorAll('.filter-tab');
   const seeAllBtn = document.getElementById('seeAllBtn');
-  
+
   // Modals & Panels
   const bookingModal = document.getElementById('bookingModal');
   const ticketsModal = document.getElementById('ticketsModal');
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Quick Action Buttons (Under Hero)
-  window.filterByQuickAction = function(type) {
+  window.filterByQuickAction = function (type) {
     if (type === 'attractions') {
       currentFilter = 'all';
       updateActiveTab('all');
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // --- 5. Wishlist Toggle ---
-  window.toggleWishlist = function(id, name) {
+  window.toggleWishlist = function (id, name) {
     if (savedAttractions.has(id)) {
       savedAttractions.delete(id);
       showToast(`Removed "${name}" from your saved list`);
@@ -278,10 +278,10 @@ document.addEventListener('DOMContentLoaded', () => {
     notifBody.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 0.85rem;">
         ${announcements.map(a => {
-          const isUrgent = a.priority === 'urgent';
-          const isWeather = a.type === 'weather';
-          const iconBg = isUrgent ? '#ef4444' : isWeather ? '#0284c7' : '#10b981';
-          return `
+      const isUrgent = a.priority === 'urgent';
+      const isWeather = a.type === 'weather';
+      const iconBg = isUrgent ? '#ef4444' : isWeather ? '#0284c7' : '#10b981';
+      return `
             <div style="display: flex; gap: 0.85rem; padding: 0.85rem; background: ${isUrgent ? '#fef2f2' : isWeather ? '#f0f9ff' : 'var(--bg-page)'}; border: 1px solid ${isUrgent ? '#fecaca' : isWeather ? '#bae6fd' : 'var(--border)'}; border-radius: var(--radius-sm);">
               <div style="width: 36px; height: 36px; border-radius: 99px; background: ${iconBg}; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           `;
-        }).join('')}
+    }).join('')}
       </div>
     `;
   }
@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- 9. Modals Logic (Booking, Tickets, Notifications) ---
-  window.openBookingModal = function(attractionId) {
+  window.openBookingModal = function (attractionId) {
     if (window.TourismHubStore) {
       attractionsData = TourismHubStore.getCatalog();
     }
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bookingModal?.classList.add('active');
   };
 
-  window.closeModal = function(modalId) {
+  window.closeModal = function (modalId) {
     const modal = document.getElementById(modalId);
     if (modal) modal.classList.remove('active');
   };
@@ -492,19 +492,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Open "My Tickets" Modal
-  window.openTicketsModal = function() {
+  window.openTicketsModal = function () {
     renderMyTickets();
     ticketsModal?.classList.add('active');
   };
 
   // Open "Notifications" Modal
-  window.openNotificationsModal = function() {
+  window.openNotificationsModal = function () {
     renderNotifications();
     notificationsModal?.classList.add('active');
   };
 
   // Open "Capacity" Modal
-  window.openCapacityModal = function() {
+  window.openCapacityModal = function () {
     renderCapacityModal();
     capacityModal?.classList.add('active');
   };
@@ -525,11 +525,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 10. Toast Notification System ---
   let toastTimeout;
-  window.showToast = function(message) {
+  window.showToast = function (message) {
     if (!toast || !toastMessage) return;
     toastMessage.textContent = message;
     toast.classList.add('active');
-    
+
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
       toast.classList.remove('active');
@@ -540,15 +540,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Managed by js/sidebar.js to avoid duplicate event listeners across pages
 
   // Modal Handlers for Sidebar Features
-  window.openScannerModal = function() {
+  window.openScannerModal = function () {
     document.getElementById('qrScannerModal')?.classList.add('active');
   };
 
-  window.openAnalyticsModal = function() {
+  window.openAnalyticsModal = function () {
     document.getElementById('analyticsModal')?.classList.add('active');
   };
 
-  window.openSettingsModal = function() {
+  window.openSettingsModal = function () {
     showToast('Settings & preferences opened.');
   };
 

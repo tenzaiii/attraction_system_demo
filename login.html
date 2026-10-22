@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tourist Sign In & Registration — TourismHub</title>
+  <meta name="description" content="Sign in to your TourismHub account to access digital tourist passes, check real-time attraction capacity, and enjoy turnstile fast-track.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'%3E%3Cpolygon points='12,2 24,28 0,28' fill='%2310b981'/%3E%3Cpolygon points='26,8 38,28 14,28' fill='%230284c7'/%3E%3C/svg%3E">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <div class="client-auth-layout">
+
+    <!-- ======================================================================
+         Left Visual Pane (Hero Showcase)
+         ====================================================================== -->
+    <div class="client-auth-visual">
+      
+      <div class="visual-content-wrapper">
+        <a href="index.html" class="visual-top-brand" title="Back to TourismHub Portal">
+          <svg class="visual-brand-icon" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <polygon points="12,4 23,32 1,32" fill="#10B981" />
+            <polygon points="28,10 41,32 15,32" fill="#0284C7" />
+            <polygon points="12,4 16,13 8,13" fill="#ffffff" />
+            <polygon points="28,10 32,18 24,18" fill="#ffffff" />
+          </svg>
+          <span>TourismHub</span>
+        </a>
+
+        <h1 class="visual-headline">
+          Experience the Philippines with <span>Instant Passes</span>.
+        </h1>
+
+        <p class="visual-subtitle">
+          Your unified digital gateway to historic landmarks, pristine eco-sanctuaries, cultural festivals, and seamless turnstile access.
+        </p>
+
+        <!-- Feature Points -->
+        <div class="visual-features-list">
+          <div class="visual-feature-item">
+            <div class="visual-feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div>
+              <div class="visual-feature-title">Live Slot Allocation</div>
+              <div class="visual-feature-desc">Accurate real-time capacity prevents queueing and overcrowding.</div>
+            </div>
+          </div>
+
+          <div class="visual-feature-item">
+            <div class="visual-feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
+            </div>
+            <div>
+              <div class="visual-feature-title">Instant QR Tourist Passes</div>
+              <div class="visual-feature-desc">Scan directly at automated turnstiles for fast-track entry.</div>
+            </div>
+          </div>
+
+          <div class="visual-feature-item">
+            <div class="visual-feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div>
+              <div class="visual-feature-title">Weather & Safety Advisories</div>
+              <div class="visual-feature-desc">Direct announcements dispatched from official park operators.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="visual-bottom-meta">
+        <span>© 2026 Department of Tourism Operations</span>
+        <span>Secure HTTPS Verification</span>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================
+         Right Form Pane (Interactive Sign In & Registration)
+         ====================================================================== -->
+    <div class="client-auth-form-pane">
+      <div class="form-wrapper">
+
+        <!-- Top Navigation -->
+        <div class="form-top-nav">
+          <a href="index.html" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Destination Portal</span>
+          </a>
+        </div>
+
+        <!-- Active Session Status Bar (if already signed in) -->
+        <div id="activeSessionBar"></div>
+
+        <!-- Form Header -->
+        <div class="form-header">
+          <a href="index.html" class="form-mobile-logo">
+            <svg width="28" height="24" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="12,4 23,32 1,32" fill="#10B981" />
+              <polygon points="28,10 41,32 15,32" fill="#0284C7" />
+            </svg>
+            <span>TourismHub</span>
+          </a>
+          <h2 class="form-title" id="formTitle">Sign In to TourismHub</h2>
+          <p class="form-subtitle" id="formSubtitle">Unified portal authentication for Tourist Passholders and Attraction Operators.</p>
+        </div>
+
+        <!-- Segmented Tab Switcher -->
+        <div class="auth-segmented-control">
+          <button type="button" class="segment-btn active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
+          <button type="button" class="segment-btn" id="tabRegister" onclick="switchTab('register')">Create Account</button>
+        </div>
+
+        <!-- Global Alert Message -->
+        <div class="form-alert" id="formAlert">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="formAlertText">Alert message</span>
+        </div>
+
+        <!-- ==================================================================
+             FORM 1: Sign In
+             ================================================================== -->
+        <form class="auth-form active" id="formSignIn">
+          
+          <div class="input-group">
+            <label class="input-label" for="signInEmail">Email Address / Operator ID</label>
+            <div class="input-control-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <input type="email" id="signInEmail" class="text-input" placeholder="maria.santos@email.com or admin@tourismhub.gov.ph" required autocomplete="username">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="signInPassword">Password</label>
+            <div class="input-control-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input type="password" id="signInPassword" class="text-input" placeholder="••••••••" required autocomplete="current-password">
+              <button type="button" class="password-toggle-btn" onclick="togglePassword('signInPassword', this)" aria-label="Toggle password visibility">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-options-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rememberClient" checked>
+              <span>Remember this device</span>
+            </label>
+            <a href="javascript:void(0)" class="forgot-password-link" onclick="if(window.showNotice){window.showNotice('Password reset link dispatched to your demo email inbox.', 'info');}">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn-auth-submit" id="btnSignInSubmit">
+            <span class="submit-spinner"></span>
+            <span>Sign In & Continue</span>
+          </button>
+          <div style="font-size: 0.76rem; color: #64748b; text-align: center; margin-top: 0.65rem;">
+            🛡️ Auto-routes to <strong>Admin Portal</strong> for operators or <strong>Tourist Portal</strong> for visitors.
+          </div>
+
+          <!-- 1-Click Quick Demo Accounts -->
+          <div class="quick-demo-section">
+            <div class="quick-demo-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span>1-Click Demo Profiles</span>
+            </div>
+
+            <!-- Group 1: Tourist Public Portal -->
+            <div class="demo-group-label">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span style="color: #059669;">Public Portal (Tourist Access)</span>
+            </div>
+            <div class="quick-cards-grid">
+              <div class="quick-account-card" onclick="quickFillUnified('maria.santos@email.com', 'tourist123')">
+                <div class="quick-card-info">
+                  <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="Maria Santos" class="quick-user-avatar">
+                  <div class="quick-user-meta">
+                    <span class="quick-user-name">Maria Santos</span>
+                    <span class="quick-user-role">Philippine Resident • Pass Holder</span>
+                  </div>
+                </div>
+                <span class="quick-action-tag">Public Portal</span>
+              </div>
+
+              <div class="quick-account-card" onclick="quickFillUnified('alex.tan@visitor.sg', 'tourist123')">
+                <div class="quick-card-info">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Alex Tan" class="quick-user-avatar">
+                  <div class="quick-user-meta">
+                    <span class="quick-user-name">Alex Tan</span>
+                    <span class="quick-user-role">International Explorer • Singapore</span>
+                  </div>
+                </div>
+                <span class="quick-action-tag">Public Portal</span>
+              </div>
+            </div>
+
+            <!-- Group 2: Admin Operations Clearance -->
+            <div class="demo-group-label" style="margin-top: 1rem;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span style="color: #0284c7;">Admin Portal (Operator Clearance)</span>
+            </div>
+            <div class="quick-cards-grid">
+              <div class="quick-account-card admin-card" onclick="quickFillUnified('admin@tourismhub.gov.ph', 'admin123')">
+                <div class="quick-card-info">
+                  <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" alt="Juan Miguel Repas" class="quick-user-avatar">
+                  <div class="quick-user-meta">
+                    <span class="quick-user-name">Juan Miguel Repas</span>
+                    <span class="quick-user-role">Head of Tourism Ops • Chief Admin</span>
+                  </div>
+                </div>
+                <span class="quick-action-tag">Admin Portal</span>
+              </div>
+
+              <div class="quick-account-card admin-card" onclick="quickFillUnified('turnstile@tourismhub.gov.ph', 'gate2026')">
+                <div class="quick-card-info">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" alt="Carlos Mendoza" class="quick-user-avatar">
+                  <div class="quick-user-meta">
+                    <span class="quick-user-name">Carlos Mendoza</span>
+                    <span class="quick-user-role">Turnstile Gate Officer • Security</span>
+                  </div>
+                </div>
+                <span class="quick-action-tag">Admin Portal</span>
+              </div>
+            </div>
+          </div>
+
+        </form>
+
+        <!-- ==================================================================
+             FORM 2: Registration
+             ================================================================== -->
+        <form class="auth-form" id="formRegister">
+          
+          <div class="input-group">
+            <label class="input-label" for="regName">Full Name</label>
+            <div class="input-control-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input type="text" id="regName" class="text-input" placeholder="e.g. Juan dela Cruz" required autocomplete="name">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="regEmail">Email Address</label>
+            <div class="input-control-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <input type="email" id="regEmail" class="text-input" placeholder="name@example.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="regCountry">Country of Residence</label>
+            <div class="input-control-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <input type="text" id="regCountry" class="text-input" placeholder="Philippines / Singapore / USA" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="regPhone">Mobile Phone (Optional)</label>
+            <div class="input-control-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <input type="tel" id="regPhone" class="text-input" placeholder="+63 917 000 0000">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="regPassword">Create Password</label>
+            <div class="input-control-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input type="password" id="regPassword" class="text-input" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password">
+              <button type="button" class="password-toggle-btn" onclick="togglePassword('regPassword', this)" aria-label="Toggle password visibility">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-auth-submit" id="btnRegisterSubmit" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);">
+            <span class="submit-spinner"></span>
+            <span>Create Free Tourist Account</span>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Shared State Store & Authentication Script -->
+  <script src="js/store.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

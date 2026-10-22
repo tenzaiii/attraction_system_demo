@@ -28,13 +28,25 @@ TourismHub provides attraction operators with tools to streamline entry processi
 ```
 attraction_system_demo/
 ├── index.html            # Public Tourist Portal & Destination Discovery
+├── login.html            # Unified Authentication Portal (Tourist & Admin Access)
 ├── admin.html            # Attraction Operator Admin Dashboard
+├── attractions.html      # Attractions & Events Catalog Browser
+├── capacity.html         # Real-time Capacity & Schedule Availability Monitor
+├── notifications.html    # Tourist Advisories & Notification Center
+├── scanner.html          # Public Entry Pass QR Verification Scanner
 ├── css/
-│   ├── styles.css        # Public portal stylesheets
-│   └── admin.css         # Separated Operator Admin Dashboard styles
+│   ├── styles.css        # Main public portal stylesheets
+│   ├── login.css         # Unified Portal login styling (split-screen responsive layout)
+│   ├── admin.css         # Operator Admin Dashboard styles
+│   └── portal-pages.css  # Sub-pages layout styling
 ├── js/
 │   ├── app.js            # Public portal interactivity & pass generation
-│   └── admin.js          # Admin dashboard logic, scanner, & capacity controls
+│   ├── login.js          # Unified authentication, role-based routing, & quick demo logic
+│   ├── admin.js          # Admin dashboard controls, scanner, & capacity logic
+│   ├── store.js          # Unified local storage real-time state store
+│   ├── sidebar.js        # Responsive collapsible sidebar rail controller
+│   └── portal-sync.js    # Multi-tab bidirectional real-time synchronization
+├── assets/               # Destination media and hero banners
 └── README.md             # Project documentation
 ```
 
@@ -42,6 +54,9 @@ attraction_system_demo/
 
 ## 🚀 Getting Started
 
-Simply open either file in any modern web browser:
-- **Public Portal**: Open [`index.html`](index.html) to explore attractions and generate tourist passes.
-- **Admin Dashboard**: Open [`admin.html`](admin.html) to manage catalog records, monitor capacities, scan passes, and dispatch alerts.
+Simply open any of the HTML pages in any modern web browser:
+- **Unified Sign In Portal**: Open [`login.html`](login.html) for unified authentication. Auto-routes based on account role:
+  - **Tourist Access**: Demo profiles (**Maria Santos**, **Alex Tan**) or newly registered accounts route to [`index.html`](index.html).
+  - **Admin Clearance**: Operator profiles (**Juan Miguel Repas**, **Carlos Mendoza**) route to [`admin.html`](admin.html).
+- **Public Tourist Portal**: Open [`index.html`](index.html) to explore destinations, check schedules, and generate digital passes.
+- **Admin Operator Dashboard**: Open [`admin.html`](admin.html) to manage catalog items, adjust capacities, scan entry passes, and broadcast alerts.

@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="TourismHub QR Scanner - Scan tourist pass to verify and check in visitors.">
   <title>QR Scanner — TourismHub Portal</title>
-  
+
   <!-- Favicon SVG -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'%3E%3Cpolygon points='12,2 24,28 0,28' fill='%2310b981'/%3E%3Cpolygon points='26,8 38,28 14,28' fill='%230284c7'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'%3E%3Cpolygon points='12,2 24,28 0,28' fill='%2310b981'/%3E%3Cpolygon points='26,8 38,28 14,28' fill='%230284c7'/%3E%3C/svg%3E">
 
   <!-- Main Stylesheets -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/portal-pages.css">
 </head>
+
 <body>
 
   <!-- ==========================================================================
@@ -21,7 +24,8 @@
   <aside class="side-navigation" id="sideNav" aria-label="Portal Navigation">
     <div class="sidebar-header">
       <a href="index.html" class="sidebar-logo">
-        <svg class="sidebar-logo-icon" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg class="sidebar-logo-icon" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
           <polygon points="12,4 23,32 1,32" fill="#10B981" />
           <polygon points="28,10 41,32 15,32" fill="#0284C7" />
           <polygon points="12,4 16,13 8,13" fill="#ffffff" />
@@ -29,8 +33,10 @@
         </svg>
         <span class="sidebar-logo-text">TourismHub</span>
       </a>
-      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Collapse Sidebar" title="Collapse / Expand Sidebar">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Collapse Sidebar"
+        title="Collapse / Expand Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
@@ -43,7 +49,7 @@
           <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Dashboard">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
               </svg>
             </span>
             <span class="sidebar-item-text">Dashboard</span>
@@ -55,7 +61,7 @@
           <a href="attractions.html" class="sidebar-menu-link" data-nav="attractions" title="Attractions & Events">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z"/>
+                <path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z" />
               </svg>
             </span>
             <span class="sidebar-item-text">Attractions & Events</span>
@@ -66,7 +72,8 @@
         <li class="sidebar-menu-item">
           <a href="capacity.html" class="sidebar-menu-link" data-nav="capacity" title="Capacity & Schedule">
             <span class="sidebar-item-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
                 <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -83,7 +90,8 @@
         <li class="sidebar-menu-item">
           <a href="scanner.html" class="sidebar-menu-link active" data-nav="scanner" title="QR Scanner">
             <span class="sidebar-item-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
                 <path d="M4 8V5a1 1 0 0 1 1-1h3"></path>
                 <path d="M16 4h3a1 1 0 0 1 1 1v3"></path>
                 <path d="M20 16v3a1 1 0 0 1-1 1h-3"></path>
@@ -97,10 +105,11 @@
 
         <!-- 6. Analytics -->
         <li class="sidebar-menu-item">
-          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="analytics" title="Analytics" onclick="alert('QR Check-in Analytics: 98.6% valid pass rate today.')">
+          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="analytics" title="Analytics"
+            onclick="openAnalyticsModal()">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
+                <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z" />
               </svg>
             </span>
             <span class="sidebar-item-text">Analytics</span>
@@ -112,7 +121,8 @@
           <a href="notifications.html" class="sidebar-menu-link" data-nav="notifications" title="Notifications">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                <path
+                  d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
               </svg>
             </span>
             <span class="sidebar-item-text">Notifications</span>
@@ -122,28 +132,18 @@
 
         <!-- 8. Settings -->
         <li class="sidebar-menu-item">
-          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="settings" title="Settings" onclick="alert('Scanner optical sensitivity calibrated.')">
+          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="settings" title="Settings"
+            onclick="openSettingsModal()">
             <span class="sidebar-item-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
               </svg>
             </span>
             <span class="sidebar-item-text">Settings</span>
-          </a>
-        </li>
-
-        <!-- 9. Admin Dashboard -->
-        <li class="sidebar-menu-item">
-          <a href="admin.html" class="sidebar-menu-link" style="color: #38bdf8;" title="Admin Dashboard">
-            <span class="sidebar-item-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Admin Dashboard</span>
           </a>
         </li>
       </ul>
@@ -157,7 +157,8 @@
   <header class="portal-topbar">
     <div class="portal-topbar-left">
       <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Open Sidebar Navigation">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -178,11 +179,12 @@
         <span class="sidebar-item-badge-dot" style="position: absolute; top: 8px; right: 8px;"></span>
       </a>
 
-      <div class="portal-user-profile" onclick="location.href='admin.html'" title="Switch to Admin Profile">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Maria Santos" class="portal-avatar-img">
+      <div class="portal-user-profile" onclick="location.href='login.html'" title="Tourist Account / Sign In">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+          alt="Tourist Profile" class="portal-avatar-img">
         <div class="portal-user-meta">
-          <span class="portal-user-name">Maria Santos</span>
-          <span class="portal-user-role">Operator</span>
+          <span class="portal-user-name">Tourist Portal</span>
+          <span class="portal-user-role">Sign In / Register</span>
         </div>
       </div>
     </div>
@@ -193,8 +195,10 @@
 
     <!-- Section Header (Matching Image 4) -->
     <div style="display: flex; align-items: flex-start; gap: 0.85rem; margin-bottom: 1.5rem;">
-      <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #0f172a;">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <div
+        style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #0f172a;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="7" height="7"></rect>
           <rect x="14" y="3" width="7" height="7"></rect>
           <rect x="14" y="14" width="7" height="7"></rect>
@@ -202,7 +206,9 @@
         </svg>
       </div>
       <div>
-        <h1 style="font-family: var(--font-heading); font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-bottom: 0.2rem;">QR Scanner</h1>
+        <h1
+          style="font-family: var(--font-heading); font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-bottom: 0.2rem;">
+          QR Scanner</h1>
         <p style="font-size: 0.9rem; color: #64748b;">Scan tourist pass to verify and check in visitors.</p>
       </div>
     </div>
@@ -210,17 +216,21 @@
     <!-- Scanner Viewfinder Card (Exact Match from Image 4) -->
     <div class="scanner-viewport-card">
       <div class="scanner-camera-frame" id="cameraFrame" style="background-image: url('assets/hero-banner.jpg');">
-        
+
         <!-- Top Right Switch Camera Icon Button -->
         <button class="scanner-top-switch-btn" title="Switch Camera" onclick="toggleCameraView()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+            <circle cx="12" cy="13" r="4" />
+          </svg>
         </button>
 
         <!-- Centered QR Reticle Box with White Brackets & QR Code Icon -->
         <div class="scanner-reticle-box">
           <div class="scanner-laser-line"></div>
           <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm13-2h3v2h-3zm-3 2h2v3h-2zm2 3h4v3h-4zm-2 1h2v2h-2zm4-6h2v2h-2z"/>
+            <path
+              d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm13-2h3v2h-3zm-3 2h2v3h-2zm2 3h4v3h-4zm-2 1h2v2h-2zm4-6h2v2h-2z" />
           </svg>
         </div>
 
@@ -229,30 +239,42 @@
 
         <!-- Bottom Flash / Capture Icon Button -->
         <button class="scanner-flash-btn" id="cameraSnapBtn" title="Capture / Scan" onclick="simulateQRScan()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
         </button>
 
       </div>
 
       <!-- Quick Manual Verification & Test Strip -->
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap;">
+      <div
+        style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap;">
         <div style="display: flex; align-items: center; gap: 0.65rem; flex: 1; max-width: 480px;">
-          <input type="text" id="manualPassInput" placeholder="Enter Tourist Pass Code (e.g. PASS-8842-MNL)..." style="flex: 1; padding: 0.65rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: monospace; font-size: 0.9rem;">
+          <input type="text" id="manualPassInput" placeholder="Enter Tourist Pass Code (e.g. PASS-8842-MNL)..."
+            style="flex: 1; padding: 0.65rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: monospace; font-size: 0.9rem;">
           <button class="btn-primary-blue" onclick="validateManualCode()">Verify Code</button>
         </div>
 
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Simulate Scans:</span>
-          <button class="portal-filter-tab" style="padding: 0.35rem 0.75rem; font-size: 0.76rem;" onclick="triggerScan('PASS-8842-MNL', 'Juan Dela Cruz', 'Rizal Monument & Luneta Park', true)">Valid Pass</button>
-          <button class="portal-filter-tab" style="padding: 0.35rem 0.75rem; font-size: 0.76rem;" onclick="triggerScan('PASS-9912-EXP', 'Carlos Mendoza', 'Intramuros Heritage Tour', false)">Expired Pass</button>
+          <button class="portal-filter-tab" style="padding: 0.35rem 0.75rem; font-size: 0.76rem;"
+            onclick="triggerScan('PASS-8842-MNL', 'Juan Dela Cruz', 'Rizal Monument & Luneta Park', true)">Valid
+            Pass</button>
+          <button class="portal-filter-tab" style="padding: 0.35rem 0.75rem; font-size: 0.76rem;"
+            onclick="triggerScan('PASS-9912-EXP', 'Carlos Mendoza', 'Intramuros Heritage Tour', false)">Expired
+            Pass</button>
         </div>
       </div>
     </div>
 
     <!-- Recent Scans Section (Exact Match from Image 4) -->
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-      <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #0f172a;">Recent Scans</h2>
-      <a href="javascript:void(0)" class="upcoming-events-view-all" onclick="alert('Viewing all scanned history records.')">View All</a>
+      <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #0f172a;">Recent Scans
+      </h2>
+      <a href="javascript:void(0)" class="upcoming-events-view-all"
+        onclick="openScannedHistory()">View All</a>
     </div>
 
     <div class="portal-table-container">
@@ -267,7 +289,7 @@
           </tr>
         </thead>
         <tbody id="scansTableBody">
-          
+
           <!-- Row 1: Juan Dela Cruz -->
           <tr>
             <td>10:24 AM</td>
@@ -275,8 +297,11 @@
             <td>Sample: Attraction 1</td>
             <td><span class="valid-dot-pill">Valid</span></td>
             <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;" onclick="showScanReceipt('Juan Dela Cruz', 'Sample: Attraction 1', 'PASS-8842-MNL', '10:24 AM', 'Valid')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <button class="action-arrow-btn" style="margin-left: auto;"
+                onclick="showScanReceipt('Juan Dela Cruz', 'Sample: Attraction 1', 'PASS-8842-MNL', '10:24 AM', 'Valid')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
               </button>
             </td>
           </tr>
@@ -288,8 +313,11 @@
             <td>Sample Event 1</td>
             <td><span class="valid-dot-pill">Valid</span></td>
             <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;" onclick="showScanReceipt('Maria Santos', 'Sample Event 1', 'PASS-5120-BCY', '10:18 AM', 'Valid')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <button class="action-arrow-btn" style="margin-left: auto;"
+                onclick="showScanReceipt('Maria Santos', 'Sample Event 1', 'PASS-5120-BCY', '10:18 AM', 'Valid')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
               </button>
             </td>
           </tr>
@@ -301,8 +329,11 @@
             <td>Sample Attraction 2</td>
             <td><span class="valid-dot-pill">Valid</span></td>
             <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;" onclick="showScanReceipt('Carlos Reyes', 'Sample Attraction 2', 'PASS-4412-RES', '10:12 AM', 'Valid')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <button class="action-arrow-btn" style="margin-left: auto;"
+                onclick="showScanReceipt('Carlos Reyes', 'Sample Attraction 2', 'PASS-4412-RES', '10:12 AM', 'Valid')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
               </button>
             </td>
           </tr>
@@ -314,8 +345,11 @@
             <td>Sample Event 2</td>
             <td><span class="invalid-dot-pill">Invalid</span></td>
             <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;" onclick="showScanReceipt('Ana Lim', 'Sample Event 2', 'PASS-0019-EXP', '10:05 AM', 'Invalid')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <button class="action-arrow-btn" style="margin-left: auto;"
+                onclick="showScanReceipt('Ana Lim', 'Sample Event 2', 'PASS-0019-EXP', '10:05 AM', 'Invalid')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
               </button>
             </td>
           </tr>
@@ -335,7 +369,8 @@
       </div>
       <div class="modal-body" style="padding: 1.5rem;">
         <div id="scanResultBadge" style="text-align: center; margin-bottom: 1rem;"></div>
-        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem;">
+        <div
+          style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
             <span style="font-size: 0.8rem; color: #64748b;">Visitor Name</span>
             <strong id="receiptVisitor"></strong>
@@ -353,7 +388,38 @@
             <span id="receiptTime"></span>
           </div>
         </div>
-        <button class="btn-primary-blue" style="width: 100%; justify-content: center;" onclick="closePortalModal('scanModal')">Confirm Check-in</button>
+        <button class="btn-primary-blue" style="width: 100%; justify-content: center;"
+          onclick="closePortalModal('scanModal')">Confirm Check-in</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Scanned History Modal -->
+  <div class="modal-overlay" id="scannedHistoryModal" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Turnstile Scan Audit History</h3>
+        <button class="modal-close" onclick="closePortalModal('scannedHistoryModal')">&times;</button>
+      </div>
+      <div style="padding: 1.5rem;">
+        <div style="max-height: 380px; overflow-y: auto;">
+          <table class="portal-data-table" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Visitor</th>
+                <th>Attraction</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody id="historyModalBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top: 1.25rem; display: flex; justify-content: flex-end;">
+          <button style="padding: 0.65rem 1.25rem; background: #0284c7; color: #fff; font-weight: 700; border: none; border-radius: 8px; cursor: pointer;" onclick="closePortalModal('scannedHistoryModal')">Close History</button>
+        </div>
       </div>
     </div>
   </div>
@@ -384,7 +450,9 @@
       const input = document.getElementById('manualPassInput');
       const code = (input?.value || '').trim();
       if (!code) {
-        alert('Please enter a pass code.');
+        if (window.showPortalToast) {
+          showPortalToast('Please enter a tourist pass reference code.', 'warning');
+        }
         return;
       }
 
@@ -402,7 +470,7 @@
       const now = new Date();
       const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-      // Save log to TourismHubStore to sync with Admin Control
+      // Save log to TourismHubStore to sync real-time entries
       if (window.TourismHubStore && typeof TourismHubStore.addLog === 'function') {
         TourismHubStore.addLog({
           time: timeStr,
@@ -415,6 +483,13 @@
       }
 
       showScanReceipt(name, attraction, code, timeStr, isValid ? 'Valid' : 'Invalid');
+
+      if (window.showPortalToast) {
+        showPortalToast(
+          isValid ? `Verified entry pass for ${name}` : `Turnstile warning: ${code} is invalid or expired`,
+          isValid ? 'success' : 'warning'
+        );
+      }
     }
 
     function showScanReceipt(name, attraction, code, time, status) {
@@ -432,6 +507,27 @@
 
       openPortalModal('scanModal');
     }
+
+    function openScannedHistory() {
+      const tbody = document.getElementById('historyModalBody');
+      if (tbody && window.TourismHubStore) {
+        const logs = TourismHubStore.getLogs();
+        if (logs.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 1.5rem;">No turnstile scans recorded yet today.</td></tr>`;
+        } else {
+          tbody.innerHTML = logs.map(l => `
+            <tr>
+              <td>${l.time || '10:00 AM'}</td>
+              <td><strong>${l.visitor || 'Tourist Guest'}</strong><br><small style="color: #64748b;">${l.pass || 'PASS'}</small></td>
+              <td>${l.attraction || 'General'}</td>
+              <td>${(l.result || '').includes('Approved') || (l.result || '').includes('Valid') ? '<span class="valid-dot-pill">Approved</span>' : '<span class="invalid-dot-pill">Denied</span>'}</td>
+            </tr>
+          `).join('');
+        }
+      }
+      openPortalModal('scannedHistoryModal');
+    }
   </script>
 </body>
+
 </html>

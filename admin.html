@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="TourismHub Operator Admin Dashboard - Centralized platform for managing attraction profiles, visitor capacity, QR tourist pass validation, and analytics.">
+  <meta name="description"
+    content="TourismHub Operator Admin Dashboard - Centralized platform for managing attraction profiles, visitor capacity, QR tourist pass validation, and analytics.">
   <title>TourismHub — Attraction Operator Admin Dashboard</title>
 
   <!-- Favicon SVG -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'%3E%3Cpolygon points='12,2 24,28 0,28' fill='%2310b981'/%3E%3Cpolygon points='26,8 38,28 14,28' fill='%230284c7'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'%3E%3Cpolygon points='12,2 24,28 0,28' fill='%2310b981'/%3E%3Cpolygon points='26,8 38,28 14,28' fill='%230284c7'/%3E%3C/svg%3E">
 
   <!-- Admin Stylesheet (Separated) -->
   <link rel="stylesheet" href="css/admin.css">
 </head>
+
 <body>
 
   <div class="admin-layout">
@@ -31,7 +35,10 @@
           <span class="brand-badge">ADMIN</span>
         </a>
         <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
 
@@ -42,7 +49,7 @@
         <!-- 1. Overview -->
         <a href="#overview" class="sidebar-link active" data-tab="overview">
           <svg class="sidebar-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
           </svg>
           <span>Overview & Control</span>
         </a>
@@ -50,7 +57,7 @@
         <!-- 2. Cataloging -->
         <a href="#catalog" class="sidebar-link" data-tab="catalog">
           <svg class="sidebar-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z"/>
+            <path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z" />
           </svg>
           <span>Attraction Catalog</span>
           <span class="sidebar-badge" id="sidebarCatalogBadge">6</span>
@@ -84,7 +91,7 @@
         <!-- 5. Analytics -->
         <a href="#analytics" class="sidebar-link" data-tab="analytics">
           <svg class="sidebar-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
+            <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z" />
           </svg>
           <span>Analytics Dashboard</span>
         </a>
@@ -92,7 +99,8 @@
         <!-- 6. Announcements Dispatch -->
         <a href="#dispatch" class="sidebar-link" data-tab="dispatch">
           <svg class="sidebar-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+            <path
+              d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
           </svg>
           <span>Dispatch & Alerts</span>
           <span class="sidebar-badge alert" id="sidebarAlertsBadge">3</span>
@@ -102,16 +110,27 @@
       <!-- Sidebar Footer User Profile -->
       <div class="sidebar-footer">
         <div class="user-snippet">
-          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" alt="Administrator Profile" class="user-avatar">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80"
+            alt="Administrator Profile" class="user-avatar">
           <div class="user-info">
             <div class="user-name">Juan Miguel Repas</div>
             <div class="user-role">Head of Tourism Ops</div>
           </div>
         </div>
-        <a href="index.html" class="public-portal-link" title="Open Public Tourist Portal">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          <span>Public Portal</span>
-        </a>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+          <a href="index.html" class="public-portal-link" style="flex: 1; margin-top: 0;" title="Open Public Tourist Portal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+            <span>Public</span>
+          </a>
+          <a href="login.html" class="public-portal-link" style="flex: 1; margin-top: 0; color: #f87171; border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.08);" title="Lock Terminal & Log Out" onclick="if(window.TourismHubStore){TourismHubStore.adminLogout();}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span>Sign Out</span>
+          </a>
+        </div>
       </div>
     </aside>
 
@@ -119,12 +138,16 @@
          Main Admin Content
          ========================================================================== -->
     <main class="admin-main">
-      
+
       <!-- Top Sticky Header -->
       <header class="admin-header">
         <div class="header-left">
           <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle Navigation Menu">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
           </button>
           <div class="header-title-box">
             <h1 id="adminPageTitle">Overview & Operations Control</h1>
@@ -141,12 +164,20 @@
 
           <!-- Quick QR Scanner Action -->
           <button class="header-action-btn" onclick="switchTab('scanner')" title="Open QR Entry Scanner">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M4 8V5a1 1 0 0 1 1-1h3" />
+              <path d="M16 4h3a1 1 0 0 1 1 1v3" />
+              <path d="M20 16v3a1 1 0 0 1-1 1h-3" />
+              <path d="M8 20H5a1 1 0 0 1-1-1v-3" />
+            </svg>
           </button>
 
           <!-- Notifications Button -->
           <button class="header-action-btn" onclick="switchTab('dispatch')" title="Active Broadcasts">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
             <span class="notification-count">3</span>
           </button>
         </div>
@@ -159,15 +190,17 @@
              TAB 1: Overview & Operations Control
              ====================================================================== -->
         <section class="tab-pane active" id="tab-overview">
-          
+
           <!-- Top KPI Cards -->
           <div class="kpi-grid">
-            
+
             <div class="kpi-card">
               <div class="kpi-card-header">
                 <span class="kpi-title">Active Attractions</span>
                 <div class="kpi-icon-wrap blue">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z" />
+                  </svg>
                 </div>
               </div>
               <div class="kpi-value" id="kpiActiveAttractions">6</div>
@@ -180,7 +213,12 @@
               <div class="kpi-card-header">
                 <span class="kpi-title">Capacity Utilization</span>
                 <div class="kpi-icon-wrap orange">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
                 </div>
               </div>
               <div class="kpi-value" id="kpiCapacityRate">84%</div>
@@ -193,7 +231,13 @@
               <div class="kpi-card-header">
                 <span class="kpi-title">QR Passes Scanned</span>
                 <div class="kpi-icon-wrap green">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M4 8V5a1 1 0 0 1 1-1h3" />
+                    <path d="M16 4h3a1 1 0 0 1 1 1v3" />
+                    <path d="M20 16v3a1 1 0 0 1-1 1h-3" />
+                    <path d="M8 20H5a1 1 0 0 1-1-1v-3" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                  </svg>
                 </div>
               </div>
               <div class="kpi-value" id="kpiPassesScanned">504 pax</div>
@@ -206,7 +250,10 @@
               <div class="kpi-card-header">
                 <span class="kpi-title">Active Dispatches</span>
                 <div class="kpi-icon-wrap purple">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
+                  </svg>
                 </div>
               </div>
               <div class="kpi-value" id="kpiActiveAlerts">3 Alerts</div>
@@ -226,41 +273,61 @@
           </div>
 
           <div class="kpi-grid" style="margin-bottom: 2rem;">
-            
+
             <div class="kpi-card" style="cursor: pointer;" onclick="switchTab('catalog')">
               <div class="kpi-card-header">
                 <span class="kpi-title">Catalog Attraction</span>
-                <div class="kpi-icon-wrap blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+                <div class="kpi-icon-wrap blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg></div>
               </div>
               <h3 style="font-size: 1.05rem; font-weight: 700;">Create / Edit Profiles</h3>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Manage operating hours, galleries, and admission fees.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Manage operating hours,
+                galleries, and admission fees.</p>
             </div>
 
             <div class="kpi-card" style="cursor: pointer;" onclick="switchTab('capacity')">
               <div class="kpi-card-header">
                 <span class="kpi-title">Visitor Capacity</span>
-                <div class="kpi-icon-wrap orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg></div>
+                <div class="kpi-icon-wrap orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 14 14" />
+                  </svg></div>
               </div>
               <h3 style="font-size: 1.05rem; font-weight: 700;">Overcrowding Control</h3>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Adjust slot thresholds and cap maximum visitors.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Adjust slot thresholds and
+                cap maximum visitors.</p>
             </div>
 
             <div class="kpi-card" style="cursor: pointer;" onclick="switchTab('scanner')">
               <div class="kpi-card-header">
                 <span class="kpi-title">QR Scanner</span>
-                <div class="kpi-icon-wrap green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="kpi-icon-wrap green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></div>
               </div>
               <h3 style="font-size: 1.05rem; font-weight: 700;">Verify Pass at Entry</h3>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Live validation for digital QR passes at gates.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Live validation for digital
+                QR passes at gates.</p>
             </div>
 
             <div class="kpi-card" style="cursor: pointer;" onclick="switchTab('dispatch')">
               <div class="kpi-card-header">
                 <span class="kpi-title">Tourist Broadcast</span>
-                <div class="kpi-icon-wrap purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                <div class="kpi-icon-wrap purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg></div>
               </div>
               <h3 style="font-size: 1.05rem; font-weight: 700;">Dispatch Advisory</h3>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Broadcast alerts for weather, schedule changes, or events.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Broadcast alerts for weather,
+                schedule changes, or events.</p>
             </div>
 
           </div>
@@ -285,14 +352,17 @@
              TAB 2: Module 1 - Attraction & Event Cataloging
              ====================================================================== -->
         <section class="tab-pane" id="tab-catalog">
-          
+
           <div class="section-heading-row">
             <div class="section-title-wrap">
               <h2>Attraction & Event Catalog</h2>
               <p>Create and configure digital profiles, operating schedules, admission fees, and capacity caps.</p>
             </div>
             <button class="btn-primary" onclick="openAddAttractionModal()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
               <span>+ Catalog New Attraction / Event</span>
             </button>
           </div>
@@ -301,8 +371,13 @@
           <div class="catalog-toolbar">
             <div class="search-filter-box">
               <div class="admin-input-group">
-                <svg class="admin-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" id="catalogSearchInput" class="admin-input" placeholder="Search by destination name, location...">
+                <svg class="admin-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.2">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="text" id="catalogSearchInput" class="admin-input"
+                  placeholder="Search by destination name, location...">
               </div>
               <select id="catalogCategoryFilter" class="admin-select" aria-label="Filter by category">
                 <option value="all">All Categories</option>
@@ -330,14 +405,19 @@
              TAB 3: Module 2 - Capacity & Schedule Management
              ====================================================================== -->
         <section class="tab-pane" id="tab-capacity">
-          
+
           <div class="section-heading-row">
             <div class="section-title-wrap">
               <h2>Capacity & Schedule Management</h2>
-              <p>Real-time monitoring of scheduled time-slot allocations against allowable limits to prevent overcrowding.</p>
+              <p>Real-time monitoring of scheduled time-slot allocations against allowable limits to prevent
+                overcrowding.</p>
             </div>
-            <button class="btn-primary" onclick="addSlotForAttraction(document.getElementById('capacityAttractionSelect').value)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <button class="btn-primary"
+              onclick="addSlotForAttraction(document.getElementById('capacityAttractionSelect').value)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
               <span>+ Add Time-Slot Allocation</span>
             </button>
           </div>
@@ -349,7 +429,9 @@
               <!-- Populated via admin.js -->
             </select>
             <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto;">
-              Color Legend: <strong style="color: #10b981;">Normal (&lt;80%)</strong> · <strong style="color: #f59e0b;">Near Capacity (80%+)</strong> · <strong style="color: #ef4444;">At Capacity (100%)</strong>
+              Color Legend: <strong style="color: #10b981;">Normal (&lt;80%)</strong> · <strong
+                style="color: #f59e0b;">Near Capacity (80%+)</strong> · <strong style="color: #ef4444;">At Capacity
+                (100%)</strong>
             </span>
           </div>
 
@@ -364,7 +446,7 @@
              TAB 4: Module 3 - QR Tourist Pass Scanning & Validation
              ====================================================================== -->
         <section class="tab-pane" id="tab-scanner">
-          
+
           <div class="section-heading-row">
             <div class="section-title-wrap">
               <h2>QR Tourist Pass Scanning & Verification</h2>
@@ -373,7 +455,7 @@
           </div>
 
           <div class="scanner-grid">
-            
+
             <!-- Left: Viewfinder & Input Simulator -->
             <div class="scanner-camera-panel">
               <div class="scanner-viewfinder-box">
@@ -390,23 +472,29 @@
 
               <!-- Manual / Hardware Scanner Barcode Input -->
               <div class="scanner-manual-input-row">
-                <input type="text" id="scannerManualInput" placeholder="Scan or enter pass code (e.g. PASS-8842-MNL)..." autocomplete="off">
+                <input type="text" id="scannerManualInput" placeholder="Scan or enter pass code (e.g. PASS-8842-MNL)..."
+                  autocomplete="off">
                 <button class="btn-primary" id="scanSubmitBtn">Verify Pass</button>
               </div>
 
               <!-- Quick Test Presets -->
               <div class="scanner-preset-buttons">
-                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-light); align-self: center;">Test Presets:</span>
-                <button class="preset-chip" onclick="testPresetPass('PASS-8842-MNL')">✓ PASS-8842-MNL (Valid Manila Pass)</button>
-                <button class="preset-chip" onclick="testPresetPass('PASS-5120-BCY')">✓ PASS-5120-BCY (Valid Boracay Pass)</button>
-                <button class="preset-chip" onclick="testPresetPass('PASS-9912-EXP')">✕ PASS-9912-EXP (Expired Pass)</button>
-                <button class="preset-chip" onclick="testPresetPass('PASS-3310-USD')">✕ PASS-3310-USD (Already Used)</button>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-light); align-self: center;">Test
+                  Presets:</span>
+                <button class="preset-chip" onclick="testPresetPass('PASS-8842-MNL')">✓ PASS-8842-MNL (Valid Manila
+                  Pass)</button>
+                <button class="preset-chip" onclick="testPresetPass('PASS-5120-BCY')">✓ PASS-5120-BCY (Valid Boracay
+                  Pass)</button>
+                <button class="preset-chip" onclick="testPresetPass('PASS-9912-EXP')">✕ PASS-9912-EXP (Expired
+                  Pass)</button>
+                <button class="preset-chip" onclick="testPresetPass('PASS-3310-USD')">✕ PASS-3310-USD (Already
+                  Used)</button>
               </div>
             </div>
 
             <!-- Right: Real-Time Validation Result Card & Recent Scans -->
             <div class="scanner-results-panel">
-              
+
               <!-- Validation Feedback Card -->
               <div class="validation-card" id="validationResultCard">
                 <!-- Injected via admin.js -->
@@ -445,21 +533,25 @@
              TAB 5: Module 4 - Admin Analytics Dashboard
              ====================================================================== -->
         <section class="tab-pane" id="tab-analytics">
-          
+
           <div class="section-heading-row">
             <div class="section-title-wrap">
               <h2>Admin Analytics & Reports</h2>
               <p>Track attendance trends, peak visiting hours, and capacity utilization across operations.</p>
             </div>
             <button class="btn-secondary" onclick="showToast('Exporting summary operational report (CSV)...')">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
               <span>Export Summary Report</span>
             </button>
           </div>
 
           <!-- Charts Grid -->
           <div class="analytics-charts-grid">
-            
+
             <!-- Chart 1: Hourly Peak Attendance Bar Visualization -->
             <div class="chart-card">
               <div class="chart-card-header">
@@ -491,8 +583,10 @@
           <!-- Performance Data Table -->
           <div class="data-table-card">
             <div class="data-table-header">
-              <h3 style="font-family: var(--font-heading); font-size: 1rem; font-weight: 700;">Destination Attendance & Capacity Summary</h3>
-              <span style="font-size: 0.78rem; color: var(--text-muted);">Aggregated Historical & Operational Data</span>
+              <h3 style="font-family: var(--font-heading); font-size: 1rem; font-weight: 700;">Destination Attendance &
+                Capacity Summary</h3>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">Aggregated Historical & Operational
+                Data</span>
             </div>
             <table class="data-table">
               <thead>
@@ -516,7 +610,7 @@
              TAB 6: Module 5 - Announcement & Notification Dispatch
              ====================================================================== -->
         <section class="tab-pane" id="tab-dispatch">
-          
+
           <div class="section-heading-row">
             <div class="section-title-wrap">
               <h2>Announcement & Notification Dispatch</h2>
@@ -525,15 +619,16 @@
           </div>
 
           <div class="dispatch-layout-grid">
-            
+
             <!-- Left: Dispatch Form Composer -->
             <div class="dispatch-composer-card">
               <h3 class="composer-title">Compose Public Advisory</h3>
-              
+
               <form id="dispatchForm">
                 <div class="form-group">
                   <label for="dispatchTitle">Announcement Headline *</label>
-                  <input type="text" id="dispatchTitle" class="form-control" placeholder="e.g. Gale Warning & Afternoon Tour Suspension" required>
+                  <input type="text" id="dispatchTitle" class="form-control"
+                    placeholder="e.g. Gale Warning & Afternoon Tour Suspension" required>
                 </div>
 
                 <div class="form-row-2">
@@ -569,11 +664,16 @@
 
                 <div class="form-group">
                   <label for="dispatchBody">Advisory Message Content *</label>
-                  <textarea id="dispatchBody" class="form-control" placeholder="Provide clear instructions for tourists regarding safety, alternative hours, or rescheduling..." required></textarea>
+                  <textarea id="dispatchBody" class="form-control"
+                    placeholder="Provide clear instructions for tourists regarding safety, alternative hours, or rescheduling..."
+                    required></textarea>
                 </div>
 
                 <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
                   <span>Broadcast Advisory to Tourists</span>
                 </button>
               </form>
@@ -581,7 +681,8 @@
 
             <!-- Right: Active Feed of Broadcasted Advisories -->
             <div>
-              <h3 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; margin-bottom: 1.25rem;">
+              <h3
+                style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; margin-bottom: 1.25rem;">
                 Currently Active Public Broadcasts
               </h3>
               <div class="announcements-feed" id="announcementsFeed">
@@ -606,17 +707,21 @@
       <div class="admin-modal-header">
         <h3 id="attractionModalTitle">Catalog New Attraction / Event</h3>
         <button class="modal-close-btn" onclick="closeModal('attractionModal')" aria-label="Close modal">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
 
       <form id="attractionForm">
         <input type="hidden" id="attractionModalId">
-        
+
         <div class="admin-modal-body">
           <div class="form-group">
             <label for="attrFormTitle">Attraction / Event Name *</label>
-            <input type="text" id="attrFormTitle" class="form-control" placeholder="e.g. Calle Crisologo Heritage Strip" required>
+            <input type="text" id="attrFormTitle" class="form-control" placeholder="e.g. Calle Crisologo Heritage Strip"
+              required>
           </div>
 
           <div class="form-row-2">
@@ -637,11 +742,13 @@
           <div class="form-row-2">
             <div class="form-group">
               <label for="attrFormLocation">Location / Province *</label>
-              <input type="text" id="attrFormLocation" class="form-control" placeholder="e.g. Vigan, Ilocos Sur" required>
+              <input type="text" id="attrFormLocation" class="form-control" placeholder="e.g. Vigan, Ilocos Sur"
+                required>
             </div>
             <div class="form-group">
               <label for="attrFormHours">Operating Hours *</label>
-              <input type="text" id="attrFormHours" class="form-control" placeholder="e.g. 08:00 AM - 06:00 PM" required>
+              <input type="text" id="attrFormHours" class="form-control" placeholder="e.g. 08:00 AM - 06:00 PM"
+                required>
             </div>
           </div>
 
@@ -667,7 +774,9 @@
 
           <div class="form-group">
             <label for="attrFormDesc">Description & Highlights *</label>
-            <textarea id="attrFormDesc" class="form-control" placeholder="Describe the historical importance, natural beauty, or tourist guidelines..." required></textarea>
+            <textarea id="attrFormDesc" class="form-control"
+              placeholder="Describe the historical importance, natural beauty, or tourist guidelines..."
+              required></textarea>
           </div>
         </div>
 
@@ -681,7 +790,9 @@
 
   <!-- Toast Notification System -->
   <aside class="admin-toast" id="adminToast" role="status" aria-live="polite">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
     <span id="adminToastMessage">Action completed successfully</span>
   </aside>
 
@@ -690,4 +801,5 @@
   <!-- Admin Application Script (Separated) -->
   <script src="js/admin.js"></script>
 </body>
+
 </html>
