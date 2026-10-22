@@ -103,18 +103,7 @@
           </a>
         </li>
 
-        <!-- 6. Analytics -->
-        <li class="sidebar-menu-item">
-          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="analytics" title="Analytics"
-            onclick="openAnalyticsModal()">
-            <span class="sidebar-item-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z" />
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Analytics</span>
-          </a>
-        </li>
+
 
         <!-- 7. Notifications -->
         <li class="sidebar-menu-item">
@@ -269,93 +258,95 @@
       </div>
     </div>
 
-    <!-- Recent Scans Section (Exact Match from Image 4) -->
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-      <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #0f172a;">Recent Scans
-      </h2>
-      <a href="javascript:void(0)" class="upcoming-events-view-all"
-        onclick="openScannedHistory()">View All</a>
-    </div>
+    <!-- Recent Scans Section (Operator Admin Only) -->
+    <div id="scannerRecentScansSection" class="admin-only-feature" style="display: none;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #0f172a;">Recent Scans
+        </h2>
+        <a href="javascript:void(0)" class="upcoming-events-view-all"
+          onclick="openScannedHistory()">View All</a>
+      </div>
 
-    <div class="portal-table-container">
-      <table class="portal-data-table" id="scansTable">
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Visitor Name</th>
-            <th>Attraction/Event</th>
-            <th>Status</th>
-            <th style="text-align: right;">Action</th>
-          </tr>
-        </thead>
-        <tbody id="scansTableBody">
+      <div class="portal-table-container">
+        <table class="portal-data-table" id="scansTable">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Visitor Name</th>
+              <th>Attraction/Event</th>
+              <th>Status</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="scansTableBody">
 
-          <!-- Row 1: Juan Dela Cruz -->
-          <tr>
-            <td>10:24 AM</td>
-            <td><strong>Juan Dela Cruz</strong></td>
-            <td>Sample: Attraction 1</td>
-            <td><span class="valid-dot-pill">Valid</span></td>
-            <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;"
-                onclick="showScanReceipt('Juan Dela Cruz', 'Sample: Attraction 1', 'PASS-8842-MNL', '10:24 AM', 'Valid')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
-            </td>
-          </tr>
+            <!-- Row 1: Juan Dela Cruz -->
+            <tr>
+              <td>10:24 AM</td>
+              <td><strong>Juan Dela Cruz</strong></td>
+              <td>Sample: Attraction 1</td>
+              <td><span class="valid-dot-pill">Valid</span></td>
+              <td style="text-align: right;">
+                <button class="action-arrow-btn" style="margin-left: auto;"
+                  onclick="showScanReceipt('Juan Dela Cruz', 'Sample: Attraction 1', 'PASS-8842-MNL', '10:24 AM', 'Valid')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </td>
+            </tr>
 
-          <!-- Row 2: Maria Santos -->
-          <tr>
-            <td>10:18 AM</td>
-            <td><strong>Maria Santos</strong></td>
-            <td>Sample Event 1</td>
-            <td><span class="valid-dot-pill">Valid</span></td>
-            <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;"
-                onclick="showScanReceipt('Maria Santos', 'Sample Event 1', 'PASS-5120-BCY', '10:18 AM', 'Valid')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
-            </td>
-          </tr>
+            <!-- Row 2: Maria Santos -->
+            <tr>
+              <td>10:18 AM</td>
+              <td><strong>Maria Santos</strong></td>
+              <td>Sample Event 1</td>
+              <td><span class="valid-dot-pill">Valid</span></td>
+              <td style="text-align: right;">
+                <button class="action-arrow-btn" style="margin-left: auto;"
+                  onclick="showScanReceipt('Maria Santos', 'Sample Event 1', 'PASS-5120-BCY', '10:18 AM', 'Valid')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </td>
+            </tr>
 
-          <!-- Row 3: Carlos Reyes -->
-          <tr>
-            <td>10:12 AM</td>
-            <td><strong>Carlos Reyes</strong></td>
-            <td>Sample Attraction 2</td>
-            <td><span class="valid-dot-pill">Valid</span></td>
-            <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;"
-                onclick="showScanReceipt('Carlos Reyes', 'Sample Attraction 2', 'PASS-4412-RES', '10:12 AM', 'Valid')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
-            </td>
-          </tr>
+            <!-- Row 3: Carlos Reyes -->
+            <tr>
+              <td>10:12 AM</td>
+              <td><strong>Carlos Reyes</strong></td>
+              <td>Sample Attraction 2</td>
+              <td><span class="valid-dot-pill">Valid</span></td>
+              <td style="text-align: right;">
+                <button class="action-arrow-btn" style="margin-left: auto;"
+                  onclick="showScanReceipt('Carlos Reyes', 'Sample Attraction 2', 'PASS-4412-RES', '10:12 AM', 'Valid')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </td>
+            </tr>
 
-          <!-- Row 4: Ana Lim -->
-          <tr>
-            <td>10:05 AM</td>
-            <td><strong>Ana Lim</strong></td>
-            <td>Sample Event 2</td>
-            <td><span class="invalid-dot-pill">Invalid</span></td>
-            <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;"
-                onclick="showScanReceipt('Ana Lim', 'Sample Event 2', 'PASS-0019-EXP', '10:05 AM', 'Invalid')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
-            </td>
-          </tr>
+            <!-- Row 4: Ana Lim -->
+            <tr>
+              <td>10:05 AM</td>
+              <td><strong>Ana Lim</strong></td>
+              <td>Sample Event 2</td>
+              <td><span class="invalid-dot-pill">Invalid</span></td>
+              <td style="text-align: right;">
+                <button class="action-arrow-btn" style="margin-left: auto;"
+                  onclick="showScanReceipt('Ana Lim', 'Sample Event 2', 'PASS-0019-EXP', '10:05 AM', 'Invalid')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </td>
+            </tr>
 
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </main>

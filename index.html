@@ -111,18 +111,7 @@
           </a>
         </li>
 
-        <!-- 6. Analytics -->
-        <li class="sidebar-menu-item">
-          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="analytics" title="Analytics"
-            onclick="openAnalyticsModal()">
-            <span class="sidebar-item-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z" />
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Analytics</span>
-          </a>
-        </li>
+
 
         <!-- 7. Notifications (with Red Dot Badge) -->
         <li class="sidebar-menu-item">
@@ -235,15 +224,6 @@
           <span>Sign In</span>
         </a>
 
-        <!-- CTA Header Button -->
-        <button class="btn-primary-sm" onclick="openBookingModal('rizal-monument')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-            </polygon>
-          </svg>
-          <span>Get Pass</span>
-        </button>
       </div>
 
     </div>
@@ -1014,55 +994,7 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       Analytics Modal (Matching Sidebar "Analytics")
-       ========================================================================== -->
-  <div class="modal-overlay" id="analyticsModal" role="dialog" aria-modal="true" aria-labelledby="analyticsModalTitle">
-    <div class="modal-window">
-      <div class="modal-header">
-        <h3 class="modal-title" id="analyticsModalTitle">Visitor Traffic & Analytics</h3>
-        <button class="modal-close-btn" onclick="closeModal('analyticsModal')" aria-label="Close modal">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-          <div
-            style="background: var(--bg-page); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">
-              Today's Check-ins</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #1d70f5; margin-top: 0.25rem;">4,289</div>
-            <div style="font-size: 0.75rem; color: #10b981; font-weight: 600;">+14% vs yesterday</div>
-          </div>
-          <div
-            style="background: var(--bg-page); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Scan
-              Success</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">99.8%</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">Average latency: 0.3s</div>
-          </div>
-        </div>
 
-        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Peak Traffic Hours</h4>
-        <div
-          style="display: flex; align-items: flex-end; gap: 0.5rem; height: 120px; padding: 0.75rem; background: var(--bg-page); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 1.25rem;">
-          <div style="flex: 1; height: 35%; background: #93c5fd; border-radius: 4px;" title="9 AM: 35%"></div>
-          <div style="flex: 1; height: 60%; background: #60a5fa; border-radius: 4px;" title="11 AM: 60%"></div>
-          <div style="flex: 1; height: 95%; background: #1d70f5; border-radius: 4px;" title="1 PM: 95% (Peak)"></div>
-          <div style="flex: 1; height: 80%; background: #3b82f6; border-radius: 4px;" title="3 PM: 80%"></div>
-          <div style="flex: 1; height: 45%; background: #93c5fd; border-radius: 4px;" title="5 PM: 45%"></div>
-        </div>
-
-        <button onclick="closeModal('analyticsModal')"
-          style="width: 100%; padding: 0.85rem; background: var(--bg-subtle); color: var(--text-main); font-weight: 700; border-radius: var(--radius-full); border: 1px solid var(--border);">
-          Close Overview
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- ==========================================================================
        Toast Notification Component

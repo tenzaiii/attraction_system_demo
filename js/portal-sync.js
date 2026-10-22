@@ -403,8 +403,36 @@
       }, 3500);
     };
 
+    // --- 9. Role-Based Feature Visibility (Hide Admin Features from Public Portal) ---
+    function checkAdminFeaturesVisibility() {
+      const adminAuth = (window.TourismHubStore && typeof TourismHubStore.getAdminAuth === 'function')
+        ? TourismHubStore.getAdminAuth()
+        : null;
+      const isAdminLoggedIn = !!(adminAuth && adminAuth.roleKey);
+
+      // Toggle all admin-only feature elements across portal subpages
+      document.querySelectorAll('.admin-only-feature').forEach(el => {
+        el.style.display = isAdminLoggedIn ? '' : 'none';
+      });
+
+      // Update header profile widget if logged in as admin
+      document.querySelectorAll('.portal-user-profile').forEach(widget => {
+        if (isAdminLoggedIn) {
+          const nameEl = widget.querySelector('.portal-user-name');
+          const roleEl = widget.querySelector('.portal-user-role');
+          const imgEl = widget.querySelector('.portal-avatar-img');
+          if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
+          if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
+          if (imgEl && adminAuth.avatar) imgEl.src = adminAuth.avatar;
+          widget.onclick = function() { location.href = 'admin.html'; };
+          widget.title = 'Switch to Admin Dashboard';
+        }
+      });
+    }
+
     // Master render caller
     function refreshCurrentPage() {
+      checkAdminFeaturesVisibility();
       updateNotifBadges();
       syncAttractionsPage();
       syncCapacityPage();

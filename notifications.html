@@ -104,18 +104,7 @@
           </a>
         </li>
 
-        <!-- 6. Analytics -->
-        <li class="sidebar-menu-item">
-          <a href="javascript:void(0)" class="sidebar-menu-link" data-nav="analytics" title="Analytics"
-            onclick="openAnalyticsModal()">
-            <span class="sidebar-item-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z" />
-              </svg>
-            </span>
-            <span class="sidebar-item-text">Analytics</span>
-          </a>
-        </li>
+
 
         <!-- 7. Notifications (ACTIVE) -->
         <li class="sidebar-menu-item">
@@ -205,7 +194,7 @@
         <input type="text" id="notifSearchInput" class="portal-search-input" placeholder="Search announcements...">
       </div>
 
-      <button class="btn-primary-blue" onclick="openPortalModal('newAnnouncementModal')">
+      <button class="btn-primary-blue admin-only-feature" id="newAnnouncementBtn" onclick="openPortalModal('newAnnouncementModal')" style="display: none;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
