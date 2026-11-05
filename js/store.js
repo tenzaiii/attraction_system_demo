@@ -1,21 +1,16 @@
-/**
- * TourismHub - Centralized Shared State Store (Local Storage & Multi-Tab Synchronization)
- * Connects the Operator Admin Dashboard (admin.html) and Client Portal (index.html) in real-time.
- */
-
 (function (window) {
   'use strict';
 
-  // Storage Keys
+  // Temporary local cache keys
   const KEYS = {
-    CATALOG: 'tourismhub_catalog_v1',
-    CAPACITY: 'tourismhub_capacity_v1',
-    ANNOUNCEMENTS: 'tourismhub_announcements_v1',
-    PASSES: 'tourismhub_passes_v1',
-    LOGS: 'tourismhub_logs_v1',
-    ADMIN_AUTH: 'tourismhub_admin_auth_v1',
-    CLIENT_AUTH: 'tourismhub_client_auth_v1',
-    CLIENT_USERS: 'tourismhub_client_users_v1'
+    CATALOG: 'tourismhub_temp_catalog_v1',
+    CAPACITY: 'tourismhub_temp_capacity_v1',
+    ANNOUNCEMENTS: 'tourismhub_temp_announcements_v1',
+    PASSES: 'tourismhub_temp_passes_v1',
+    LOGS: 'tourismhub_temp_logs_v1',
+    ADMIN_AUTH: 'tourismhub_temp_admin_auth_v1',
+    CLIENT_AUTH: 'tourismhub_temp_client_auth_v1',
+    CLIENT_USERS: 'tourismhub_temp_client_users_v1'
   };
 
   // Default Seed Admin & Operator Accounts
@@ -572,7 +567,23 @@
     setAdminAuth(user) {
       setItem(KEYS.ADMIN_AUTH, user);
     },
-    adminLogin(email, password) {
+    async adminLogin(email, password) {
+      // 1. Try online Supabase profiles database first if connected
+      if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        try {
+          const onlineRes = await TourismHubSupabase.loginUser(email, password);
+          if (onlineRes && onlineRes.success) {
+            this.setAdminAuth(onlineRes.user);
+            return onlineRes;
+          } else if (onlineRes && !onlineRes.success) {
+            return onlineRes;
+          }
+        } catch (e) {
+          console.warn('[Store] Online admin authentication error, checking local store:', e);
+        }
+      }
+
+      // 2. Temporary local storage authentication fallback
       const users = this.getAdminUsers();
       const match = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
       if (!match) {
@@ -597,7 +608,23 @@
     setClientAuth(user) {
       setItem(KEYS.CLIENT_AUTH, user);
     },
-    clientLogin(email, password) {
+    async clientLogin(email, password) {
+      // 1. Try online Supabase profiles database first if connected
+      if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        try {
+          const onlineRes = await TourismHubSupabase.loginUser(email, password);
+          if (onlineRes && onlineRes.success) {
+            this.setClientAuth(onlineRes.user);
+            return onlineRes;
+          } else if (onlineRes && !onlineRes.success) {
+            return onlineRes;
+          }
+        } catch (e) {
+          console.warn('[Store] Online client authentication error, checking local store:', e);
+        }
+      }
+
+      // 2. Temporary local storage authentication fallback
       const users = this.getClientUsers();
       const match = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
       if (!match) {
@@ -612,7 +639,23 @@
       this.setClientAuth(sessionUser);
       return { success: true, user: sessionUser };
     },
-    clientRegister(name, email, password, country, phone) {
+    async clientRegister(name, email, password, country, phone) {
+      // 1. Try online Supabase profiles database first if connected
+      if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        try {
+          const onlineRes = await TourismHubSupabase.registerTourist(name, email, password, country, phone);
+          if (onlineRes && onlineRes.success) {
+            this.setClientAuth(onlineRes.user);
+            return onlineRes;
+          } else if (onlineRes && !onlineRes.success) {
+            return onlineRes;
+          }
+        } catch (e) {
+          console.warn('[Store] Online client registration error, falling back to local store:', e);
+        }
+      }
+
+      // 2. Temporary local storage registration fallback
       const users = this.getClientUsers();
       const existing = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
       if (existing) {

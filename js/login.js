@@ -1,8 +1,3 @@
-/**
- * TourismHub - Public Tourist Portal Authentication Logic (login.js)
- * Handles client sign-in, account creation, quick-demo logins, and session redirection.
- */
-
 // Global Helpers (available immediately)
 window.switchTab = function(mode) {
   const tabSignIn = document.getElementById('tabSignIn');
@@ -88,72 +83,114 @@ function getReturnUrl() {
   return params.get('redirect') || 'index.html';
 }
 
-function submitUnifiedLogin(email, password) {
+async function submitUnifiedLogin(email, password) {
   const btn = document.getElementById('btnSignInSubmit');
   clearAlerts();
+
+  const cleanEmail = (email || '').toLowerCase().trim();
+  const cleanPassword = (password || '').trim();
+
+  if (!cleanEmail || !cleanPassword) {
+    showNotice('Please provide both your email address and password.', 'error');
+    return;
+  }
+
   setLoading(btn, true);
 
-  setTimeout(() => {
-    setLoading(btn, false);
+  try {
     if (!window.TourismHubStore) {
+      setLoading(btn, false);
       showNotice('Authentication system is initializing. Please retry in a moment.', 'error');
       return;
     }
-
-    const cleanEmail = (email || '').toLowerCase().trim();
 
     // 1. Check if user credentials match an Admin / Operator
     const adminUsers = TourismHubStore.getAdminUsers() || [];
     const isAdminAccount = adminUsers.some(u => (u.email || '').toLowerCase().trim() === cleanEmail);
 
     if (isAdminAccount) {
-      const res = TourismHubStore.adminLogin(email, password);
-      if (res.success) {
+      const res = await TourismHubStore.adminLogin(cleanEmail, cleanPassword);
+      setLoading(btn, false);
+      if (res && res.success) {
         showNotice(`Operator clearance verified! Welcome, ${res.user.name}. Entering Admin Portal...`, 'success');
         setTimeout(() => {
           window.location.href = 'admin.html';
-        }, 600);
+        }, 500);
       } else {
-        showNotice(res.message, 'error');
+        showNotice(res ? res.message : 'Operator authentication failed.', 'error');
       }
       return;
     }
 
-    // 2. Otherwise authenticate against registered Tourist / Client accounts
-    const res = TourismHubStore.clientLogin(email, password);
-    if (res.success) {
+    // 2. Authenticate against Tourist / Client database (Online Supabase -> Temporary Cache)
+    const res = await TourismHubStore.clientLogin(cleanEmail, cleanPassword);
+    setLoading(btn, false);
+    if (res && res.success) {
       showNotice(`Welcome back, ${res.user.name}! Entering Tourist Portal...`, 'success');
       setTimeout(() => {
         window.location.href = getReturnUrl();
-      }, 600);
+      }, 500);
     } else {
-      showNotice(res.message, 'error');
+      showNotice(res ? res.message : 'Invalid credentials. Please verify your email and password.', 'error');
     }
-  }, 400);
+  } catch (err) {
+    setLoading(btn, false);
+    showNotice(err.message || 'Error occurred during login. Please retry.', 'error');
+  }
 }
 
-function submitClientRegister(name, email, password, country, phone) {
+async function submitClientRegister(name, email, password, passwordConfirm, country, phone) {
   const btn = document.getElementById('btnRegisterSubmit');
   clearAlerts();
+
+  const cleanName = (name || '').trim();
+  const cleanEmail = (email || '').toLowerCase().trim();
+  const cleanPassword = (password || '').trim();
+  const cleanConfirm = (passwordConfirm || '').trim();
+  const cleanCountry = (country || '').trim();
+  const cleanPhone = (phone || '').trim();
+
+  // Field Validations
+  if (!cleanName) {
+    showNotice('Please enter your full name.', 'error');
+    return;
+  }
+  if (!cleanEmail || !cleanEmail.includes('@')) {
+    showNotice('Please enter a valid email address.', 'error');
+    return;
+  }
+  if (!cleanPassword || cleanPassword.length < 6) {
+    showNotice('Password must be at least 6 characters in length.', 'error');
+    return;
+  }
+  if (cleanPassword !== cleanConfirm) {
+    showNotice('Passwords do not match. Please re-enter your password confirmation.', 'error');
+    return;
+  }
+
   setLoading(btn, true);
 
-  setTimeout(() => {
-    setLoading(btn, false);
+  try {
     if (!window.TourismHubStore || typeof TourismHubStore.clientRegister !== 'function') {
+      setLoading(btn, false);
       showNotice('Registration system is initializing. Please retry in a moment.', 'error');
       return;
     }
 
-    const res = TourismHubStore.clientRegister(name, email, password, country, phone);
-    if (res.success) {
-      showNotice(`Account registered! Welcome, ${res.user.name}. Redirecting to Tourist Portal...`, 'success');
+    const res = await TourismHubStore.clientRegister(cleanName, cleanEmail, cleanPassword, cleanCountry, cleanPhone);
+    setLoading(btn, false);
+    if (res && res.success) {
+      showNotice(`Account registered successfully! Welcome, ${res.user.name}. Redirecting to Tourist Portal...`, 'success');
       setTimeout(() => {
         window.location.href = getReturnUrl();
-      }, 700);
+      }, 600);
     } else {
-      showNotice(res.message, 'error');
+      showNotice(res ? res.message : 'Registration failed. Please try again.', 'error');
     }
-  }, 450);
+  } catch (err) {
+    setLoading(btn, false);
+    showNotice(err.message || 'Error occurred during registration.', 'error');
+  }
 }
 
 // Initialize on DOM Ready
@@ -220,7 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const country = document.getElementById('regCountry')?.value;
       const phone = document.getElementById('regPhone')?.value;
       const pwd = document.getElementById('regPassword')?.value;
-      submitClientRegister(name, email, pwd, country, phone);
+      const pwdConfirm = document.getElementById('regPasswordConfirm')?.value;
+      submitClientRegister(name, email, pwd, pwdConfirm, country, phone);
     });
   }
 });

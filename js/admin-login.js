@@ -1,9 +1,3 @@
-/**
- * TourismHub - Operator Admin Authentication Logic (admin-login.js)
- * High-security authentication gate, operator clearance verification,
- * 1-click demo logins, and operator session redirection.
- */
-
 // Global Helpers (available immediately)
 window.togglePassword = function(inputId, btn) {
   const input = document.getElementById(inputId);

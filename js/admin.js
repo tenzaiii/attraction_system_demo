@@ -1,8 +1,3 @@
-/**
- * TourismHub - Centralized Attraction & Operator Admin Dashboard
- * Core Application Logic, State Management & Event Handling
- */
-
 document.addEventListener('DOMContentLoaded', () => {
 
   // ==========================================================================

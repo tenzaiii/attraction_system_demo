@@ -1,8 +1,3 @@
-/**
- * TourismHub - Universal Side Navigation & Interactivity
- * Handles responsive sidebar open, close on page selection, and page synchronization.
- */
-
 (function() {
   'use strict';
 

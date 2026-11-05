@@ -1,8 +1,3 @@
-/**
- * TourismHub - Attraction & Event Booking System (Client Portal)
- * Synchronized with Operator Admin Dashboard via TourismHubStore
- */
-
 document.addEventListener('DOMContentLoaded', () => {
 
   // --- 1. Shared Data Store for Attractions ---
@@ -399,6 +394,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 9. Modals Logic (Booking, Tickets, Notifications) ---
   window.openBookingModal = function (attractionId) {
+    // Check if user is logged in before booking
+    const clientAuth = (window.TourismHubStore && typeof TourismHubStore.getClientAuth === 'function')
+      ? TourismHubStore.getClientAuth()
+      : null;
+    const adminAuth = (window.TourismHubStore && typeof TourismHubStore.getAdminAuth === 'function')
+      ? TourismHubStore.getAdminAuth()
+      : null;
+
+    if (!clientAuth && !adminAuth) {
+      // Redirect to login page with return parameter to resume booking
+      window.location.href = `login.html?redirect=index.html%23featuredAttractions`;
+      return;
+    }
+
     if (window.TourismHubStore) {
       attractionsData = TourismHubStore.getCatalog();
     }
@@ -407,6 +416,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalImg = document.getElementById('bookingModalImg');
     const modalPrice = document.getElementById('bookingModalPrice');
     const bookingAttractionInput = document.getElementById('bookingAttractionId');
+
+    // Auto-fill visitor name with logged-in user name
+    const visitorNameInput = document.getElementById('visitorName');
+    if (visitorNameInput) {
+      const activeUser = clientAuth || adminAuth;
+      if (activeUser && activeUser.name) {
+        visitorNameInput.value = activeUser.name;
+      }
+    }
 
     if (modalTitle) modalTitle.textContent = `Reserve Pass: ${attraction.title}`;
     if (modalImg) modalImg.src = attraction.image || 'assets/hero-banner.jpg';
@@ -552,26 +570,231 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Settings & preferences opened.');
   };
 
-  // --- 12. Real-Time Cross-Tab Synchronization Listener ---
+  // --- 13. Profile Dropdown & User Profile Header Synchronization ---
+  window.toggleProfileDropdown = function (event) {
+    if (event) event.stopPropagation();
+    const dropdown = document.getElementById('userProfileDropdown');
+    if (!dropdown) return;
+
+    const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
+    const adminAuth = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
+
+    // If not signed in at all, clicking profile sends to login
+    if (!clientAuth && !adminAuth) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const isActive = dropdown.classList.contains('active');
+    if (isActive) {
+      dropdown.classList.remove('active');
+    } else {
+      renderProfileDropdownContent();
+      dropdown.classList.add('active');
+    }
+  };
+
+  window.switchDropdownTab = function (tabName) {
+    const tabPasses = document.getElementById('dropdownTabPasses');
+    const tabDetails = document.getElementById('dropdownTabDetails');
+    const btnPasses = document.getElementById('tabBtnPasses');
+    const btnDetails = document.getElementById('tabBtnDetails');
+
+    if (tabName === 'passes') {
+      tabPasses?.classList.add('active');
+      tabDetails?.classList.remove('active');
+      btnPasses?.classList.add('active');
+      btnDetails?.classList.remove('active');
+    } else {
+      tabPasses?.classList.remove('active');
+      tabDetails?.classList.add('active');
+      btnPasses?.classList.remove('active');
+      btnDetails?.classList.add('active');
+    }
+  };
+
+  window.handleSignOut = function () {
+    if (window.TourismHubStore) {
+      TourismHubStore.clientLogout();
+      TourismHubStore.adminLogout();
+    }
+    showToast('Signed out successfully. Returning to sign in gateway...');
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 450);
+  };
+
+  // Close dropdown on clicking outside
+  document.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('userProfileWrapper');
+    const dropdown = document.getElementById('userProfileDropdown');
+    if (dropdown && dropdown.classList.contains('active')) {
+      if (!wrapper || !wrapper.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    }
+  });
+
+  function renderProfileDropdownContent() {
+    if (!window.TourismHubStore) return;
+    const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
+    const adminAuth = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
+    const activeUser = adminAuth || clientAuth;
+
+    if (!activeUser) return;
+
+    // Header info
+    const nameEl = document.getElementById('dropdownUserName');
+    const emailEl = document.getElementById('dropdownUserEmail');
+    const badgeEl = document.getElementById('dropdownUserBadge');
+    const avatarEl = document.getElementById('dropdownAvatar');
+
+    if (nameEl) nameEl.textContent = activeUser.name;
+    if (emailEl) emailEl.textContent = activeUser.email;
+    if (badgeEl) badgeEl.textContent = activeUser.badge || (adminAuth ? 'Operator Clearance' : 'Verified Tourist');
+    if (avatarEl && activeUser.avatar) avatarEl.src = activeUser.avatar;
+
+    // Compiled QR Passes list
+    const passes = TourismHubStore.getPasses() || [];
+    const passesList = document.getElementById('dropdownPassesList');
+    const passesCountEl = document.getElementById('dropdownPassesCount');
+
+    if (passesCountEl) passesCountEl.textContent = passes.length;
+
+    if (passesList) {
+      if (passes.length === 0) {
+        passesList.innerHTML = `
+          <div style="text-align: center; padding: 1.5rem 0.5rem; color: var(--text-muted);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="margin: 0 auto 0.5rem; opacity: 0.6;"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
+            <div style="font-size: 0.84rem; font-weight: 700; color: #0f172a;">No Active Passes Yet</div>
+            <div style="font-size: 0.74rem; margin-top: 2px;">Reserve attraction slots below to view your QR passes here.</div>
+          </div>
+        `;
+      } else {
+        passesList.innerHTML = passes.map(pass => `
+          <div class="dropdown-pass-card">
+            <div class="dropdown-pass-header">
+              <span class="dropdown-pass-title">${pass.attraction || 'Attraction Pass'}</span>
+              <span class="dropdown-pass-badge">${(pass.status || 'valid').toUpperCase()}</span>
+            </div>
+            <div class="dropdown-pass-body">
+              <div class="dropdown-pass-qr">
+                <svg width="46" height="46" viewBox="0 0 24 24" fill="currentColor" style="color: #0f172a;">
+                  <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v2h-4v-2zm-4 0h2v4h-2v-4zm2 2h2v2h-2v-2zm2 2h2v2h-2v-2zm-6 2h4v2h-4v-2z"/>
+                </svg>
+              </div>
+              <div class="dropdown-pass-meta">
+                <div>Ref: <strong>${pass.code}</strong></div>
+                <div>Date: ${pass.validDate || 'Today'}</div>
+                <div>Slot: ${pass.slot || 'Standard Access'}</div>
+                <div>Party: ${pass.partySize || 1} Person(s)</div>
+              </div>
+            </div>
+          </div>
+        `).join('') + `
+          <button type="button" class="dropdown-action-btn" onclick="openTicketsModal(); document.getElementById('userProfileDropdown')?.classList.remove('active');">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Open Full Pass Viewer</span>
+          </button>
+        `;
+      }
+    }
+
+    // Account details tab
+    const detailsEl = document.getElementById('dropdownAccountDetails');
+    if (detailsEl) {
+      detailsEl.innerHTML = `
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.5rem;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Session Information</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+            <span style="color: var(--text-muted);">Account Type:</span>
+            <strong>${adminAuth ? 'Operator Console' : 'Tourist Member'}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+            <span style="color: var(--text-muted);">Country:</span>
+            <span>${activeUser.country || 'Philippines'}</span>
+          </div>
+          ${activeUser.phone ? `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+            <span style="color: var(--text-muted);">Contact:</span>
+            <span>${activeUser.phone}</span>
+          </div>` : ''}
+          ${adminAuth && activeUser.department ? `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+            <span style="color: var(--text-muted);">Dept:</span>
+            <span style="text-align: right; max-width: 60%;">${activeUser.department}</span>
+          </div>` : ''}
+        </div>
+        ${adminAuth ? `
+        <button type="button" class="dropdown-action-btn" style="color: #0284c7; border-color: #bae6fd; background: #f0f9ff;" onclick="location.href='admin.html'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Open Operator Admin Dashboard</span>
+        </button>` : ''}
+      `;
+    }
+  }
+
+  function syncUserProfileHeader() {
+    const profileBtn = document.getElementById('userProfileBtn');
+    const navAvatar = document.getElementById('userNavAvatar');
+    const authLink = document.getElementById('navSignInLink');
+    if (!window.TourismHubStore) return;
+
+    const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
+    const adminAuth = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
+    const activeUser = adminAuth || clientAuth;
+
+    if (activeUser) {
+      // 1. Hide Sign In button completely when signed in
+      if (authLink) {
+        authLink.style.display = 'none';
+      }
+
+      // 2. Configure Profile Button with Avatar
+      if (navAvatar && activeUser.avatar) {
+        navAvatar.src = activeUser.avatar;
+      }
+      if (profileBtn) {
+        profileBtn.title = `Profile: ${activeUser.name} (Click for Passes & Options)`;
+      }
+    } else {
+      // Show Sign In button when not signed in
+      if (authLink) {
+        authLink.style.display = 'inline-flex';
+        authLink.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span>Sign In</span>`;
+        authLink.href = 'login.html';
+      }
+      if (navAvatar) {
+        navAvatar.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
+      }
+      if (profileBtn) {
+        profileBtn.title = 'Sign In to TourismHub';
+      }
+    }
+  }
+
+  // --- 14. Real-Time Cross-Tab Synchronization Listener ---
   if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
     TourismHubStore.onSync((key) => {
+      syncUserProfileHeader();
       renderAttractions();
       renderNotifications();
       renderCapacityModal();
       renderMyTickets();
 
-      if (key === 'tourismhub_announcements_v1') {
+      if (key === 'tourismhub_announcements_v1' || key === 'tourismhub_temp_announcements_v1') {
         const announcements = TourismHubStore.getAnnouncements();
         if (announcements.length > 0) {
           showToast(`Operator Alert: "${announcements[0].title}"`);
         }
-      } else if (key === 'tourismhub_catalog_v1') {
+      } else if (key === 'tourismhub_catalog_v1' || key === 'tourismhub_temp_catalog_v1') {
         showToast('Attraction catalog updated by operator.');
       }
     });
   }
 
-  // --- 13. Initial Render ---
+  // --- 15. Initial Render ---
+  syncUserProfileHeader();
   renderAttractions();
   renderNotifications();
   renderCapacityModal();

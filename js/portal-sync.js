@@ -1,8 +1,3 @@
-/**
- * TourismHub - Public Portal & Admin Control Real-Time Synchronization Engine
- * Bridges index.html, attractions.html, capacity.html, notifications.html, scanner.html with admin.html
- */
-
 (function() {
   'use strict';
 
@@ -403,29 +398,57 @@
       }, 3500);
     };
 
-    // --- 9. Role-Based Feature Visibility (Hide Admin Features from Public Portal) ---
+    // --- 9. Role-Based Feature Visibility & User Profile Synchronization ---
     function checkAdminFeaturesVisibility() {
       const adminAuth = (window.TourismHubStore && typeof TourismHubStore.getAdminAuth === 'function')
         ? TourismHubStore.getAdminAuth()
         : null;
+      const clientAuth = (window.TourismHubStore && typeof TourismHubStore.getClientAuth === 'function')
+        ? TourismHubStore.getClientAuth()
+        : null;
       const isAdminLoggedIn = !!(adminAuth && adminAuth.roleKey);
+      const isClientLoggedIn = !!(clientAuth && clientAuth.email);
+      const activeUser = adminAuth || clientAuth;
 
       // Toggle all admin-only feature elements across portal subpages
       document.querySelectorAll('.admin-only-feature').forEach(el => {
         el.style.display = isAdminLoggedIn ? '' : 'none';
       });
 
-      // Update header profile widget if logged in as admin
+      // Update header profile widget across subpages
       document.querySelectorAll('.portal-user-profile').forEach(widget => {
+        const nameEl = widget.querySelector('.portal-user-name');
+        const roleEl = widget.querySelector('.portal-user-role');
+        const imgEl = widget.querySelector('.portal-avatar-img');
+
         if (isAdminLoggedIn) {
-          const nameEl = widget.querySelector('.portal-user-name');
-          const roleEl = widget.querySelector('.portal-user-role');
-          const imgEl = widget.querySelector('.portal-avatar-img');
           if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
           if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
           if (imgEl && adminAuth.avatar) imgEl.src = adminAuth.avatar;
-          widget.onclick = function() { location.href = 'admin.html'; };
-          widget.title = 'Switch to Admin Dashboard';
+          widget.onclick = function(e) { 
+            if (window.toggleProfileDropdown) {
+              window.toggleProfileDropdown(e);
+            } else {
+              location.href = 'admin.html';
+            }
+          };
+          widget.title = 'Operator: ' + adminAuth.name + ' (Click for Options)';
+        } else if (isClientLoggedIn) {
+          if (nameEl) nameEl.textContent = clientAuth.name || 'Tourist';
+          if (roleEl) roleEl.textContent = clientAuth.badge || 'Verified Tourist';
+          if (imgEl && clientAuth.avatar) imgEl.src = clientAuth.avatar;
+          widget.onclick = function(e) { 
+            if (window.toggleProfileDropdown) {
+              window.toggleProfileDropdown(e);
+            }
+          };
+          widget.title = 'Logged in as ' + clientAuth.name + ' (Click for QR Passes & Profile)';
+        } else {
+          if (nameEl) nameEl.textContent = 'Tourist Portal';
+          if (roleEl) roleEl.textContent = 'Sign In / Register';
+          if (imgEl) imgEl.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
+          widget.onclick = function() { location.href = 'login.html'; };
+          widget.title = 'Tourist Account / Sign In';
         }
       });
     }

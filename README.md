@@ -52,11 +52,6 @@ attraction_system_demo/
 
 ---
 
-## 🚀 Getting Started
+## 🚀 WEBSITE
 
-Simply open any of the HTML pages in any modern web browser:
-- **Unified Sign In Portal**: Open [`login.html`](login.html) for unified authentication. Auto-routes based on account role:
-  - **Tourist Access**: Demo profiles (**Maria Santos**, **Alex Tan**) or newly registered accounts route to [`index.html`](index.html).
-  - **Admin Clearance**: Operator profiles (**Juan Miguel Repas**, **Carlos Mendoza**) route to [`admin.html`](admin.html).
-- **Public Tourist Portal**: Open [`index.html`](index.html) to explore destinations, check schedules, and generate digital passes.
-- **Admin Operator Dashboard**: Open [`admin.html`](admin.html) to manage catalog items, adjust capacities, scan entry passes, and broadcast alerts.
+-
