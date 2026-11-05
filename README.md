@@ -1,3 +1,6 @@
+## 🚀 WEBSITE LINK
+-https://tenzaiii.github.io/attraction_system_demo/
+
 # TourismHub — Centralized Attraction & Visitor Management System
 
 A centralized platform for attraction operators to manage attraction profiles, events, visitor capacity, QR Tourist Pass validation, real-time analytics, and tourist notification dispatching.
@@ -52,6 +55,3 @@ attraction_system_demo/
 
 ---
 
-## 🚀 WEBSITE
-
--
