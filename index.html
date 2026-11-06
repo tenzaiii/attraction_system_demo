@@ -17,6 +17,8 @@
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/portal-pages.css">
+
 </head>
 
 <body>
@@ -209,7 +211,14 @@
           <span class="badge-count">0</span>
         </button>
 
-        
+        <div class="portal-user-profile" onclick="location.href='login.html'" title="Tourist Account / Sign In">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+          alt="Tourist Profile" class="portal-avatar-img">
+        <div class="portal-user-meta">
+          <span class="portal-user-name">Tourist Portal</span>
+          <span class="portal-user-role">Sign In / Register</span>
+        </div>
+      </div>
 
         <!-- Tourist Login Link (Hidden when signed in) -->
         <a href="login.html" class="auth-signin-link" id="navSignInLink" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.84rem; font-weight: 600; color: #0284c7; text-decoration: none; padding: 0.42rem 0.85rem; border: 1.5px solid #0284c7; border-radius: 9999px; transition: all 0.2s;" title="Tourist Portal Sign In & Registration">
@@ -993,6 +1002,10 @@
   <script src="js/portal-sync.js"></script>
   <!-- Application Script -->
   <script src="js/app.js"></script>
+
+
+
+
 </body>
 
 </html>

@@ -381,14 +381,14 @@
           <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Announcement
             Title</label>
           <input type="text" id="annTitle" required placeholder="e.g. Weather Advisory: High Tide Notice"
-            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
         </div>
 
         <div style="margin-bottom: 1rem;">
           <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Dispatch
             Type</label>
           <select id="annType"
-            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
             <option value="alert">Alert</option>
             <option value="announcement">Announcement</option>
             <option value="event">Event</option>
@@ -396,10 +396,10 @@
         </div>
 
         <div style="margin-bottom: 1.25rem;">
-          <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Message
+          <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem; ">Message
             Content</label>
           <textarea id="annMessage" rows="3" required placeholder="Explain notice details for guests..."
-            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; resize: vertical;"></textarea>
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; resize: vertical; background: var(--bg-page); color: var(--text-main);"></textarea>
         </div>
 
         <button type="submit" class="btn-primary-blue" style="width: 100%; justify-content: center;">Dispatch to

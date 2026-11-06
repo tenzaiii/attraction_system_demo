@@ -176,6 +176,44 @@
 
 <body>
 
+
+  <!-- Top Header Bar (Matching Image 4) -->
+  <header class="portal-topbar">
+    <div class="portal-topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Open Sidebar Navigation">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <div style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: #0f172a;">
+        User Account Center
+      </div>
+    </div>
+
+    <div class="portal-topbar-right">
+      <a href="notifications.html" class="portal-notif-btn" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="sidebar-item-badge-dot" style="position: absolute; top: 8px; right: 8px;"></span>
+      </a>
+
+       <div class="portal-user-profile" onclick="location.href='profile.html'" title="My Profile & Settings">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+            alt="User Avatar" class="portal-avatar-img" id="topAvatar">
+          <div class="portal-user-meta">
+            <span class="portal-user-name" id="topUserName">Tourist User</span>
+            <span class="portal-user-role" id="topUserRole">Verified Tourist</span>
+          </div>
+        </div>
+    </div>
+  </header>
+  
   <!-- ==========================================================================
        Collapsible Side Navigation Bar
        ========================================================================== -->
@@ -292,39 +330,6 @@
 
   <!-- Main Sub-Page Wrapper -->
   <div class="portal-body-layout">
-
-    <!-- Top Navigation Bar -->
-    <header class="portal-topbar">
-      <div class="portal-topbar-left">
-        <button class="portal-mobile-toggle" id="mobileMenuBtn" aria-label="Open navigation menu">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-        <span style="font-weight: 800; font-size: 1.1rem; color: var(--text-main);">User Account Center</span>
-      </div>
-
-      <div class="portal-topbar-right">
-        <a href="notifications.html" class="portal-notif-btn" aria-label="Notifications" title="Notifications">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-          </svg>
-          <span class="sidebar-item-badge-dot"></span>
-        </a>
-
-        <div class="portal-user-profile" onclick="location.href='profile.html'" title="My Profile & Settings">
-          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
-            alt="User Avatar" class="portal-avatar-img" id="topAvatar">
-          <div class="portal-user-meta">
-            <span class="portal-user-name" id="topUserName">Tourist User</span>
-            <span class="portal-user-role" id="topUserRole">Verified Tourist</span>
-          </div>
-        </div>
-      </div>
-    </header>
 
     <!-- Main Content Area -->
     <main class="portal-main-wrapper">
