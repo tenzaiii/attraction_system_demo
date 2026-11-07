@@ -14,7 +14,15 @@
 [data-theme="dark"] .portal-card,
 [data-theme="dark"] .portal-filter-bar,
 [data-theme="dark"] .portal-table-container,
-[data-theme="dark"] .portal-panel {
+[data-theme="dark"] .portal-panel,
+[data-theme="dark"] .portal-item-card,
+[data-theme="dark"] .upcoming-events-card,
+[data-theme="dark"] .quick-actions-card,
+[data-theme="dark"] .scanner-viewport-card,
+[data-theme="dark"] .modal-dialog,
+[data-theme="dark"] .profile-hero-card,
+[data-theme="dark"] .profile-pass-item,
+[data-theme="dark"] .settings-group-card {
   background-color: #1e293b !important;
   border-color: #334155 !important;
   color: #f8fafc !important;
@@ -25,16 +33,257 @@
   border-color: #334155 !important;
 }
 
-[data-theme="dark"] .portal-search-input {
+[data-theme="dark"] .portal-search-bar .portal-search-input,
+[data-theme="dark"] .portal-hero-search input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   color: #f8fafc !important;
 }
 
-[data-theme="dark"] .portal-page-heading {
-  color: #ffffff !important;
+[data-theme="dark"] .portal-hero-search {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+[data-theme="dark"] .portal-page-heading,
+[data-theme="dark"] .portal-item-title,
+[data-theme="dark"] .upcoming-events-title,
+[data-theme="dark"] .quick-actions-card-title,
+[data-theme="dark"] .upcoming-event-name,
+[data-theme="dark"] .attraction-cell-title,
+[data-theme="dark"] .notif-heading,
+[data-theme="dark"] .modal-title,
+[data-theme="dark"] .portal-stat-value,
+[data-theme="dark"] div[style*="color: #0f172a"],
+[data-theme="dark"] span[style*="color: #0f172a"],
+[data-theme="dark"] h1[style*="color: #0f172a"],
+[data-theme="dark"] h2[style*="color: #0f172a"],
+[data-theme="dark"] h3[style*="color: #0f172a"],
+[data-theme="dark"] h4[style*="color: #0f172a"],
+[data-theme="dark"] strong[style*="color: #0f172a"] {
+  color: #f8fafc !important;
 }
 
 [data-theme="dark"] .portal-user-name {
   color: #f8fafc !important;
+}
+
+[data-theme="dark"] .portal-item-desc,
+[data-theme="dark"] .attraction-cell-meta,
+[data-theme="dark"] .notif-subline,
+[data-theme="dark"] .portal-page-subtext,
+[data-theme="dark"] .portal-user-role,
+[data-theme="dark"] .portal-stat-label {
+  color: #94a3b8 !important;
+}
+
+/* Stat Card Icons */
+[data-theme="dark"] .portal-stat-icon.purple { background: rgba(147, 51, 234, 0.2) !important; color: #c084fc !important; }
+[data-theme="dark"] .portal-stat-icon.green  { background: rgba(16, 185, 129, 0.2) !important; color: #34d399 !important; }
+[data-theme="dark"] .portal-stat-icon.blue   { background: rgba(2, 132, 199, 0.2) !important; color: #38bdf8 !important; }
+[data-theme="dark"] .portal-stat-icon.orange { background: rgba(234, 88, 12, 0.2) !important; color: #fb923c !important; }
+
+/* Quick Actions in Sidebar */
+[data-theme="dark"] .quick-action-item {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .quick-action-item:hover {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .quick-action-item span {
+  color: #f8fafc !important;
+}
+
+/* Card Footers & Metas */
+[data-theme="dark"] .portal-item-footer {
+  background: #0f172a !important;
+  border-top: 1px solid #334155 !important;
+}
+
+[data-theme="dark"] .portal-item-meta-list {
+  border-top: 1px solid #334155 !important;
+  color: #94a3b8 !important;
+}
+
+/* Form Inputs, Selects, and Textareas */
+[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+[data-theme="dark"] select,
+[data-theme="dark"] textarea,
+[data-theme="dark"] .portal-select {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] label {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+[data-theme="dark"] select option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* Filter tabs */
+[data-theme="dark"] .portal-filter-tab {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .portal-filter-tab:hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .portal-filter-tab.active {
+  background-color: #0284c7 !important;
+  border-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+/* Tables and Rows */
+[data-theme="dark"] .portal-data-table th {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .portal-data-table td {
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .portal-data-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Quick Action / Arrow buttons */
+[data-theme="dark"] .action-arrow-btn,
+[data-theme="dark"] .table-action-btn,
+[data-theme="dark"] .modal-close {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .action-arrow-btn:hover,
+[data-theme="dark"] .table-action-btn:hover,
+[data-theme="dark"] .modal-close:hover {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+/* Upcoming Events & Badges */
+[data-theme="dark"] .upcoming-event-item:hover {
+  background-color: #0f172a !important;
+}
+
+[data-theme="dark"] .upcoming-event-badge {
+  background: rgba(124, 58, 237, 0.25) !important;
+  color: #c084fc !important;
+}
+
+/* Stay Updated Promo Card */
+[data-theme="dark"] .stay-updated-card {
+  background: rgba(22, 163, 74, 0.12) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+[data-theme="dark"] .stay-updated-icon {
+  background: rgba(34, 197, 94, 0.2) !important;
+  color: #4ade80 !important;
+}
+
+[data-theme="dark"] .stay-updated-title {
+  color: #4ade80 !important;
+}
+
+[data-theme="dark"] .stay-updated-desc {
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .stay-updated-btn {
+  color: #34d399 !important;
+}
+
+/* Inline light cards inside modals & pages */
+[data-theme="dark"] div[style*="background: #f8fafc"],
+[data-theme="dark"] div[style*="background-color: #f8fafc"],
+[data-theme="dark"] div[style*="background: #ffffff"],
+[data-theme="dark"] div[style*="background:#f8fafc"],
+[data-theme="dark"] div[style*="background:#ffffff"] {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+/* Wishlist button */
+[data-theme="dark"] .portal-card-wishlist-btn {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .portal-card-wishlist-btn:hover,
+[data-theme="dark"] .portal-card-wishlist-btn.saved {
+  color: #ef4444 !important;
+  background: #1e293b !important;
+}
+
+/* Valid and Invalid Verification Pills */
+[data-theme="dark"] .valid-dot-pill {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .invalid-dot-pill {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+}
+
+[data-theme="dark"] .status-normal {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .status-full {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+}
+
+[data-theme="dark"] .avail-count-green {
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .avail-count-red {
+  color: #f87171 !important;
+}
+
+/* Notification pill / circle colors contrast adjustment in dark mode */
+[data-theme="dark"] .notif-icon-circle.yellow { background: rgba(217, 119, 6, 0.2) !important; color: #fbbf24 !important; }
+[data-theme="dark"] .notif-icon-circle.blue   { background: rgba(2, 132, 199, 0.2) !important; color: #38bdf8 !important; }
+[data-theme="dark"] .notif-icon-circle.gold   { background: rgba(202, 138, 4, 0.2) !important; color: #fde047 !important; }
+[data-theme="dark"] .notif-icon-circle.info   { background: rgba(67, 56, 202, 0.2) !important; color: #818cf8 !important; }
+
+[data-theme="dark"] .portal-pill-badge.blue   { background: rgba(2, 132, 199, 0.2) !important; color: #38bdf8 !important; }
+[data-theme="dark"] .portal-pill-badge.purple { background: rgba(126, 34, 206, 0.2) !important; color: #c084fc !important; }
+[data-theme="dark"] .portal-pill-badge.pink   { background: rgba(190, 24, 93, 0.2) !important; color: #f472b6 !important; }
+[data-theme="dark"] .portal-pill-badge.green  { background: rgba(4, 120, 87, 0.2) !important; color: #34d399 !important; }
+[data-theme="dark"] .portal-pill-badge.red    { background: rgba(185, 28, 28, 0.2) !important; color: #f87171 !important; }
+
+/* Modal overlay */
+[data-theme="dark"] .modal-overlay {
+  background: rgba(0, 0, 0, 0.75) !important;
 }
 
 /* Top Portal Sub-Header Bar */
@@ -1489,4 +1738,62 @@
 .portal-toast.warning {
   background: #9a3412;
   border: 1px solid #f97316;
+}
+
+/* ==========================================================================
+   Admin Quick Header Action & Wishlist Controls
+   ========================================================================== */
+.nav-admin-dashboard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: 1px solid #0284c7;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.nav-admin-dashboard-btn:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+  color: #ffffff !important;
+}
+
+.portal-card-wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  z-index: 5;
+}
+
+.portal-card-wishlist-btn:hover {
+  transform: scale(1.1);
+  color: #ef4444;
+  background: #ffffff;
+}
+
+.portal-card-wishlist-btn.saved {
+  color: #ef4444;
+  background: #ffffff;
 }

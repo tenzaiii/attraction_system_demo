@@ -66,12 +66,20 @@
         const fallbackImg = item.image || 'assets/hero-banner.jpg';
         const locationStr = item.location || 'Resort Grounds';
         const hoursStr = item.operatingHours || '08:00 AM – 08:00 PM';
+        const isFav = (typeof TourismHubStore.isFavorite === 'function') ? TourismHubStore.isFavorite(item.id) : false;
 
         return `
           <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'attraction'}" data-area="${item.location ? item.location.toLowerCase() : 'all'}">
             <div class="portal-item-media">
               <img src="${fallbackImg}" alt="${item.title}" loading="lazy" onerror="this.src='assets/hero-banner.jpg'">
               <span class="portal-badge-tag ${badgeClass}">${badgeLabel}</span>
+              <button class="portal-card-wishlist-btn ${isFav ? 'saved' : ''}" 
+                      title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
+                      onclick="togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </button>
             </div>
             <div class="portal-item-body">
               <h3 class="portal-item-title">${item.title}</h3>
@@ -350,18 +358,18 @@
       const badgeClass = (type || '').toLowerCase() === 'alert' ? 'pink' : ((type || '').toLowerCase() === 'event' ? 'purple' : 'blue');
       const modalContent = `
         <div class="modal-overlay active" id="announcementDetailModal" role="dialog" aria-modal="true" style="display: flex;">
-          <div class="modal-dialog" style="max-width: 500px; padding: 1.5rem;">
+          <div class="modal-dialog" style="max-width: 500px; padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
               <span class="portal-pill-badge ${badgeClass}">${type || 'Announcement'}</span>
               <button onclick="document.getElementById('announcementDetailModal').remove()" class="modal-close">&times;</button>
             </div>
-            <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; line-height: 1.3;">${title}</h3>
-            <div style="display: flex; gap: 1rem; font-size: 0.82rem; color: #64748b; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; line-height: 1.3;">${title}</h3>
+            <div style="display: flex; gap: 1rem; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.25rem;">
               <span>Dispatched: ${time || 'Today'}</span>
               <span>•</span>
               <span>Audience: <strong>${target || 'All Visitors'}</strong></span>
             </div>
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; color: #334155; line-height: 1.6; font-size: 0.92rem; margin-bottom: 1.5rem;">
+            <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; color: var(--text-main); line-height: 1.6; font-size: 0.92rem; margin-bottom: 1.5rem;">
               ${text || 'No additional details provided for this bulletin.'}
             </div>
             <div style="display: flex; gap: 0.75rem;">
@@ -412,7 +420,16 @@
 
       // Toggle all admin-only feature elements across portal subpages
       document.querySelectorAll('.admin-only-feature').forEach(el => {
-        el.style.display = isAdminLoggedIn ? '' : 'none';
+        if (isAdminLoggedIn) {
+          el.style.display = (el.tagName === 'A' || el.tagName === 'BUTTON') ? 'inline-flex' : (el.tagName === 'LI' ? 'block' : '');
+        } else {
+          el.style.display = 'none';
+        }
+      });
+
+      // Hide/Show Sign In buttons based on login state
+      document.querySelectorAll('#navSignInLink, .auth-signin-link').forEach(link => {
+        link.style.display = (isAdminLoggedIn || isClientLoggedIn) ? 'none' : 'inline-flex';
       });
 
       // Update header profile widget across subpages
@@ -421,37 +438,74 @@
         const roleEl = widget.querySelector('.portal-user-role');
         const imgEl = widget.querySelector('.portal-avatar-img');
 
+        // Remove hardcoded inline onclick so our dropdown handles it
+        widget.removeAttribute('onclick');
+
         if (isAdminLoggedIn) {
           if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
           if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
           if (imgEl && adminAuth.avatar) imgEl.src = adminAuth.avatar;
           widget.onclick = function(e) { 
             if (window.toggleProfileDropdown) {
-              window.toggleProfileDropdown(e);
+              window.toggleProfileDropdown(e, widget);
             } else {
               location.href = 'admin.html';
             }
           };
-          widget.title = 'Operator: ' + adminAuth.name + ' (Click for Options)';
+          widget.title = 'Operator: ' + adminAuth.name + ' (Click for Menu)';
         } else if (isClientLoggedIn) {
           if (nameEl) nameEl.textContent = clientAuth.name || 'Tourist';
           if (roleEl) roleEl.textContent = clientAuth.badge || 'Verified Tourist';
           if (imgEl && clientAuth.avatar) imgEl.src = clientAuth.avatar;
           widget.onclick = function(e) { 
             if (window.toggleProfileDropdown) {
-              window.toggleProfileDropdown(e);
+              window.toggleProfileDropdown(e, widget);
             }
           };
-          widget.title = 'Logged in as ' + clientAuth.name + ' (Click for QR Passes & Profile)';
+          widget.title = 'Logged in as ' + clientAuth.name + ' (Click for Menu)';
         } else {
           if (nameEl) nameEl.textContent = 'Tourist Portal';
           if (roleEl) roleEl.textContent = 'Sign In / Register';
           if (imgEl) imgEl.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
-          widget.onclick = function() { location.href = 'login.html'; };
+          widget.onclick = function(e) {
+            if (window.toggleProfileDropdown) {
+              window.toggleProfileDropdown(e, widget);
+            } else {
+              location.href = 'login.html';
+            }
+          };
           widget.title = 'Tourist Account / Sign In';
         }
       });
     }
+
+    // Interactive favorite toggle for portal cards
+    window.togglePortalFavorite = function(id, title, btn, evt) {
+      if (evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+      }
+      if (window.TourismHubStore && typeof TourismHubStore.toggleFavorite === 'function') {
+        const res = TourismHubStore.toggleFavorite(id);
+        if (btn) {
+          if (res.isFavorite) {
+            btn.classList.add('saved');
+            const svg = btn.querySelector('svg');
+            if (svg) svg.setAttribute('fill', 'currentColor');
+            btn.title = 'Remove from favorites';
+          } else {
+            btn.classList.remove('saved');
+            const svg = btn.querySelector('svg');
+            if (svg) svg.setAttribute('fill', 'none');
+            btn.title = 'Save to favorites';
+          }
+        }
+        if (typeof showToast === 'function') {
+          showToast(res.isFavorite ? `Saved "${title}" to your favorites!` : `Removed "${title}" from favorites`);
+        }
+        window.dispatchEvent(new CustomEvent('favoritesUpdated'));
+      }
+    };
 
     // Master render caller
     function refreshCurrentPage() {
@@ -468,6 +522,11 @@
 
     // Listen for cross-tab and cross-page real-time sync from admin control
     TourismHubStore.onSync((key) => {
+      refreshCurrentPage();
+    });
+
+    // Listen for live Supabase sync
+    window.addEventListener('supabaseSyncComplete', () => {
       refreshCurrentPage();
     });
   }

@@ -62,6 +62,132 @@
   --header-height: 70px;
 }
 
+/* ==========================================================================
+   Dark Theme Support for Admin Operations Dashboard
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg-body: #0b1120;
+  --bg-card: #1e293b;
+  --bg-subtle: #0f172a;
+  --sidebar-bg: #070d19;
+  --sidebar-hover: #1e293b;
+  --sidebar-border: #1e293b;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+  --border: #334155;
+  --border-focus: #38bdf8;
+}
+
+[data-theme="dark"] body {
+  background-color: var(--bg-body);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .admin-header {
+  background: #1e293b !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+[data-theme="dark"] .admin-card,
+[data-theme="dark"] .kpi-card,
+[data-theme="dark"] .chart-card,
+[data-theme="dark"] .slot-card,
+[data-theme="dark"] .capacity-attraction-selector,
+[data-theme="dark"] .admin-card-container,
+[data-theme="dark"] .admin-modal-content {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .admin-input,
+[data-theme="dark"] .admin-select,
+[data-theme="dark"] .form-control,
+[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+[data-theme="dark"] .admin-table th {
+  background-color: #0f172a !important;
+  border-bottom-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .admin-table td {
+  border-bottom-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .admin-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+[data-theme="dark"] .radio-pill {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .announcement-card {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .announcement-card.urgent {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+}
+
+[data-theme="dark"] .announcement-card.weather {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+}
+
+[data-theme="dark"] .bar-track,
+[data-theme="dark"] .cat-bar-track,
+[data-theme="dark"] .capacity-progress-bar {
+  background-color: #334155 !important;
+}
+
+[data-theme="dark"] .slot-card.near-capacity {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  border-color: #f59e0b !important;
+}
+
+[data-theme="dark"] .slot-card.at-capacity {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  border-color: #ef4444 !important;
+}
+
+[data-theme="dark"] .header-status-pill {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .quick-action-btn {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .quick-action-btn:hover {
+  background-color: #334155 !important;
+}
+
+[data-theme="dark"] label {
+  color: #f8fafc !important;
+}
+
 /* --- Base & Reset --- */
 *, *::before, *::after {
   box-sizing: border-box;

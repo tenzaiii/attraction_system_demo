@@ -15,6 +15,12 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/portal-pages.css">
 
+  <script>
+    if (localStorage.getItem('tourismhub_theme') === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+
   <style>
     .profile-tabs-nav {
       display: flex;
@@ -152,6 +158,10 @@
       border-radius: 34px;
     }
 
+    [data-theme="dark"] .switch-slider {
+      background-color: #334155;
+    }
+
     .switch-slider:before {
       position: absolute;
       content: "";
@@ -195,7 +205,24 @@
     </div>
 
     <div class="portal-topbar-right">
-      <a href="notifications.html" class="portal-notif-btn" aria-label="Notifications">
+      <!-- Admin Dashboard Quick Button (Admin Only) -->
+      <a href="admin.html" class="nav-admin-dashboard-btn admin-only-feature" style="display: none;" title="Admin Operator Dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="3" y="3" width="7" height="9"></rect>
+          <rect x="14" y="3" width="7" height="5"></rect>
+          <rect x="14" y="12" width="7" height="9"></rect>
+          <rect x="3" y="16" width="7" height="5"></rect>
+        </svg>
+        <span>Admin Dashboard</span>
+      </a>
+
+      <!-- Dark / Light Mode Toggle Button -->
+      <button class="portal-notif-btn topbar-theme-toggle-btn" id="globalDarkModeBtn" onclick="toggleGlobalTheme()" aria-label="Toggle Theme" title="Toggle Theme">
+        <svg class="theme-btn-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="theme-btn-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
+      <a href="notifications.html" class="portal-notif-btn" aria-label="Notifications" title="Notifications">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -203,7 +230,8 @@
         <span class="sidebar-item-badge-dot" style="position: absolute; top: 8px; right: 8px;"></span>
       </a>
 
-       <div class="portal-user-profile" onclick="location.href='profile.html'" title="My Profile & Settings">
+      <div class="user-profile-wrapper">
+        <div class="portal-user-profile" id="userProfileBtn" title="My Profile & Options">
           <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
             alt="User Avatar" class="portal-avatar-img" id="topAvatar">
           <div class="portal-user-meta">
@@ -211,6 +239,7 @@
             <span class="portal-user-role" id="topUserRole">Verified Tourist</span>
           </div>
         </div>
+      </div>
     </div>
   </header>
   
@@ -311,7 +340,7 @@
           </a>
         </li>
 
-        <!-- 6. Profile (ACTIVE - Replaces Settings) -->
+        <!-- 6. Profile (ACTIVE) -->
         <li class="sidebar-menu-item">
           <a href="profile.html" class="sidebar-menu-link active" data-nav="profile" title="My Profile & Passes">
             <span class="sidebar-item-icon">
@@ -322,6 +351,18 @@
               </svg>
             </span>
             <span class="sidebar-item-text">Profile</span>
+          </a>
+        </li>
+
+        <!-- 7. Admin Dashboard (Admin Only) -->
+        <li class="sidebar-menu-item admin-only-feature" style="display: none;">
+          <a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Admin Dashboard</span>
           </a>
         </li>
       </ul>
@@ -349,7 +390,13 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 0.75rem;">
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <!-- Admin Dashboard Shortcut (Admin Only) -->
+          <a href="admin.html" id="adminDashboardHeroBtn" class="btn-primary-blue admin-only-feature" style="display: none; background: #0284c7; border-color: #0284c7; text-decoration: none; align-items: center; gap: 0.5rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+            <span>Admin Dashboard</span>
+          </a>
+
           <button type="button" class="btn-primary-blue" onclick="handleSignOut()" style="background: #ef4444; border-color: #ef4444;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span>Sign Out</span>
@@ -362,6 +409,10 @@
         <button type="button" class="profile-tab-btn active" id="tabBtnPasses" onclick="switchProfileTab('passes')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
           <span>My QR Passes (<span id="passTabCount">0</span>)</span>
+        </button>
+        <button type="button" class="profile-tab-btn" id="tabBtnFavorites" onclick="switchProfileTab('favorites')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <span>Saved Favorites (<span id="favTabCount">0</span>)</span>
         </button>
         <button type="button" class="profile-tab-btn" id="tabBtnSettings" onclick="switchProfileTab('settings')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -379,6 +430,15 @@
       <section class="profile-tab-pane active" id="panePasses">
         <div id="profilePassesList" class="profile-pass-grid">
           <!-- Digital Passes populated by script -->
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 2: Saved Favorites & Destinations
+           ====================================================================== -->
+      <section class="profile-tab-pane" id="paneFavorites">
+        <div id="profileFavoritesList" class="profile-pass-grid">
+          <!-- Populated by script -->
         </div>
       </section>
 
@@ -484,6 +544,10 @@
       if (tab === 'passes') {
         document.getElementById('tabBtnPasses')?.classList.add('active');
         document.getElementById('panePasses')?.classList.add('active');
+      } else if (tab === 'favorites') {
+        document.getElementById('tabBtnFavorites')?.classList.add('active');
+        document.getElementById('paneFavorites')?.classList.add('active');
+        renderProfileFavorites();
       } else if (tab === 'settings') {
         document.getElementById('tabBtnSettings')?.classList.add('active');
         document.getElementById('paneSettings')?.classList.add('active');
@@ -493,14 +557,86 @@
       }
     }
 
+    // Render Saved Favorites Tab
+    function renderProfileFavorites() {
+      if (!window.TourismHubStore) return;
+      const favIds = (typeof TourismHubStore.getFavorites === 'function') ? TourismHubStore.getFavorites() : [];
+      const favCountEl = document.getElementById('favTabCount');
+      if (favCountEl) favCountEl.textContent = favIds.length;
+
+      const listEl = document.getElementById('profileFavoritesList');
+      if (!listEl) return;
+
+      if (favIds.length === 0) {
+        listEl.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: var(--bg-card); border: 1px dashed var(--border); border-radius: var(--radius-lg);">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8" style="margin: 0 auto 0.75rem;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">No Saved Favorites Yet</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 420px; margin: 0.5rem auto 1.25rem;">Browse our attractions catalog and tap the heart icon on any destination to save it here for quick access.</p>
+            <a href="attractions.html" class="btn-primary-blue" style="display: inline-flex; text-decoration: none;">Explore Attractions</a>
+          </div>
+        `;
+        return;
+      }
+
+      const catalog = TourismHubStore.getCatalog ? TourismHubStore.getCatalog() : [];
+      const favItems = favIds.map(id => catalog.find(c => c.id === id)).filter(Boolean);
+
+      listEl.innerHTML = favItems.map(item => {
+        const fallbackImg = item.image || 'assets/hero-banner.jpg';
+        return `
+          <div class="profile-pass-item" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="position: relative; border-radius: 8px; overflow: hidden; height: 160px; margin-bottom: 0.85rem;">
+                <img src="${fallbackImg}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/hero-banner.jpg'">
+                <span class="portal-pill-badge blue" style="position: absolute; top: 10px; left: 10px; backdrop-filter: blur(4px);">${item.category || item.badge || 'Attraction'}</span>
+              </div>
+              <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">${item.title}</h4>
+              <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                <span>${item.location || 'Resort Grounds'}</span>
+              </div>
+              <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                ${item.description || 'Experience world-class resort amenities and sights.'}
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-top: auto; pt: 0.5rem; border-top: 1px solid var(--border);">
+              <a href="index.html#featuredAttractions" class="btn-primary-blue" style="flex: 1; text-align: center; justify-content: center; text-decoration: none; font-size: 0.82rem; padding: 0.55rem;">
+                Book Pass
+              </a>
+              <button type="button" onclick="removeProfileFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}')" style="padding: 0.55rem 0.75rem; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; color: #ef4444; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem;" title="Remove from favorites">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <span>Remove</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Remove favorite helper
+    window.removeProfileFavorite = function(id, title) {
+      if (window.TourismHubStore && typeof TourismHubStore.removeFavorite === 'function') {
+        TourismHubStore.removeFavorite(id);
+        renderProfileFavorites();
+        window.dispatchEvent(new CustomEvent('favoritesUpdated'));
+      }
+    };
+
     // Dark Mode Controller
     function toggleDarkMode(isDark) {
-      if (isDark) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('tourismhub_theme', 'dark');
+      if (typeof window.toggleThemeFromDropdown === 'function') {
+        window.toggleThemeFromDropdown(isDark);
       } else {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('tourismhub_theme', 'light');
+        if (isDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('tourismhub_theme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('tourismhub_theme', 'light');
+        }
+        document.querySelectorAll('#themeToggle, .theme-toggle-input').forEach(t => { t.checked = isDark; });
       }
     }
 
@@ -537,6 +673,12 @@
       document.getElementById('heroBadge').textContent = user.badge || (admin ? 'Chief Operator' : 'Verified Resident Tourist');
       document.getElementById('heroCountry').textContent = user.country || 'Philippines';
 
+      // Show Admin Dashboard button if operator
+      if (admin && admin.roleKey) {
+        const adminBtn = document.getElementById('adminDashboardHeroBtn');
+        if (adminBtn) adminBtn.style.display = 'inline-flex';
+      }
+
       if (user.avatar) {
         document.getElementById('topAvatar').src = user.avatar;
         document.getElementById('heroAvatar').src = user.avatar;
@@ -547,6 +689,22 @@
       document.getElementById('accEmail').textContent = user.email || '';
       document.getElementById('accCountry').textContent = user.country || 'Philippines';
       document.getElementById('accPhone').textContent = user.phone || 'None provided';
+
+      // Initialize Favorites & Listeners
+      renderProfileFavorites();
+      window.addEventListener('favoritesUpdated', renderProfileFavorites);
+
+      // Handle URL hash tab routing
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'favorites') {
+        switchProfileTab('favorites');
+      } else if (hash === 'settings') {
+        switchProfileTab('settings');
+      } else if (hash === 'account') {
+        switchProfileTab('account');
+      } else if (hash === 'passes') {
+        switchProfileTab('passes');
+      }
 
       // Compiled Passes
       const passes = TourismHubStore.getPasses() || [];

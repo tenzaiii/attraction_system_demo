@@ -46,7 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
   // User Wishlist
-  const savedAttractions = new Set();
+  function getSavedSet() {
+    const list = (window.TourismHubStore && typeof TourismHubStore.getFavorites === 'function')
+      ? TourismHubStore.getFavorites()
+      : [];
+    return new Set(list);
+  }
 
   // --- 2. DOM Elements ---
   const attractionsGrid = document.getElementById('attractionsGrid');
@@ -109,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Limit initial display unless expanded
     const displayList = showAll ? filtered : filtered.slice(0, 3);
+    const savedAttractions = getSavedSet();
 
     if (displayList.length === 0) {
       attractionsGrid.innerHTML = `
@@ -236,16 +242,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // --- 5. Wishlist Toggle ---
+  // --- 5. Wishlist / Favorites Toggle ---
   window.toggleWishlist = function (id, name) {
-    if (savedAttractions.has(id)) {
-      savedAttractions.delete(id);
-      showToast(`Removed "${name}" from your saved list`);
-    } else {
-      savedAttractions.add(id);
-      showToast(`Added "${name}" to your wishlist!`);
+    if (window.TourismHubStore && typeof TourismHubStore.toggleFavorite === 'function') {
+      const res = TourismHubStore.toggleFavorite(id);
+      if (res.isFavorite) {
+        showToast(`Saved "${name}" to your profile favorites!`);
+      } else {
+        showToast(`Removed "${name}" from your favorites`);
+      }
     }
     renderAttractions();
+    // Dispatch custom event to notify open tabs or other components
+    window.dispatchEvent(new CustomEvent('favoritesUpdated'));
   };
 
   // --- 6. Dynamic Notifications & Announcements Renderer ---
@@ -666,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
         passesList.innerHTML = `
           <div style="text-align: center; padding: 1.5rem 0.5rem; color: var(--text-muted);">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="margin: 0 auto 0.5rem; opacity: 0.6;"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
-            <div style="font-size: 0.84rem; font-weight: 700; color: #0f172a;">No Active Passes Yet</div>
+            <div style="font-size: 0.84rem; font-weight: 700; color: var(--text-main);">No Active Passes Yet</div>
             <div style="font-size: 0.74rem; margin-top: 2px;">Reserve attraction slots below to view your QR passes here.</div>
           </div>
         `;
@@ -704,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailsEl = document.getElementById('dropdownAccountDetails');
     if (detailsEl) {
       detailsEl.innerHTML = `
-        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.5rem;">
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.5rem;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Session Information</div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
             <span style="color: var(--text-muted);">Account Type:</span>
@@ -792,6 +801,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Live Supabase sync listener
+  window.addEventListener('supabaseSyncComplete', () => {
+    syncUserProfileHeader();
+    renderAttractions();
+    renderNotifications();
+  });
 
   // --- 15. Initial Render ---
   syncUserProfileHeader();

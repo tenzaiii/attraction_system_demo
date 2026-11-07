@@ -15,6 +15,12 @@
   <!-- Main Stylesheets -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/portal-pages.css">
+
+  <script>
+    if (localStorage.getItem('tourismhub_theme') === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
 </head>
 
 <body>
@@ -133,6 +139,18 @@
             <span class="sidebar-item-text">Profile</span>
           </a>
         </li>
+
+        <!-- 9. Admin Dashboard (Admin Only) -->
+        <li class="sidebar-menu-item admin-only-feature" style="display: none;">
+          <a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Admin Dashboard</span>
+          </a>
+        </li>
       </ul>
     </nav>
   </aside>
@@ -163,6 +181,23 @@
     </div>
 
     <div class="portal-topbar-right">
+      <!-- Admin Dashboard Quick Button (Admin Only) -->
+      <a href="admin.html" class="nav-admin-dashboard-btn admin-only-feature" style="display: none;" title="Admin Operator Dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="3" y="3" width="7" height="9"></rect>
+          <rect x="14" y="3" width="7" height="5"></rect>
+          <rect x="14" y="12" width="7" height="9"></rect>
+          <rect x="3" y="16" width="7" height="5"></rect>
+        </svg>
+        <span>Admin Dashboard</span>
+      </a>
+
+      <!-- Dark / Light Mode Toggle Button -->
+      <button class="portal-notif-btn topbar-theme-toggle-btn" id="globalDarkModeBtn" onclick="toggleGlobalTheme()" aria-label="Toggle Theme" title="Toggle Theme">
+        <svg class="theme-btn-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="theme-btn-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
       <a href="notifications.html" class="portal-notif-btn" aria-label="Notifications">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -171,12 +206,14 @@
         <span class="sidebar-item-badge-dot" style="position: absolute; top: 8px; right: 8px;"></span>
       </a>
 
-      <div class="portal-user-profile" onclick="location.href='login.html'" title="Tourist Account / Sign In">
-        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
-          alt="Tourist Profile" class="portal-avatar-img">
-        <div class="portal-user-meta">
-          <span class="portal-user-name">Tourist Portal</span>
-          <span class="portal-user-role">Sign In / Register</span>
+      <div class="user-profile-wrapper">
+        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+            alt="Tourist Profile" class="portal-avatar-img">
+          <div class="portal-user-meta">
+            <span class="portal-user-name">Tourist Portal</span>
+            <span class="portal-user-role">Sign In / Register</span>
+          </div>
         </div>
       </div>
     </div>

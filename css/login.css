@@ -621,3 +621,84 @@ body {
   align-items: center;
   gap: 0.35rem;
 }
+
+/* ==========================================================================
+   Dark Mode Support for Login & Register Portal
+   ========================================================================== */
+[data-theme="dark"] {
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+  --border: #334155;
+}
+
+[data-theme="dark"] .client-auth-form-pane {
+  background: #0b1120 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .form-title {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .input-label {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .text-input,
+[data-theme="dark"] select.text-input {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .text-input::placeholder {
+  color: #64748b !important;
+}
+
+[data-theme="dark"] .auth-segmented-control {
+  background: #0f172a !important;
+  border: 1px solid #334155 !important;
+}
+
+[data-theme="dark"] .segment-btn {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .segment-btn.active {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .quick-account-card {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .quick-account-card:hover {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .quick-account-name {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .quick-account-card.admin-card {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .quick-account-card.admin-card:hover {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .back-link {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .back-link:hover {
+  color: #38bdf8 !important;
+}

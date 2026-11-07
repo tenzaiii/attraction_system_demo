@@ -203,8 +203,61 @@
     },
 
     // =========================================================================
-    // CATALOG & ATTRACTIONS DATA
+    // CATALOG & ATTRACTIONS DATA (Supabase Sync)
     // =========================================================================
+
+    /**
+     * Map database row (snake_case) to client attraction object (camelCase)
+     */
+    mapCatalogFromDb(row) {
+      if (!row) return null;
+      return {
+        id: row.id,
+        title: row.title || '',
+        category: row.category || 'Tourist Spot',
+        type: row.type || 'attraction',
+        status: row.status || 'active',
+        rating: row.rating ? String(row.rating) : '4.8',
+        reviews: row.reviews ? String(row.reviews) : '1.2k',
+        price: row.price !== null && row.price !== undefined ? Number(row.price) : 20,
+        priceLabel: row.price_label || (row.price ? `$${row.price}` : 'Free'),
+        admission: row.admission || 'Standard Admission',
+        operatingHours: row.operating_hours || '08:00 AM - 06:00 PM',
+        capacityPerSlot: row.capacity_per_slot || 100,
+        image: row.image || 'assets/hero-banner.jpg',
+        location: row.location || 'Metro Manila',
+        badge: row.badge || 'Featured',
+        description: row.description || '',
+        created_at: row.created_at,
+        updated_at: row.updated_at
+      };
+    },
+
+    /**
+     * Map client attraction object (camelCase) to database row (snake_case)
+     */
+    mapCatalogToDb(item) {
+      if (!item) return null;
+      const priceVal = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+      return {
+        id: String(item.id || 'attraction-' + Date.now()),
+        title: item.title || '',
+        category: item.category || 'Tourist Spot',
+        type: item.type || 'attraction',
+        status: item.status || 'active',
+        rating: String(item.rating || '4.8'),
+        reviews: String(item.reviews || '100'),
+        price: priceVal,
+        price_label: item.priceLabel || item.price_label || (priceVal ? `$${priceVal}` : 'Free'),
+        admission: item.admission || 'Standard Admission',
+        operating_hours: item.operatingHours || item.operating_hours || '08:00 AM - 06:00 PM',
+        capacity_per_slot: Number(item.capacityPerSlot || item.capacity_per_slot || 100),
+        image: item.image || 'assets/hero-banner.jpg',
+        location: item.location || 'Metro Manila',
+        badge: item.badge || 'Featured',
+        description: item.description || ''
+      };
+    },
 
     /**
      * Fetch catalog items from Supabase `catalog` table
@@ -218,9 +271,10 @@
           .order('created_at', { ascending: false });
 
         if (error) throw error;
-        return data;
+        if (!Array.isArray(data)) return [];
+        return data.map(row => this.mapCatalogFromDb(row));
       } catch (err) {
-        console.warn('[Supabase] Failed to fetch catalog:', err.message);
+        console.warn('⚠️ [Supabase] Failed to fetch catalog:', err.message);
         return null;
       }
     },
@@ -231,20 +285,97 @@
     async upsertCatalogItem(item) {
       if (!supabaseClient) return null;
       try {
+        const dbPayload = this.mapCatalogToDb(item);
         const { data, error } = await supabaseClient
           .from('catalog')
-          .upsert([item])
+          .upsert([dbPayload], { onConflict: 'id' })
           .select();
+
         if (error) throw error;
-        return { success: true, data };
+        const saved = (data && data[0]) ? this.mapCatalogFromDb(data[0]) : item;
+        console.log('⚡ [Supabase] Synced catalog item:', saved.title);
+        return { success: true, data: saved };
       } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to upsert catalog item:', err.message);
+        return { success: false, message: err.message };
+      }
+    },
+
+    /**
+     * Delete an attraction from Supabase `catalog`
+     */
+    async deleteCatalogItem(id) {
+      if (!supabaseClient) return null;
+      try {
+        const { error } = await supabaseClient
+          .from('catalog')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        console.log('⚡ [Supabase] Deleted catalog item:', id);
+        return { success: true };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to delete catalog item:', err.message);
         return { success: false, message: err.message };
       }
     },
 
     // =========================================================================
-    // ANNOUNCEMENTS DATA
+    // ANNOUNCEMENTS DATA (Supabase Sync)
     // =========================================================================
+
+    /**
+     * Map database row to client announcement object
+     */
+    mapAnnouncementFromDb(row) {
+      if (!row) return null;
+
+      // Compute relative timestamp
+      let timeStr = 'Recently';
+      if (row.created_at) {
+        const diffMs = Date.now() - new Date(row.created_at).getTime();
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMins / 60);
+        const diffDays = Math.floor(diffHours / 24);
+        if (diffMins < 1) timeStr = 'Just now';
+        else if (diffMins < 60) timeStr = `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+        else if (diffHours < 24) timeStr = `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        else timeStr = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      }
+
+      return {
+        id: String(row.id),
+        title: row.title || 'Broadcast Advisory',
+        type: row.type || 'announcement',
+        priority: row.priority || 'normal',
+        target: row.author || 'All Visitors',
+        author: row.author || 'Operations Desk',
+        text: row.message || '',
+        message: row.message || '',
+        timestamp: timeStr,
+        created_at: row.created_at,
+        active: true
+      };
+    },
+
+    /**
+     * Map client announcement object to database row
+     */
+    mapAnnouncementToDb(ann) {
+      if (!ann) return null;
+      const payload = {
+        title: ann.title || 'Broadcast Advisory',
+        message: ann.text || ann.message || '',
+        type: ann.type || 'announcement',
+        priority: ann.priority || 'normal',
+        author: ann.target || ann.author || 'Operations Desk'
+      };
+      if (typeof ann.id === 'number' || (typeof ann.id === 'string' && /^\d+$/.test(ann.id))) {
+        payload.id = parseInt(ann.id, 10);
+      }
+      return payload;
+    },
 
     /**
      * Fetch announcements from Supabase `announcements` table
@@ -256,10 +387,82 @@
           .from('announcements')
           .select('*')
           .order('created_at', { ascending: false });
+
         if (error) throw error;
-        return data;
+        if (!Array.isArray(data)) return [];
+        return data.map(row => this.mapAnnouncementFromDb(row));
       } catch (err) {
-        console.warn('[Supabase] Failed to fetch announcements:', err.message);
+        console.warn('⚠️ [Supabase] Failed to fetch announcements:', err.message);
+        return null;
+      }
+    },
+
+    /**
+     * Insert a new broadcast announcement into Supabase `announcements`
+     */
+    async insertAnnouncement(ann) {
+      if (!supabaseClient) return null;
+      try {
+        const dbPayload = this.mapAnnouncementToDb(ann);
+        const { data, error } = await supabaseClient
+          .from('announcements')
+          .insert([dbPayload])
+          .select()
+          .single();
+
+        if (error) throw error;
+        const saved = this.mapAnnouncementFromDb(data);
+        console.log('⚡ [Supabase] Inserted announcement broadcast:', saved.title);
+        return { success: true, data: saved };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to insert announcement:', err.message);
+        return { success: false, message: err.message };
+      }
+    },
+
+    /**
+     * Delete/Dismiss an announcement from Supabase `announcements`
+     */
+    async deleteAnnouncement(id) {
+      if (!supabaseClient) return null;
+      try {
+        let query = supabaseClient.from('announcements').delete();
+        if (/^\d+$/.test(String(id))) {
+          query = query.eq('id', parseInt(id, 10));
+        } else {
+          query = query.eq('title', id);
+        }
+        const { error } = await query;
+        if (error) throw error;
+        console.log('⚡ [Supabase] Deleted announcement:', id);
+        return { success: true };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to delete announcement:', err.message);
+        return { success: false, message: err.message };
+      }
+    },
+
+    /**
+     * Subscribe to real-time changes on public catalog and announcements
+     */
+    subscribeToChanges(callbacks = {}) {
+      if (!supabaseClient) return null;
+      try {
+        const channel = supabaseClient
+          .channel('tourismhub-realtime-feed')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'catalog' }, (payload) => {
+            console.log('⚡ [Supabase Realtime] Catalog table event:', payload.eventType);
+            if (typeof callbacks.onCatalogChange === 'function') callbacks.onCatalogChange(payload);
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements' }, (payload) => {
+            console.log('⚡ [Supabase Realtime] Announcements table event:', payload.eventType);
+            if (typeof callbacks.onAnnouncementChange === 'function') callbacks.onAnnouncementChange(payload);
+          })
+          .subscribe();
+
+        return channel;
+      } catch (err) {
+        console.warn('⚠️ [Supabase Realtime] Failed to subscribe:', err.message);
         return null;
       }
     }

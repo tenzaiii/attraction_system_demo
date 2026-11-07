@@ -68,6 +68,217 @@
   --primary-light: #0c4a6e;
 }
 
+[data-theme="dark"] body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .site-header {
+  background-color: rgba(11, 17, 32, 0.95) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .nav-link {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .nav-link:hover,
+[data-theme="dark"] .nav-link.active {
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .nav-icon-btn {
+  background-color: var(--bg-subtle) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border);
+}
+
+[data-theme="dark"] .nav-icon-btn:hover {
+  background-color: var(--bg-card) !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .hero-search-capsule {
+  background-color: var(--bg-card) !important;
+  border: 1.5px solid var(--border) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .hero-search-input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .hero-search-input::placeholder {
+  color: var(--text-light) !important;
+}
+
+[data-theme="dark"] .search-category-filter {
+  background: var(--bg-subtle) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .search-tag-pill {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .search-tag-pill:hover {
+  background: var(--primary) !important;
+  color: #ffffff !important;
+  border-color: var(--primary) !important;
+}
+
+[data-theme="dark"] .category-circle-icon {
+  background-color: var(--bg-subtle) !important;
+  border: 1px solid var(--border) !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .category-label {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .category-action-card:hover .category-circle-icon {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .filter-tabs {
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .filter-tab {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .filter-tab:hover {
+  border-color: var(--primary) !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .filter-tab.active {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .attraction-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="dark"] .card-title {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .card-subtitle {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .card-rating {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .card-wishlist-btn {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .card-wishlist-btn:hover,
+[data-theme="dark"] .card-wishlist-btn.saved {
+  background: var(--bg-card) !important;
+  color: #ef4444 !important;
+}
+
+[data-theme="dark"] .features-section {
+  background: var(--bg-page) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .feature-box {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .feature-box:hover {
+  background: var(--bg-subtle) !important;
+  border-color: var(--primary) !important;
+}
+
+[data-theme="dark"] .feature-box-title {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .feature-icon-wrap {
+  background: var(--bg-subtle) !important;
+  border: 1px solid var(--border) !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .faq-section {
+  background: var(--bg-page) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .faq-item {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .faq-question-btn {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .faq-answer-panel {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .pricing-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .pricing-card.featured {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-subtle) 100%) !important;
+  border-color: var(--primary) !important;
+}
+
+[data-theme="dark"] .testimonials-section {
+  background: var(--bg-page) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .testimonial-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .testimonial-card:hover {
+  background: var(--bg-subtle) !important;
+}
+
+[data-theme="dark"] .mobile-bottom-nav {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  border-top: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .bottom-nav-item {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .bottom-nav-item.active {
+  color: #38bdf8 !important;
+}
+
 [data-theme="dark"] .portal-topbar,
 [data-theme="dark"] .side-navigation,
 [data-theme="dark"] .modal-window,
@@ -116,6 +327,26 @@
   background-color: #0f172a !important;
   border-color: var(--border) !important;
   color: #f8fafc !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+[data-theme="dark"] .dropdown-action-btn {
+  background: var(--bg-subtle) !important;
+  border-color: var(--border) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .dropdown-action-btn:hover {
+  background: var(--bg-page) !important;
+  border-color: var(--primary) !important;
+}
+
+[data-theme="dark"] label {
+  color: var(--text-main) !important;
 }
 
 /* ==========================================================================
@@ -526,6 +757,30 @@ img {
   gap: 0.9rem;
 }
 
+.nav-admin-dashboard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: 1px solid #0284c7;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.nav-admin-dashboard-btn:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+  color: #ffffff !important;
+}
+
 .nav-icon-btn {
   position: relative;
   width: 40px;
@@ -620,7 +875,7 @@ img {
   align-items: center;
   justify-content: center;
   background-color: #0b2239;
-  background-image: linear-gradient(180deg, rgba(8, 25, 45, 0.25) 0%, rgba(8, 25, 45, 0.65) 100%), url('../assets/qc-memorial-circle.jpg');
+  background-image: linear-gradient(180deg, rgba(8, 25, 45, 0.25) 0%, rgba(8, 25, 45, 0.65) 100%), url('../assets/hero-banner.jpg');
   background-size: cover;
   background-position: center 38%;
   background-repeat: no-repeat;
@@ -1996,9 +2251,9 @@ img {
 .modal-body select {
   width: 100%;
   padding: 0.75rem 0.95rem;
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border: 1.5px solid #cbd5e1;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: 0.95rem;
@@ -2013,7 +2268,7 @@ img {
 }
 
 .modal-body label {
-  color: #1e293b;
+  color: var(--text-main);
 }
 
 /* Digital Ticket QR Card in Modal */

@@ -10,7 +10,8 @@
     LOGS: 'tourismhub_temp_logs_v1',
     ADMIN_AUTH: 'tourismhub_temp_admin_auth_v1',
     CLIENT_AUTH: 'tourismhub_temp_client_auth_v1',
-    CLIENT_USERS: 'tourismhub_temp_client_users_v1'
+    CLIENT_USERS: 'tourismhub_temp_client_users_v1',
+    FAVORITES: 'tourismhub_temp_favorites_v1'
   };
 
   // Default Seed Admin & Operator Accounts
@@ -373,6 +374,12 @@
         ];
         this.saveCapacityData(capacity);
       }
+
+      // Online Supabase Sync
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.upsertCatalogItem === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.upsertCatalogItem(item).catch(err => console.warn('[Store] Supabase addAttraction sync error:', err));
+      }
+
       return catalog;
     },
     updateAttraction(id, updates) {
@@ -381,6 +388,11 @@
       if (idx !== -1) {
         catalog[idx] = { ...catalog[idx], ...updates };
         this.saveCatalog(catalog);
+
+        // Online Supabase Sync
+        if (window.TourismHubSupabase && typeof TourismHubSupabase.upsertCatalogItem === 'function' && TourismHubSupabase.isReady()) {
+          TourismHubSupabase.upsertCatalogItem(catalog[idx]).catch(err => console.warn('[Store] Supabase updateAttraction sync error:', err));
+        }
       }
       return catalog;
     },
@@ -392,6 +404,12 @@
       const capacity = this.getCapacityData();
       delete capacity[id];
       this.saveCapacityData(capacity);
+
+      // Online Supabase Sync
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.deleteCatalogItem === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.deleteCatalogItem(id).catch(err => console.warn('[Store] Supabase deleteAttraction sync error:', err));
+      }
+
       return catalog;
     },
 
@@ -436,12 +454,33 @@
       const list = this.getAnnouncements();
       list.unshift(ann);
       this.saveAnnouncements(list);
+
+      // Online Supabase Sync
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.insertAnnouncement === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.insertAnnouncement(ann).then(res => {
+          if (res && res.success && res.data && res.data.id) {
+            const curList = this.getAnnouncements();
+            const targetItem = curList.find(a => a.id === ann.id || (a.title === ann.title && a.text === ann.text));
+            if (targetItem) {
+              targetItem.id = res.data.id;
+              this.saveAnnouncements(curList);
+            }
+          }
+        }).catch(err => console.warn('[Store] Supabase addAnnouncement sync error:', err));
+      }
+
       return list;
     },
     dismissAnnouncement(id) {
       let list = this.getAnnouncements();
       list = list.filter(a => a.id !== id);
       this.saveAnnouncements(list);
+
+      // Online Supabase Sync
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.deleteAnnouncement === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.deleteAnnouncement(id).catch(err => console.warn('[Store] Supabase dismissAnnouncement sync error:', err));
+      }
+
       return list;
     },
 
@@ -684,6 +723,116 @@
       return { success: true };
     },
 
+    // =========================================================================
+    // FAVORITES / WISHLIST MANAGEMENT
+    // =========================================================================
+    getFavorites() {
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allFavs = getItem(KEYS.FAVORITES) || {};
+      return Array.isArray(allFavs[userKey]) ? allFavs[userKey] : [];
+    },
+
+    isFavorite(attractionId) {
+      if (!attractionId) return false;
+      const favs = this.getFavorites();
+      return favs.includes(attractionId);
+    },
+
+    toggleFavorite(attractionId) {
+      if (!attractionId) return { isFavorite: false, favorites: [] };
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allFavs = getItem(KEYS.FAVORITES) || {};
+      let userFavs = Array.isArray(allFavs[userKey]) ? [...allFavs[userKey]] : [];
+
+      const idx = userFavs.indexOf(attractionId);
+      let isFav = false;
+      if (idx > -1) {
+        userFavs.splice(idx, 1);
+        isFav = false;
+      } else {
+        userFavs.push(attractionId);
+        isFav = true;
+      }
+
+      allFavs[userKey] = userFavs;
+      setItem(KEYS.FAVORITES, allFavs);
+      return { isFavorite: isFav, favorites: userFavs };
+    },
+
+    removeFavorite(attractionId) {
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allFavs = getItem(KEYS.FAVORITES) || {};
+      let userFavs = Array.isArray(allFavs[userKey]) ? [...allFavs[userKey]] : [];
+
+      const idx = userFavs.indexOf(attractionId);
+      if (idx > -1) {
+        userFavs.splice(idx, 1);
+        allFavs[userKey] = userFavs;
+        setItem(KEYS.FAVORITES, allFavs);
+      }
+      return userFavs;
+    },
+
+    // =========================================================================
+    // ONLINE SUPABASE SYNCHRONIZATION (Catalog & Announcements)
+    // =========================================================================
+    async initOnlineSync() {
+      if (!window.TourismHubSupabase || typeof TourismHubSupabase.isReady !== 'function' || !TourismHubSupabase.isReady()) {
+        console.info('ℹ️ [Store] Running in offline mode (Supabase not configured or offline).');
+        return;
+      }
+
+      try {
+        console.log('⚡ [Store] Connecting to Supabase for live catalog and announcements synchronization...');
+
+        // 1. Fetch live catalog from Supabase
+        const remoteCatalog = await TourismHubSupabase.fetchCatalog();
+        if (Array.isArray(remoteCatalog) && remoteCatalog.length > 0) {
+          const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG);
+          const catalogMap = new Map();
+          localCatalog.forEach(item => catalogMap.set(item.id, item));
+          remoteCatalog.forEach(item => catalogMap.set(item.id, item));
+          const merged = Array.from(catalogMap.values());
+          setItem(KEYS.CATALOG, merged);
+          console.log(`⚡ [Store] Catalog synchronized (${merged.length} items from Supabase & local cache).`);
+        }
+
+        // 2. Fetch live announcements from Supabase
+        const remoteAnnouncements = await TourismHubSupabase.fetchAnnouncements();
+        if (Array.isArray(remoteAnnouncements) && remoteAnnouncements.length > 0) {
+          setItem(KEYS.ANNOUNCEMENTS, remoteAnnouncements);
+          console.log(`⚡ [Store] Announcements synchronized (${remoteAnnouncements.length} broadcasts from Supabase).`);
+        }
+
+        // 3. Real-time subscription to postgres changes
+        TourismHubSupabase.subscribeToChanges({
+          onCatalogChange: async () => {
+            const freshCatalog = await TourismHubSupabase.fetchCatalog();
+            if (Array.isArray(freshCatalog) && freshCatalog.length > 0) {
+              const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG);
+              const map = new Map();
+              localCatalog.forEach(item => map.set(item.id, item));
+              freshCatalog.forEach(item => map.set(item.id, item));
+              setItem(KEYS.CATALOG, Array.from(map.values()));
+            }
+          },
+          onAnnouncementChange: async () => {
+            const freshAnnouncements = await TourismHubSupabase.fetchAnnouncements();
+            if (Array.isArray(freshAnnouncements)) {
+              setItem(KEYS.ANNOUNCEMENTS, freshAnnouncements);
+            }
+          }
+        });
+
+        window.dispatchEvent(new CustomEvent('supabaseSyncComplete'));
+      } catch (err) {
+        console.warn('⚠️ [Store] Supabase synchronization warning:', err.message || err);
+      }
+    },
+
     // Reset to initial seed state
     resetAll() {
       setItem(KEYS.CATALOG, DEFAULT_CATALOG);
@@ -694,9 +843,21 @@
       setItem(KEYS.ADMIN_AUTH, null);
       setItem(KEYS.CLIENT_AUTH, null);
       setItem(KEYS.CLIENT_USERS, DEFAULT_CLIENT_USERS);
+      setItem(KEYS.FAVORITES, {});
     }
   };
 
   window.TourismHubStore = TourismHubStore;
+
+  // Auto-initialize Supabase sync on load
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        TourismHubStore.initOnlineSync();
+      });
+    } else {
+      setTimeout(() => TourismHubStore.initOnlineSync(), 0);
+    }
+  }
 
 })(window);
