@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rating: '4.8',
         reviews: '1.2k',
         price: 15,
-        priceLabel: 'Free / Guided $15',
+        priceLabel: 'Free / Guided ₱150',
         image: 'assets/rizal-monument.jpg',
         badge: 'Iconic Landmark',
         description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines.'
@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'beach',
         rating: '4.7',
         reviews: '980',
-        price: 25,
-        priceLabel: 'Day Pass $25',
+        price: 250,
+        priceLabel: 'Day Pass ₱250',
         image: 'assets/white-beach.jpg',
         badge: 'Tropical Haven',
         description: 'Pristine powdery white sand, azure waters, and vibrant island activities with legendary sunsets.'
@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'festival',
         rating: '4.9',
         reviews: '850',
-        price: 35,
-        priceLabel: 'Event Access $35',
+        price: 350,
+        priceLabel: 'Event Access ₱350',
         image: 'assets/pahiyas-festival.jpg',
         badge: 'Annual Celebration',
         description: 'A colorful harvest festival in Lucban featuring houses decorated with vibrant kiping rice wafers and fruits.'
@@ -79,9 +79,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- 3. Render Attractions Grid ---
+  // --- 3. Render Attractions Grid & Dynamic Filter Sync ---
   let showAll = false;
   let currentFilter = 'all';
+
+  // Sync category dropdown with unique categories from Supabase catalog
+  function syncCategoryDropdownOptions(items) {
+    if (!searchFilter) return;
+    const currentVal = searchFilter.value;
+    const categories = new Set();
+    items.forEach(it => {
+      if (it.category) categories.add(it.category.trim());
+    });
+
+    // Rebuild options preserving 'all'
+    const optionsHtml = ['<option value="all">All Categories</option>'];
+    categories.forEach(cat => {
+      const selected = currentVal.toLowerCase() === cat.toLowerCase() ? 'selected' : '';
+      optionsHtml.push(`<option value="${cat.replace(/"/g, '&quot;')}" ${selected}>${cat}</option>`);
+    });
+    searchFilter.innerHTML = optionsHtml.join('');
+  }
 
   function renderAttractions() {
     if (!attractionsGrid) return;
@@ -90,24 +108,31 @@ document.addEventListener('DOMContentLoaded', () => {
       attractionsData = TourismHubStore.getCatalog();
     }
 
+    // Keep dropdown options synced with live Supabase catalog data
+    syncCategoryDropdownOptions(attractionsData);
+
     const searchTerm = (searchInput ? searchInput.value : '').toLowerCase().trim();
-    const dropdownCat = searchFilter ? searchFilter.value : 'all';
+    const dropdownCat = (searchFilter ? searchFilter.value : 'all').toLowerCase().trim();
 
     let filtered = attractionsData.filter(item => {
+      const itemType = (item.type || '').toLowerCase();
+      const itemCat = (item.category || '').toLowerCase();
+
       // Tab filter
-      if (currentFilter !== 'all' && item.type !== currentFilter && item.category?.toLowerCase() !== currentFilter.toLowerCase()) {
+      if (currentFilter !== 'all' && itemType !== currentFilter.toLowerCase() && itemCat !== currentFilter.toLowerCase()) {
         return false;
       }
       // Dropdown category filter
-      if (dropdownCat !== 'all' && item.type !== dropdownCat) {
+      if (dropdownCat !== 'all' && itemCat !== dropdownCat && itemType !== dropdownCat) {
         return false;
       }
       // Text search
       if (searchTerm) {
-        const matchesName = item.title?.toLowerCase().includes(searchTerm);
-        const matchesCat = item.category?.toLowerCase().includes(searchTerm);
-        const matchesDesc = item.description?.toLowerCase().includes(searchTerm);
-        return matchesName || matchesCat || matchesDesc;
+        const matchesName = (item.title || '').toLowerCase().includes(searchTerm);
+        const matchesCat = itemCat.includes(searchTerm);
+        const matchesDesc = (item.description || '').toLowerCase().includes(searchTerm);
+        const matchesLoc = (item.location || '').toLowerCase().includes(searchTerm);
+        return matchesName || matchesCat || matchesDesc || matchesLoc;
       }
       return true;
     });
@@ -437,7 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (modalTitle) modalTitle.textContent = `Reserve Pass: ${attraction.title}`;
     if (modalImg) modalImg.src = attraction.image || 'assets/hero-banner.jpg';
-    if (modalPrice) modalPrice.textContent = `$${attraction.price || 20}`;
+    if (modalPrice) modalPrice.textContent = `₱${attraction.price || 150}`;
     if (bookingAttractionInput) bookingAttractionInput.value = attraction.id;
 
     recalcTotal();
@@ -467,9 +492,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const attractionId = document.getElementById('bookingAttractionId')?.value;
     const attraction = (window.TourismHubStore ? TourismHubStore.getCatalog() : attractionsData).find(a => a.id === attractionId) || attractionsData[0];
     const count = parseInt(visitorCountInput.value, 10) || 1;
-    const unitPrice = attraction.price || 20;
+    const unitPrice = attraction.price || 150;
     const total = unitPrice * count;
-    totalPriceDisplay.textContent = `$${total}`;
+    totalPriceDisplay.textContent = `₱${total}`;
   }
 
   if (visitorCountInput) {
@@ -503,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
           slot: '09:00 AM - 12:00 PM',
           passType: 'Standard Tourist Pass',
           status: 'valid',
-          amount: `$${(attraction.price || 20) * count}.00`,
+          amount: `₱${(attraction.price || 150) * count}.00`,
           validDate: visitDate
         });
       }
@@ -550,7 +575,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 10. Toast Notification System ---
+  // --- 10. FAQ Accordion Dropdown Logic ---
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach(item => {
+    const questionBtn = item.querySelector('.faq-question-btn');
+    if (questionBtn) {
+      questionBtn.addEventListener('click', () => {
+        const isOpen = item.classList.contains('active');
+        // Close other accordion items for clean accordion UX
+        faqItems.forEach(other => {
+          if (other !== item) {
+            other.classList.remove('active');
+            const otherBtn = other.querySelector('.faq-question-btn');
+            if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+        // Toggle current item
+        if (isOpen) {
+          item.classList.remove('active');
+          questionBtn.setAttribute('aria-expanded', 'false');
+        } else {
+          item.classList.add('active');
+          questionBtn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    }
+  });
+
+  // --- 11. Toast Notification System ---
   let toastTimeout;
   window.showToast = function (message) {
     if (!toast || !toastMessage) return;
@@ -579,28 +631,25 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Settings & preferences opened.');
   };
 
-  // --- 13. Profile Dropdown & User Profile Header Synchronization ---
-  window.toggleProfileDropdown = function (event) {
-    if (event) event.stopPropagation();
-    const dropdown = document.getElementById('userProfileDropdown');
-    if (!dropdown) return;
-
-    const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
-    const adminAuth = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
-
-    // If not signed in at all, clicking profile sends to login
-    if (!clientAuth && !adminAuth) {
-      window.location.href = 'login.html';
-      return;
+  // --- 13. Profile Navigation & User Profile Header Synchronization ---
+  window.navigateToProfilePage = function (event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
     }
+    const clientAuth = TourismHubStore && TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
+    const adminAuth = TourismHubStore && TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
 
-    const isActive = dropdown.classList.contains('active');
-    if (isActive) {
-      dropdown.classList.remove('active');
+    if (clientAuth || adminAuth) {
+      window.location.href = 'profile.html';
     } else {
-      renderProfileDropdownContent();
-      dropdown.classList.add('active');
+      window.location.href = 'login.html';
     }
+  };
+
+  // Compatibility alias
+  window.toggleProfileDropdown = function (event) {
+    window.navigateToProfilePage(event);
   };
 
   window.switchDropdownTab = function (tabName) {
@@ -765,6 +814,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (profileBtn) {
         profileBtn.title = `Profile: ${activeUser.name} (Click for Passes & Options)`;
+        profileBtn.style.cursor = 'pointer';
+        profileBtn.onclick = function(e) { window.navigateToProfilePage(e); };
+      }
+      const userNameEl = profileBtn ? profileBtn.querySelector('.portal-user-name') : null;
+      if (userNameEl) {
+        userNameEl.style.cursor = 'pointer';
+        userNameEl.onclick = function(e) { window.navigateToProfilePage(e); };
       }
     } else {
       // Show Sign In button when not signed in
@@ -778,6 +834,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (profileBtn) {
         profileBtn.title = 'Sign In to TourismHub';
+        profileBtn.style.cursor = 'pointer';
+        profileBtn.onclick = function(e) { window.navigateToProfilePage(e); };
+      }
+      const userNameEl = profileBtn ? profileBtn.querySelector('.portal-user-name') : null;
+      if (userNameEl) {
+        userNameEl.style.cursor = 'pointer';
+        userNameEl.onclick = function(e) { window.navigateToProfilePage(e); };
       }
     }
   }

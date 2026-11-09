@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'historical',
       status: 'active',
       operatingHours: '06:00 AM - 09:00 PM',
-      admission: 'Free Entry / Guided $15',
-      price: 15,
+      admission: 'Free Entry / Guided ₱150',
+      price: 150,
       capacityPerSlot: 150,
       image: 'assets/rizal-monument.jpg',
       location: 'Manila, Metro Manila',
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'historical',
       status: 'active',
       operatingHours: '08:00 AM - 06:00 PM',
-      admission: 'Heritage Pass $20',
-      price: 20,
+      admission: 'Heritage Pass ₱200',
+      price: 200,
       capacityPerSlot: 120,
       image: 'assets/rizal-monument.jpg',
       location: 'Intramuros, Manila',
@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'beach',
       status: 'active',
       operatingHours: '05:30 AM - 10:00 PM',
-      admission: 'Environmental Pass $25',
-      price: 25,
+      admission: 'Environmental Pass ₱250',
+      price: 250,
       capacityPerSlot: 200,
       image: 'assets/white-beach.jpg',
       location: 'Boracay Island, Aklan',
@@ -87,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'beach',
       status: 'maintenance',
       operatingHours: '07:00 AM - 04:00 PM',
-      admission: 'Eco-Tour Pass $45',
-      price: 45,
+      admission: 'Eco-Tour Pass ₱450',
+      price: 450,
       capacityPerSlot: 80,
       image: 'assets/hero-banner.jpg',
       location: 'El Nido, Palawan',
@@ -101,8 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'festival',
       status: 'active',
       operatingHours: '07:00 AM - 08:00 PM',
-      admission: 'Fiesta Access $35',
-      price: 35,
+      admission: 'Fiesta Access ₱350',
+      price: 350,
       capacityPerSlot: 300,
       image: 'assets/pahiyas-festival.jpg',
       location: 'Lucban, Quezon',
@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'festival',
       status: 'active',
       operatingHours: '08:00 AM - 09:00 PM',
-      admission: 'Grandstand Pass $30',
-      price: 30,
+      admission: 'Grandstand Pass ₱300',
+      price: 300,
       capacityPerSlot: 250,
       image: 'assets/pahiyas-festival.jpg',
       location: 'Cebu City, Central Visayas',
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Recent Entry Scans Log
   let recentScansList = [
-    { time: '10:14 AM', code: 'PASS-8842-MNL', name: 'Maria Santos', attraction: 'Rizal Monument', pax: 3, gate: 'North Turnstile 2', status: 'Approved' },
+    { time: '10:14 AM', code: 'PASS-8842-MNL', name: 'Maria Santos', attraction: 'Rizal Monument', pax: 3, gate: 'Express Gate 2', status: 'Approved' },
     { time: '10:08 AM', code: 'PASS-5120-BCY', name: 'Alexander Hayes', attraction: 'White Beach', pax: 2, gate: 'Station 1 Gate A', status: 'Approved' },
     { time: '09:55 AM', code: 'PASS-9912-EXP', name: 'Chen Wei', attraction: 'Intramuros', pax: 1, gate: 'Fort Santiago Express', status: 'Rejected' },
     { time: '09:42 AM', code: 'PASS-4402-PLW', name: 'Liam Henderson', attraction: 'Big Lagoon', pax: 2, gate: 'Dock Gate 3', status: 'Approved' },
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     scanner: {
       title: 'QR Tourist Pass Scanner',
-      sub: 'Validate digital passes and record attendance logs at attraction turnstiles.'
+      sub: 'Validate digital passes and record attendance logs at attraction express gates.'
     },
     analytics: {
       title: 'Admin Analytics Dashboard',
@@ -745,7 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: 'Unregistered Pass',
         attraction: 'N/A',
         pax: 0,
-        gate: 'Turnstile A1',
+        gate: 'Express Gate A1',
         status: 'Rejected'
       });
       renderRecentScans();
@@ -786,7 +786,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Turnstile A1 Express',
+        gate: 'Express Gate A1',
         status: 'Approved'
       });
 
@@ -810,7 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Turnstile A1 Express',
+        gate: 'Express Gate A1',
         status: 'Rejected'
       });
 
@@ -832,7 +832,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Turnstile A1 Express',
+        gate: 'Express Gate A1',
         status: 'Rejected'
       });
     }
@@ -882,7 +882,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="validation-field">
           <label>Gate Verification</label>
-          <span>Turnstile A1 • Fast Track</span>
+          <span>Express Gate A1 • Fast Track</span>
         </div>
       </div>
     `;
@@ -1125,7 +1125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `"${(item.title || '').replace(/"/g, '""')}"`,
         `"${(item.category || '').replace(/"/g, '""')}"`,
         `"${item.operatingHours || '08:00 AM - 06:00 PM'}"`,
-        `"${item.priceLabel || `$${item.price || 0}`}"`,
+        `"${item.priceLabel || `₱${item.price || 0}`}"`,
         bookedSum,
         maxCapSum,
         `"${utilRate}%"`,

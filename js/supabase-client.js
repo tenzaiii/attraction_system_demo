@@ -202,6 +202,51 @@
       }
     },
 
+    /**
+     * Update user password in Supabase `profiles` table
+     */
+    async updateUserPassword(emailOrId, currentPassword, newPassword) {
+      if (!supabaseClient) {
+        return { success: false, message: 'Database client not connected.' };
+      }
+      try {
+        const cleanIdent = String(emailOrId || '').trim().toLowerCase();
+        // 1. Fetch current profile
+        let query = supabaseClient.from('profiles').select('*');
+        if (cleanIdent.includes('@')) {
+          query = query.eq('email', cleanIdent);
+        } else {
+          query = query.eq('id', cleanIdent);
+        }
+        const { data, error } = await query.single();
+        if (error || !data) {
+          return { success: false, message: 'User profile not found in system directory.' };
+        }
+
+        // 2. Verify current password
+        if (data.password_hash !== currentPassword) {
+          return { success: false, message: 'Current password is incorrect. Please re-enter.' };
+        }
+
+        // 3. Update password hash
+        const { error: updateError } = await supabaseClient
+          .from('profiles')
+          .update({
+            password_hash: newPassword,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', data.id);
+
+        if (updateError) throw updateError;
+
+        console.log('⚡ [Supabase] Password successfully updated for profile:', data.email);
+        return { success: true, message: 'Password updated successfully!' };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] updateUserPassword error:', err.message);
+        return { success: false, message: err.message || 'Failed to update password.' };
+      }
+    },
+
     // =========================================================================
     // CATALOG & ATTRACTIONS DATA (Supabase Sync)
     // =========================================================================
@@ -219,8 +264,8 @@
         status: row.status || 'active',
         rating: row.rating ? String(row.rating) : '4.8',
         reviews: row.reviews ? String(row.reviews) : '1.2k',
-        price: row.price !== null && row.price !== undefined ? Number(row.price) : 20,
-        priceLabel: row.price_label || (row.price ? `$${row.price}` : 'Free'),
+        price: row.price !== null && row.price !== undefined ? Number(row.price) : 150,
+        priceLabel: row.price_label || (row.price ? `₱${row.price}` : 'Free'),
         admission: row.admission || 'Standard Admission',
         operatingHours: row.operating_hours || '08:00 AM - 06:00 PM',
         capacityPerSlot: row.capacity_per_slot || 100,
@@ -248,7 +293,7 @@
         rating: String(item.rating || '4.8'),
         reviews: String(item.reviews || '100'),
         price: priceVal,
-        price_label: item.priceLabel || item.price_label || (priceVal ? `$${priceVal}` : 'Free'),
+        price_label: item.priceLabel || item.price_label || (priceVal ? `₱${priceVal}` : 'Free'),
         admission: item.admission || 'Standard Admission',
         operating_hours: item.operatingHours || item.operating_hours || '08:00 AM - 06:00 PM',
         capacity_per_slot: Number(item.capacityPerSlot || item.capacity_per_slot || 100),
@@ -442,8 +487,109 @@
       }
     },
 
+    // =========================================================================
+    // PASSES & CAPACITY (Supabase Sync)
+    // =========================================================================
+
+    mapPassFromDb(row) {
+      if (!row) return null;
+      return {
+        code: row.pass_code,
+        visitorName: row.visitor_name,
+        visitorEmail: row.visitor_email || '',
+        partySize: row.party_size || 1,
+        attractionId: row.attraction_id,
+        attraction: row.attraction_title || 'Attraction Pass',
+        slot: row.time_slot || 'Standard Access',
+        passType: 'Standard Tourist Pass',
+        status: row.status || 'valid',
+        amount: row.amount_paid ? (String(row.amount_paid).startsWith('₱') ? row.amount_paid : `₱${row.amount_paid}`) : '₱250.00',
+        validDate: row.pass_date || 'Today',
+        issuedAt: row.created_at || new Date().toISOString()
+      };
+    },
+
+    mapPassToDb(pass) {
+      if (!pass) return null;
+      const amtNum = typeof pass.amount === 'number' ? pass.amount : parseFloat(String(pass.amount || '0').replace(/[^0-9.]/g, '')) || 0;
+      return {
+        pass_code: pass.code,
+        visitor_name: pass.visitorName || 'Tourist Guest',
+        visitor_email: pass.visitorEmail || null,
+        attraction_id: pass.attractionId || null,
+        attraction_title: pass.attraction || 'Attraction Pass',
+        party_size: pass.partySize || 1,
+        pass_date: pass.validDate || new Date().toISOString().split('T')[0],
+        time_slot: pass.slot || '09:00 AM - 12:00 PM',
+        amount_paid: amtNum,
+        status: pass.status || 'valid'
+      };
+    },
+
     /**
-     * Subscribe to real-time changes on public catalog and announcements
+     * Fetch all digital passes from Supabase `passes` table
+     */
+    async fetchPasses() {
+      if (!supabaseClient) return [];
+      try {
+        const { data, error } = await supabaseClient
+          .from('passes')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        if (!Array.isArray(data)) return [];
+        return data.map(row => this.mapPassFromDb(row));
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to fetch passes:', err.message);
+        return [];
+      }
+    },
+
+    /**
+     * Insert a new tourist pass into Supabase `passes`
+     */
+    async insertPass(pass) {
+      if (!supabaseClient) return null;
+      try {
+        const dbPayload = this.mapPassToDb(pass);
+        const { data, error } = await supabaseClient
+          .from('passes')
+          .insert([dbPayload])
+          .select()
+          .single();
+
+        if (error) throw error;
+        console.log('⚡ [Supabase] Issued pass:', pass.code);
+        return { success: true, data: this.mapPassFromDb(data) };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to insert pass:', err.message);
+        return { success: false, message: err.message };
+      }
+    },
+
+    /**
+     * Update pass status in Supabase `passes`
+     */
+    async updatePassStatus(code, status) {
+      if (!supabaseClient) return null;
+      try {
+        const { data, error } = await supabaseClient
+          .from('passes')
+          .update({ status: status, scanned_at: new Date().toISOString() })
+          .eq('pass_code', code)
+          .select();
+
+        if (error) throw error;
+        return { success: true, data };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to update pass:', err.message);
+        return { success: false, message: err.message };
+      }
+    },
+
+    /**
+     * Subscribe to real-time changes on public catalog, announcements, and passes
      */
     subscribeToChanges(callbacks = {}) {
       if (!supabaseClient) return null;
@@ -457,6 +603,10 @@
           .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements' }, (payload) => {
             console.log('⚡ [Supabase Realtime] Announcements table event:', payload.eventType);
             if (typeof callbacks.onAnnouncementChange === 'function') callbacks.onAnnouncementChange(payload);
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'passes' }, (payload) => {
+            console.log('⚡ [Supabase Realtime] Passes table event:', payload.eventType);
+            if (typeof callbacks.onPassChange === 'function') callbacks.onPassChange(payload);
           })
           .subscribe();
 

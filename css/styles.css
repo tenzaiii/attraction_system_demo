@@ -875,7 +875,7 @@ img {
   align-items: center;
   justify-content: center;
   background-color: #0b2239;
-  background-image: linear-gradient(180deg, rgba(8, 25, 45, 0.25) 0%, rgba(8, 25, 45, 0.65) 100%), url('../assets/hero-banner.jpg');
+  background-image: linear-gradient(180deg, rgba(8, 25, 45, 0.25) 0%, rgba(8, 25, 45, 0.65) 100%), url('/assets/qc-memorial-circle.jpg');
   background-size: cover;
   background-position: center 38%;
   background-repeat: no-repeat;

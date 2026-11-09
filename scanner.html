@@ -423,7 +423,7 @@
   <div class="modal-overlay" id="scannedHistoryModal" role="dialog" aria-modal="true">
     <div class="modal-dialog" style="max-width: 600px;">
       <div class="modal-header">
-        <h3 class="modal-title">Turnstile Scan Audit History</h3>
+        <h3 class="modal-title">Digital Gate Scan Audit History</h3>
         <button class="modal-close" onclick="closePortalModal('scannedHistoryModal')">&times;</button>
       </div>
       <div style="padding: 1.5rem;">
@@ -517,7 +517,7 @@
 
       if (window.showPortalToast) {
         showPortalToast(
-          isValid ? `Verified entry pass for ${name}` : `Turnstile warning: ${code} is invalid or expired`,
+          isValid ? `Verified entry pass for ${name}` : `Gate alert: ${code} is invalid or expired`,
           isValid ? 'success' : 'warning'
         );
       }
@@ -544,7 +544,7 @@
       if (tbody && window.TourismHubStore) {
         const logs = TourismHubStore.getLogs();
         if (logs.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 1.5rem;">No turnstile scans recorded yet today.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 1.5rem;">No gate scans recorded yet today.</td></tr>`;
         } else {
           tbody.innerHTML = logs.map(l => `
             <tr>
