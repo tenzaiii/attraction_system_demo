@@ -814,6 +814,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navAvatar.src = activeUser.avatar;
       }
       if (profileBtn) {
+        profileBtn.style.display = 'flex';
         profileBtn.title = `Profile: ${activeUser.name} (Click for Passes & Options)`;
       }
     } else {
@@ -823,12 +824,19 @@ document.addEventListener('DOMContentLoaded', () => {
         authLink.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span>Sign In</span>`;
         authLink.href = 'login.html';
       }
+<<<<<<< HEAD
       if (navAvatar) {
         navAvatar.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
       }
       if (profileBtn) {
         profileBtn.title = 'Sign In to TourismHub';
+=======
+      // Hide tourist name and profile icon completely when exploring as guest
+      if (profileBtn) {
+        profileBtn.style.display = 'none';
+>>>>>>> fbc8af7 (feat: integrate Supabase backend sync and dynamic catalog rendering in attractions module)
       }
+    }
     }
   }
 

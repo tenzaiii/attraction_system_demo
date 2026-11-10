@@ -443,6 +443,8 @@
         widget.removeAttribute('onclick');
 
         if (isAdminLoggedIn) {
+          widget.style.display = 'flex';
+          widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
           if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
           if (imgEl && adminAuth.avatar) imgEl.src = adminAuth.avatar;
@@ -455,6 +457,8 @@
           };
           widget.title = 'Operator: ' + adminAuth.name + ' (Click for Menu)';
         } else if (isClientLoggedIn) {
+          widget.style.display = 'flex';
+          widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = clientAuth.name || 'Tourist';
           if (roleEl) roleEl.textContent = clientAuth.badge || 'Verified Tourist';
           if (imgEl && clientAuth.avatar) imgEl.src = clientAuth.avatar;
@@ -465,6 +469,7 @@
           };
           widget.title = 'Logged in as ' + clientAuth.name + ' (Click for Menu)';
         } else {
+<<<<<<< HEAD
           if (nameEl) nameEl.textContent = 'Tourist Portal';
           if (roleEl) roleEl.textContent = 'Sign In / Register';
           if (imgEl) imgEl.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
@@ -476,6 +481,10 @@
             }
           };
           widget.title = 'Tourist Account / Sign In';
+=======
+          // Hide tourist name and profile icon completely when exploring as guest
+          widget.style.display = 'none';
+>>>>>>> fbc8af7 (feat: integrate Supabase backend sync and dynamic catalog rendering in attractions module)
         }
       });
     }
