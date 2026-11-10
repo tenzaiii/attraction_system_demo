@@ -479,9 +479,10 @@
 
         // Remove hardcoded inline onclick so our handler controls it
         widget.removeAttribute('onclick');
-        widget.style.cursor = 'pointer';
 
         if (isAdminLoggedIn) {
+          widget.style.display = 'flex';
+          widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
           if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
           const avatarUrl = (window.TourismHubStore && TourismHubStore.getUserAvatar)
@@ -493,6 +494,8 @@
           };
           widget.title = 'Operator: ' + adminAuth.name + ' (Click for Profile & Passes)';
         } else if (isClientLoggedIn) {
+          widget.style.display = 'flex';
+          widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = clientAuth.name || 'Tourist';
           if (roleEl) roleEl.textContent = clientAuth.badge || 'Verified Tourist';
           const avatarUrl = (window.TourismHubStore && TourismHubStore.getUserAvatar)
@@ -504,16 +507,8 @@
           };
           widget.title = 'Logged in as ' + clientAuth.name + ' (Click for Profile & Passes)';
         } else {
-          if (nameEl) nameEl.textContent = 'Tourist Portal';
-          if (roleEl) roleEl.textContent = 'Sign In / Register';
-          const defaultInitials = (window.TourismHubStore && TourismHubStore.generateInitialsAvatar)
-            ? TourismHubStore.generateInitialsAvatar('Tourist Guest')
-            : '';
-          if (imgEl) imgEl.src = defaultInitials;
-          widget.onclick = function(e) {
-            location.href = 'login.html';
-          };
-          widget.title = 'Tourist Account / Sign In';
+          // Hide tourist name and profile icon completely when exploring as guest
+          widget.style.display = 'none';
         }
       });
     }
