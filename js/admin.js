@@ -468,6 +468,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const status = document.getElementById('attrFormStatus')?.value;
     const desc = document.getElementById('attrFormDesc')?.value;
 
+    // Photo upload handling for admin attraction / event modal
+    let adminUploadedPhoto = null;
+    const adminPhotoInput = document.getElementById('adminAttrPhotoInput');
+    if (adminPhotoInput) {
+      adminPhotoInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        const MAX_SIZE_MB = 5;
+        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+          alert(`Photo exceeds ${MAX_SIZE_MB}MB limit! Please choose a smaller photo.`);
+          adminPhotoInput.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 960;
+            canvas.height = 540;
+            const ctx = canvas.getContext('2d');
+            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+            const w = img.width * scale;
+            const h = img.height * scale;
+            const x = (canvas.width - w) / 2;
+            const y = (canvas.height - h) / 2;
+            ctx.drawImage(img, x, y, w, h);
+            adminUploadedPhoto = canvas.toDataURL('image/jpeg', 0.85);
+
+            const previewBox = document.getElementById('adminAttrPhotoPreviewBox');
+            const previewImg = document.getElementById('adminAttrPhotoImg');
+            const status = document.getElementById('adminAttrPhotoStatus');
+            if (previewBox && previewImg) {
+              previewImg.src = adminUploadedPhoto;
+              previewBox.style.display = 'block';
+            }
+            if (status) status.textContent = file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + 'MB)';
+          };
+          img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    window.clearAdminAttrPhoto = function() {
+      adminUploadedPhoto = null;
+      if (adminPhotoInput) adminPhotoInput.value = '';
+      const previewBox = document.getElementById('adminAttrPhotoPreviewBox');
+      const previewImg = document.getElementById('adminAttrPhotoImg');
+      const status = document.getElementById('adminAttrPhotoStatus');
+      if (previewBox) previewBox.style.display = 'none';
+      if (previewImg) previewImg.src = '';
+      if (status) status.textContent = 'Default Banner';
+    };
+
     if (id) {
       // Edit existing
       const updates = {
@@ -481,6 +538,9 @@ document.addEventListener('DOMContentLoaded', () => {
         status,
         description: desc
       };
+      if (adminUploadedPhoto) {
+        updates.image = adminUploadedPhoto;
+      }
       if (window.TourismHubStore) {
         TourismHubStore.updateAttraction(id, updates);
         catalogData = TourismHubStore.getCatalog();
@@ -503,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
         price: 20,
         capacityPerSlot: capacity,
         status,
-        image: 'assets/hero-banner.jpg',
+        image: adminUploadedPhoto || 'assets/hero-banner.jpg',
         description: desc
       };
 

@@ -822,6 +822,78 @@
       return { success: true, message: 'Password updated successfully!' };
     },
 
+    /**
+     * Generate initials SVG data URI from user's full name (e.g. Maria Santos -> MS)
+     */
+    generateInitialsAvatar(name) {
+      const cleanName = String(name || 'User').trim();
+      const parts = cleanName.split(/\s+/).filter(Boolean);
+      let initials = 'U';
+      if (parts.length === 1) {
+        initials = parts[0].substring(0, 2).toUpperCase();
+      } else if (parts.length >= 2) {
+        initials = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+
+      // Generate SVG data URI
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0284c7"/>
+            <stop offset="100%" stop-color="#0369a1"/>
+          </linearGradient>
+        </defs>
+        <rect width="128" height="128" rx="64" fill="url(#grad)"/>
+        <text x="64" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="46" font-weight="800" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">${initials}</text>
+      </svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    },
+
+    /**
+     * Update user profile photo across session, local store, and Supabase profiles table
+     */
+    async updateProfileAvatar(avatarUrl) {
+      const client = this.getClientAuth();
+      const admin = this.getAdminAuth();
+      const activeUser = admin || client;
+
+      if (!activeUser) {
+        return { success: false, message: 'No active session found.' };
+      }
+
+      activeUser.avatar = avatarUrl;
+      if (admin) {
+        this.setAdminAuth(activeUser);
+      } else {
+        this.setClientAuth(activeUser);
+        // Also update local cached directory
+        const clients = this.getClientUsers();
+        const match = clients.find(c => c.email === activeUser.email || c.id === activeUser.id);
+        if (match) {
+          match.avatar = avatarUrl;
+          setItem(KEYS.CLIENT_USERS, clients);
+        }
+      }
+
+      // Sync to Supabase profiles table
+      if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        try {
+          await TourismHubSupabase.updateUserProfileAvatar(
+            activeUser.id || activeUser.email,
+            avatarUrl
+          );
+        } catch (e) {
+          console.warn('[Store] Supabase avatar sync error:', e);
+        }
+      }
+
+      // Broadcast update event so all open pages & tabs refresh their avatars immediately
+      window.dispatchEvent(new CustomEvent('tourismhub:avatarUpdated', { detail: { avatar: avatarUrl, user: activeUser } }));
+      window.dispatchEvent(new CustomEvent('tourismhub:sync', { detail: { type: 'avatar', user: activeUser } }));
+
+      return { success: true, avatar: avatarUrl };
+    },
+
     // =========================================================================
     // FAVORITES / WISHLIST MANAGEMENT
     // =========================================================================

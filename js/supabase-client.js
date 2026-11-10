@@ -247,6 +247,44 @@
       }
     },
 
+    /**
+     * Update user avatar in Supabase `profiles` table (and Storage if available)
+     */
+    async updateUserProfileAvatar(emailOrId, avatarUrl) {
+      if (!supabaseClient) {
+        return { success: false, message: 'Database client not connected.' };
+      }
+      try {
+        const cleanIdent = String(emailOrId || '').trim().toLowerCase();
+        let query = supabaseClient.from('profiles').select('id, email');
+        if (cleanIdent.includes('@')) {
+          query = query.eq('email', cleanIdent);
+        } else {
+          query = query.eq('id', cleanIdent);
+        }
+        const { data, error } = await query.single();
+        if (error || !data) {
+          return { success: false, message: 'User profile not found in Supabase directory.' };
+        }
+
+        const { error: updateError } = await supabaseClient
+          .from('profiles')
+          .update({
+            avatar: avatarUrl,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', data.id);
+
+        if (updateError) throw updateError;
+
+        console.log('⚡ [Supabase] Avatar successfully updated in profiles table for:', data.email);
+        return { success: true, avatar: avatarUrl };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] updateUserProfileAvatar error:', err.message);
+        return { success: false, message: err.message || 'Failed to update avatar in database.' };
+      }
+    },
+
     // =========================================================================
     // CATALOG & ATTRACTIONS DATA (Supabase Sync)
     // =========================================================================
