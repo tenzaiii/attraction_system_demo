@@ -137,7 +137,12 @@
       const catalog = TourismHubStore.getCatalog();
       const capacityData = TourismHubStore.getCapacityData();
 
-      tbody.innerHTML = catalog.map(item => {
+      // Get sort and filter state if present
+      const sortSelect = document.getElementById('capacitySortSelect');
+      const sortCriterion = sortSelect ? sortSelect.value : 'default';
+
+      // Transform into display items with calculated values
+      let items = catalog.map(item => {
         const slots = capacityData[item.id] || [];
         let cap = item.capacityPerSlot || 100;
         let booked = 0;
@@ -155,8 +160,39 @@
         const typeBadge = isEvent ? 'purple' : 'blue';
         const typeLabel = isEvent ? 'Event' : 'Attraction';
 
+        return {
+          ...item,
+          computedCap: cap,
+          computedBooked: booked,
+          computedAvailable: available,
+          isFull: isFull,
+          statusClass: statusClass,
+          statusLabel: statusLabel,
+          typeBadge: typeBadge,
+          typeLabel: typeLabel
+        };
+      });
+
+      // Apply Sort
+      if (sortCriterion === 'name-asc') {
+        items.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+      } else if (sortCriterion === 'name-desc') {
+        items.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+      } else if (sortCriterion === 'capacity-desc') {
+        items.sort((a, b) => b.computedCap - a.computedCap);
+      } else if (sortCriterion === 'capacity-asc') {
+        items.sort((a, b) => a.computedCap - b.computedCap);
+      } else if (sortCriterion === 'booked-desc') {
+        items.sort((a, b) => b.computedBooked - a.computedBooked);
+      } else if (sortCriterion === 'available-desc') {
+        items.sort((a, b) => b.computedAvailable - a.computedAvailable);
+      } else if (sortCriterion === 'status-full') {
+        items.sort((a, b) => (b.isFull ? 1 : 0) - (a.isFull ? 1 : 0));
+      }
+
+      tbody.innerHTML = items.map(item => {
         return `
-          <tr data-type="${item.type || 'attraction'}">
+          <tr data-type="${item.type || 'attraction'}" data-name="${(item.title || '').toLowerCase()}" data-cap="${item.computedCap}" data-booked="${item.computedBooked}" data-avail="${item.computedAvailable}" data-status="${item.statusLabel.toLowerCase()}">
             <td>
               <div class="attraction-cell-content">
                 <img src="${item.image || 'assets/hero-banner.jpg'}" alt="${item.title}" class="attraction-cell-thumb" onerror="this.src='assets/hero-banner.jpg'">
@@ -173,15 +209,20 @@
                 </div>
               </div>
             </td>
-            <td><span class="portal-pill-badge ${typeBadge}">${typeLabel}</span></td>
-            <td><strong>${cap}</strong></td>
-            <td>${booked}</td>
-            <td><span class="${available > 0 ? 'avail-count-green' : 'avail-count-red'}">${available}</span></td>
-            <td><span class="portal-pill-badge ${statusClass}">${statusLabel}</span></td>
-            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${cap}, ${booked}, ${available}, '${statusLabel}')">View</button></td>
+            <td><span class="portal-pill-badge ${item.typeBadge}">${item.typeLabel}</span></td>
+            <td><strong>${item.computedCap}</strong></td>
+            <td>${item.computedBooked}</td>
+            <td><span class="${item.computedAvailable > 0 ? 'avail-count-green' : 'avail-count-red'}">${item.computedAvailable}</span></td>
+            <td><span class="portal-pill-badge ${item.statusClass}">${item.statusLabel}</span></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${item.computedCap}, ${item.computedBooked}, ${item.computedAvailable}, '${item.statusLabel}')">View</button></td>
           </tr>
         `;
       }).join('');
+
+      // Run filter after re-rendering table rows
+      if (typeof window.filterCapacityTable === 'function') {
+        window.filterCapacityTable();
+      }
     }
 
     // --- 4. Announcements & Notifications Page (notifications.html) ---
