@@ -446,7 +446,7 @@
     };
 
     // --- 9. Role-Based Feature Visibility & User Profile Synchronization ---
-    function checkAdminFeaturesVisibility() {
+    function updatePortalAuthUI() {
       const adminAuth = (window.TourismHubStore && typeof TourismHubStore.getAdminAuth === 'function')
         ? TourismHubStore.getAdminAuth()
         : null;
@@ -484,7 +484,10 @@
         if (isAdminLoggedIn) {
           if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
           if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
-          if (imgEl && adminAuth.avatar) imgEl.src = adminAuth.avatar;
+          const avatarUrl = (window.TourismHubStore && TourismHubStore.getUserAvatar)
+            ? TourismHubStore.getUserAvatar(adminAuth)
+            : (adminAuth.avatar || '');
+          if (imgEl) imgEl.src = avatarUrl;
           widget.onclick = function(e) { 
             location.href = 'profile.html';
           };
@@ -492,7 +495,10 @@
         } else if (isClientLoggedIn) {
           if (nameEl) nameEl.textContent = clientAuth.name || 'Tourist';
           if (roleEl) roleEl.textContent = clientAuth.badge || 'Verified Tourist';
-          if (imgEl && clientAuth.avatar) imgEl.src = clientAuth.avatar;
+          const avatarUrl = (window.TourismHubStore && TourismHubStore.getUserAvatar)
+            ? TourismHubStore.getUserAvatar(clientAuth)
+            : (clientAuth.avatar || '');
+          if (imgEl) imgEl.src = avatarUrl;
           widget.onclick = function(e) { 
             location.href = 'profile.html';
           };
@@ -500,7 +506,10 @@
         } else {
           if (nameEl) nameEl.textContent = 'Tourist Portal';
           if (roleEl) roleEl.textContent = 'Sign In / Register';
-          if (imgEl) imgEl.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
+          const defaultInitials = (window.TourismHubStore && TourismHubStore.generateInitialsAvatar)
+            ? TourismHubStore.generateInitialsAvatar('Tourist Guest')
+            : '';
+          if (imgEl) imgEl.src = defaultInitials;
           widget.onclick = function(e) {
             location.href = 'login.html';
           };
@@ -508,6 +517,8 @@
         }
       });
     }
+
+    const checkAdminFeaturesVisibility = updatePortalAuthUI;
 
     // Interactive favorite toggle for portal cards
     window.togglePortalFavorite = function(id, title, btn, evt) {
@@ -539,6 +550,7 @@
 
     // Master render caller
     function refreshCurrentPage() {
+      updatePortalAuthUI();
       checkAdminFeaturesVisibility();
       updateNotifBadges();
       syncAttractionsPage();
@@ -549,6 +561,11 @@
 
     // Initial sync
     refreshCurrentPage();
+
+    // Listen for live avatar updates and multi-tab synchronization
+    window.addEventListener('tourismhub:avatarUpdated', () => {
+      updatePortalAuthUI();
+    });
 
     // Listen for cross-tab and cross-page real-time sync from admin control
     TourismHubStore.onSync((key) => {
@@ -567,4 +584,9 @@
   } else {
     initPortalSync();
   }
+
+  // Fallback trigger to ensure auth UI is populated once all sibling scripts finish executing
+  window.addEventListener('load', () => {
+    initPortalSync();
+  });
 })();

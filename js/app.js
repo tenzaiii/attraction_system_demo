@@ -808,19 +808,27 @@ document.addEventListener('DOMContentLoaded', () => {
         authLink.style.display = 'none';
       }
 
-      // 2. Configure Profile Button with Avatar
-      if (navAvatar && activeUser.avatar) {
-        navAvatar.src = activeUser.avatar;
+      // 2. Configure Profile Button with Avatar & Name
+      if (navAvatar) {
+        navAvatar.src = (window.TourismHubStore && TourismHubStore.getUserAvatar)
+          ? TourismHubStore.getUserAvatar(activeUser)
+          : (activeUser.avatar || '');
       }
       if (profileBtn) {
         profileBtn.title = `Profile: ${activeUser.name} (Click for Passes & Options)`;
         profileBtn.style.cursor = 'pointer';
         profileBtn.onclick = function(e) { window.navigateToProfilePage(e); };
-      }
-      const userNameEl = profileBtn ? profileBtn.querySelector('.portal-user-name') : null;
-      if (userNameEl) {
-        userNameEl.style.cursor = 'pointer';
-        userNameEl.onclick = function(e) { window.navigateToProfilePage(e); };
+
+        const userNameEl = profileBtn.querySelector('.portal-user-name');
+        const userRoleEl = profileBtn.querySelector('.portal-user-role');
+        if (userNameEl) {
+          userNameEl.textContent = activeUser.name || 'Tourist';
+          userNameEl.style.cursor = 'pointer';
+          userNameEl.onclick = function(e) { window.navigateToProfilePage(e); };
+        }
+        if (userRoleEl) {
+          userRoleEl.textContent = activeUser.badge || (adminAuth ? 'Chief Operator' : 'Verified Member');
+        }
       }
     } else {
       // Show Sign In button when not signed in
@@ -830,17 +838,25 @@ document.addEventListener('DOMContentLoaded', () => {
         authLink.href = 'login.html';
       }
       if (navAvatar) {
-        navAvatar.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
+        navAvatar.src = (window.TourismHubStore && TourismHubStore.generateInitialsAvatar)
+          ? TourismHubStore.generateInitialsAvatar('Tourist Guest')
+          : '';
       }
       if (profileBtn) {
         profileBtn.title = 'Sign In to TourismHub';
         profileBtn.style.cursor = 'pointer';
         profileBtn.onclick = function(e) { window.navigateToProfilePage(e); };
-      }
-      const userNameEl = profileBtn ? profileBtn.querySelector('.portal-user-name') : null;
-      if (userNameEl) {
-        userNameEl.style.cursor = 'pointer';
-        userNameEl.onclick = function(e) { window.navigateToProfilePage(e); };
+
+        const userNameEl = profileBtn.querySelector('.portal-user-name');
+        const userRoleEl = profileBtn.querySelector('.portal-user-role');
+        if (userNameEl) {
+          userNameEl.textContent = 'Tourist Portal';
+          userNameEl.style.cursor = 'pointer';
+          userNameEl.onclick = function(e) { window.navigateToProfilePage(e); };
+        }
+        if (userRoleEl) {
+          userRoleEl.textContent = 'Sign In / Register';
+        }
       }
     }
   }
@@ -870,6 +886,11 @@ document.addEventListener('DOMContentLoaded', () => {
     syncUserProfileHeader();
     renderAttractions();
     renderNotifications();
+  });
+
+  // Listen for avatar updates
+  window.addEventListener('tourismhub:avatarUpdated', () => {
+    syncUserProfileHeader();
   });
 
   // --- 15. Initial Render ---

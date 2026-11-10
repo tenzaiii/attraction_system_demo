@@ -368,8 +368,8 @@
 
       <div class="user-profile-wrapper">
         <div class="portal-user-profile" id="userProfileBtn" title="My Profile & Options">
-          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
-            alt="User Avatar" class="portal-avatar-img" id="topAvatar">
+          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
+            alt="User Avatar" class="portal-avatar-img" id="topAvatar" style="background: var(--bg-subtle);">
           <div class="portal-user-meta">
             <span class="portal-user-name" id="topUserName">Tourist User</span>
             <span class="portal-user-role" id="topUserRole">Verified Tourist</span>
@@ -515,8 +515,8 @@
       <div class="profile-hero-card">
         <div class="profile-user-left">
           <div class="profile-avatar-container">
-            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
-              alt="Profile Avatar" class="profile-avatar-large" id="heroAvatar">
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
+              alt="Profile Avatar" class="profile-avatar-large" id="heroAvatar" style="background: var(--bg-subtle);">
             <label for="profilePhotoInput" class="avatar-upload-badge" title="Upload & Crop Profile Photo (Max 5MB)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -529,7 +529,7 @@
             <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
               <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem;" id="heroName">Maria Santos</h1>
               <button type="button" id="btnResetInitials" onclick="resetToInitialsAvatar()" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); cursor: pointer; font-weight: 600;" title="Reset profile photo to name initials">
-                Use Name Initials
+                Reset Photo
               </button>
             </div>
             <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;" id="heroEmail">maria.santos@email.com</div>
@@ -945,10 +945,9 @@
       }
 
       // Check for user avatar or use First & Last Name Initials icon by default
-      const initialsAvatar = TourismHubStore.generateInitialsAvatar ? TourismHubStore.generateInitialsAvatar(user.name) : '';
-      const avatarSrc = (user.avatar && !user.avatar.includes('photo-1544005313') && !user.avatar.includes('photo-153571387'))
-        ? user.avatar
-        : (user.avatar || initialsAvatar);
+      const avatarSrc = (window.TourismHubStore && TourismHubStore.getUserAvatar)
+        ? TourismHubStore.getUserAvatar(user)
+        : (user.avatar || '');
 
       document.getElementById('topAvatar').src = avatarSrc;
       document.getElementById('heroAvatar').src = avatarSrc;

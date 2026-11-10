@@ -30,6 +30,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // Sync admin theme button icons
   updateAdminThemeUI(document.documentElement.getAttribute('data-theme') === 'dark');
 
+  // Sync admin sidebar profile avatar & name
+  function syncAdminSidebarUser() {
+    if (!window.TourismHubStore) return;
+    const admin = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
+    if (!admin) return;
+    const avatarEl = document.getElementById('adminSidebarAvatar');
+    const nameEl = document.getElementById('adminSidebarName');
+    const roleEl = document.getElementById('adminSidebarRole');
+    if (nameEl) nameEl.textContent = admin.name || 'Operator';
+    if (roleEl) roleEl.textContent = admin.role || admin.badge || 'Head of Tourism Ops';
+    if (avatarEl) {
+      avatarEl.src = TourismHubStore.getUserAvatar
+        ? TourismHubStore.getUserAvatar(admin)
+        : (admin.avatar || '');
+    }
+  }
+  syncAdminSidebarUser();
+  window.addEventListener('tourismhub:avatarUpdated', syncAdminSidebarUser);
+  window.addEventListener('tourismhub:sync', syncAdminSidebarUser);
+
   // ==========================================================================
   //  1. Central Data Store
   // ==========================================================================

@@ -112,12 +112,9 @@
     }
 
     if (user) {
-      let avatarUrl = user.avatar;
-      if (!avatarUrl || avatarUrl.includes('photo-1544005313') || avatarUrl.includes('photo-153571387')) {
-        avatarUrl = (window.TourismHubStore && TourismHubStore.generateInitialsAvatar)
-          ? TourismHubStore.generateInitialsAvatar(user.name)
-          : (user.avatar || 'assets/hero-banner.jpg');
-      }
+      const avatarUrl = (window.TourismHubStore && TourismHubStore.getUserAvatar)
+        ? TourismHubStore.getUserAvatar(user)
+        : (user.avatar || '');
       const name = user.name || (isAdmin ? 'Operator' : 'Tourist');
       const email = user.email || '';
       const badge = isAdmin ? (user.role || 'Admin Clearance') : (user.badge || 'Verified Tourist');
@@ -178,9 +175,12 @@
       `;
     } else {
       // Guest Visitor Dropdown
+      const guestAvatar = (window.TourismHubStore && TourismHubStore.generateInitialsAvatar)
+        ? TourismHubStore.generateInitialsAvatar('Guest Visitor')
+        : '';
       dropdown.innerHTML = `
         <div class="dropdown-header">
-          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="Guest" class="dropdown-avatar">
+          <img src="${guestAvatar}" alt="Guest" class="dropdown-avatar">
           <div class="dropdown-user-info">
             <div class="dropdown-user-name">Welcome, Visitor</div>
             <div class="dropdown-user-email">Guest Session</div>

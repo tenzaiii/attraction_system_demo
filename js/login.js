@@ -205,10 +205,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
 
     if (adminAuth) {
+      const adminAvatar = TourismHubStore.getUserAvatar
+        ? TourismHubStore.getUserAvatar(adminAuth)
+        : (adminAuth.avatar || '');
       activeBar.innerHTML = `
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: #f0f9ff; border: 1.5px solid #7dd3fc; border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1.25rem;">
           <div style="display: flex; align-items: center; gap: 0.6rem;">
-            <img src="${adminAuth.avatar || 'assets/hero-banner.jpg'}" alt="${adminAuth.name}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #0284c7;">
+            <img src="${adminAvatar}" alt="${adminAuth.name}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #0284c7;">
             <div style="font-size: 0.82rem; color: #0369a1; line-height: 1.3;">
               <strong>${adminAuth.name}</strong> <span style="font-size: 0.7rem; background: #0284c7; color: #fff; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700; margin-left: 0.3rem;">ADMIN CLEARANCE</span><br>
               <span style="font-size: 0.74rem; color: #0284c7;">${adminAuth.role || 'Operator'} • ${adminAuth.email}</span>
@@ -221,10 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     } else if (clientAuth) {
+      const clientAvatar = TourismHubStore.getUserAvatar
+        ? TourismHubStore.getUserAvatar(clientAuth)
+        : (clientAuth.avatar || '');
       activeBar.innerHTML = `
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1.25rem;">
           <div style="display: flex; align-items: center; gap: 0.6rem;">
-            <img src="${clientAuth.avatar || 'assets/hero-banner.jpg'}" alt="${clientAuth.name}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #10b981;">
+            <img src="${clientAvatar}" alt="${clientAuth.name}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #10b981;">
             <div style="font-size: 0.82rem; color: #166534; line-height: 1.3;">
               <strong>${clientAuth.name}</strong> <span style="font-size: 0.7rem; background: #10b981; color: #fff; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700; margin-left: 0.3rem;">TOURIST ACCOUNT</span><br>
               <span style="font-size: 0.74rem; color: #15803d;">${clientAuth.email}</span>
@@ -237,6 +243,17 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     }
+  }
+
+  // Populate quick demo card avatars dynamically using non-bold initials
+  if (window.TourismHubStore && TourismHubStore.generateInitialsAvatar) {
+    document.querySelectorAll('.quick-account-card').forEach(card => {
+      const nameEl = card.querySelector('.quick-user-name');
+      const avatarEl = card.querySelector('.quick-user-avatar');
+      if (nameEl && avatarEl) {
+        avatarEl.src = TourismHubStore.generateInitialsAvatar(nameEl.textContent.trim());
+      }
+    });
   }
 
   // Attach submit listeners

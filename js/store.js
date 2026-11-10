@@ -14,7 +14,7 @@
     FAVORITES: 'tourismhub_temp_favorites_v1'
   };
 
-  // Default Seed Admin & Operator Accounts
+  // Default Seed Admin & Operator Accounts (Mock profile photos removed, defaults to null / initials)
   const DEFAULT_ADMIN_USERS = [
     {
       id: 'admin-001',
@@ -25,7 +25,7 @@
       roleKey: 'admin',
       department: 'Department of Tourism • National Operations',
       badge: 'Chief Operator',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+      avatar: null,
       terminal: 'MNL-HQ-01'
     },
     {
@@ -37,12 +37,12 @@
       roleKey: 'officer',
       department: 'Luneta & Intramuros Entry Stations',
       badge: 'Field Security',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+      avatar: null,
       terminal: 'GATE-01'
     }
   ];
 
-  // Default Seed Client / Tourist Accounts
+  // Default Seed Client / Tourist Accounts (Mock profile photos removed, defaults to null / initials)
   const DEFAULT_CLIENT_USERS = [
     {
       id: 'client-001',
@@ -52,7 +52,7 @@
       country: 'Philippines',
       phone: '+63 917 555 0192',
       badge: 'Verified Resident Tourist',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80'
+      avatar: null
     },
     {
       id: 'client-002',
@@ -62,7 +62,7 @@
       country: 'Singapore',
       phone: '+65 9123 4567',
       badge: 'International Explorer',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+      avatar: null
     }
   ];
 
@@ -332,7 +332,28 @@
     }
   }
 
-  // Initialize store if keys don't exist
+  // Initialize store and purge legacy mock unsplash avatars from localStorage
+  try {
+    [KEYS.ADMIN_AUTH, KEYS.CLIENT_AUTH].forEach(k => {
+      const auth = getItem(k, null);
+      if (auth && auth.avatar && (auth.avatar.includes('unsplash.com') || auth.avatar.includes('photo-15'))) {
+        auth.avatar = null;
+        localStorage.setItem(k, JSON.stringify(auth));
+      }
+    });
+    const clientUsers = getItem(KEYS.CLIENT_USERS, null);
+    if (clientUsers && Array.isArray(clientUsers)) {
+      let modified = false;
+      clientUsers.forEach(u => {
+        if (u.avatar && (u.avatar.includes('unsplash.com') || u.avatar.includes('photo-15'))) {
+          u.avatar = null;
+          modified = true;
+        }
+      });
+      if (modified) localStorage.setItem(KEYS.CLIENT_USERS, JSON.stringify(clientUsers));
+    }
+  } catch (e) {}
+
   if (!localStorage.getItem(KEYS.CATALOG)) {
     setItem(KEYS.CATALOG, DEFAULT_CATALOG);
   }
@@ -835,7 +856,7 @@
         initials = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
       }
 
-      // Generate SVG data URI
+      // Generate SVG data URI with non-bold, regular font weight
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
         <defs>
           <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -844,9 +865,24 @@
           </linearGradient>
         </defs>
         <rect width="128" height="128" rx="64" fill="url(#grad)"/>
-        <text x="64" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="46" font-weight="800" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">${initials}</text>
+        <text x="64" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="44" font-weight="500" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" letter-spacing="1">${initials}</text>
       </svg>`;
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    },
+
+    /**
+     * Resolve profile avatar for a user object: returns uploaded photo or non-bold initials icon
+     */
+    getUserAvatar(user) {
+      if (!user) {
+        return this.generateInitialsAvatar('User');
+      }
+      const raw = user.avatar;
+      // If no avatar, or contains legacy mock unsplash URLs, return generated initials icon
+      if (!raw || typeof raw !== 'string' || raw.includes('unsplash.com') || raw.includes('photo-15')) {
+        return this.generateInitialsAvatar(user.name);
+      }
+      return raw;
     },
 
     /**
