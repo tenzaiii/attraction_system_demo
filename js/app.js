@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rating: '4.8',
         reviews: '1.2k',
         price: 15,
-        priceLabel: 'Free / Guided $15',
+        priceLabel: 'Free / Guided ₱15',
         image: 'assets/rizal-monument.jpg',
         badge: 'Iconic Landmark',
         description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines.'
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rating: '4.7',
         reviews: '980',
         price: 25,
-        priceLabel: 'Day Pass $25',
+        priceLabel: 'Day Pass ₱25',
         image: 'assets/white-beach.jpg',
         badge: 'Tropical Haven',
         description: 'Pristine powdery white sand, azure waters, and vibrant island activities with legendary sunsets.'
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rating: '4.9',
         reviews: '850',
         price: 35,
-        priceLabel: 'Event Access $35',
+        priceLabel: 'Event Access ₱35',
         image: 'assets/pahiyas-festival.jpg',
         badge: 'Annual Celebration',
         description: 'A colorful harvest festival in Lucban featuring houses decorated with vibrant kiping rice wafers and fruits.'
@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin: 0;">${attraction || 'Digital Tourist Pass'}</h3>
             <button onclick="document.getElementById('globalQrZoomModal')?.remove()" class="modal-close" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-muted);">&times;</button>
           </div>
-          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.15rem;">Scan at any attraction turnstile or save image</p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.15rem;">Scan at any attraction express gate or save image</p>
           <div style="background: #ffffff; padding: 16px; border-radius: 14px; border: 2px solid #e2e8f0; display: inline-block; margin-bottom: 1rem;">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=340x340&margin=12&data=${encodeURIComponent(code)}" alt="QR ${code}" width="230" height="230" style="display: block;" />
           </div>
@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (modalTitle) modalTitle.textContent = `Reserve Pass: ${attraction.title}`;
     if (modalImg) modalImg.src = attraction.image || 'assets/hero-banner.jpg';
-    if (modalPrice) modalPrice.textContent = `$${attraction.price || 20}`;
+    if (modalPrice) modalPrice.textContent = `₱${attraction.price || 20}`;
     if (bookingAttractionInput) bookingAttractionInput.value = attraction.id;
 
     recalcTotal();
@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const count = parseInt(visitorCountInput.value, 10) || 1;
     const unitPrice = attraction.price || 20;
     const total = unitPrice * count;
-    totalPriceDisplay.textContent = `$${total}`;
+    totalPriceDisplay.textContent = `₱${total}`;
   }
 
   if (visitorCountInput) {
@@ -554,7 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
           slot: '09:00 AM - 12:00 PM',
           passType: 'Standard Tourist Pass',
           status: 'valid',
-          amount: `$${(attraction.price || 20) * count}.00`,
+          amount: `₱${(attraction.price || 20) * count}.00`,
           validDate: visitDate
         });
       }
@@ -630,28 +630,17 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Settings & preferences opened.');
   };
 
-  // --- 13. Profile Dropdown & User Profile Header Synchronization ---
+  // --- 13. Profile Navigation & User Profile Header Synchronization ---
   window.toggleProfileDropdown = function (event) {
     if (event) event.stopPropagation();
-    const dropdown = document.getElementById('userProfileDropdown');
-    if (!dropdown) return;
-
     const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
     const adminAuth = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
 
-    // If not signed in at all, clicking profile sends to login
     if (!clientAuth && !adminAuth) {
-      window.location.href = 'login.html';
+      window.location.href = 'login.html?redirect=profile.html';
       return;
     }
-
-    const isActive = dropdown.classList.contains('active');
-    if (isActive) {
-      dropdown.classList.remove('active');
-    } else {
-      renderProfileDropdownContent();
-      dropdown.classList.add('active');
-    }
+    window.location.href = 'profile.html';
   };
 
   window.switchDropdownTab = function (tabName) {
@@ -795,7 +784,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function syncUserProfileHeader() {
     const profileBtn = document.getElementById('userProfileBtn');
-    const navAvatar = document.getElementById('userNavAvatar');
+    const navAvatar = document.getElementById('userNavAvatar') || profileBtn?.querySelector('.portal-avatar-img');
+    const navName = profileBtn?.querySelector('.portal-user-name');
+    const navRole = profileBtn?.querySelector('.portal-user-role');
     const authLink = document.getElementById('navSignInLink');
     if (!window.TourismHubStore) return;
 
@@ -809,13 +800,22 @@ document.addEventListener('DOMContentLoaded', () => {
         authLink.style.display = 'none';
       }
 
-      // 2. Configure Profile Button with Avatar
-      if (navAvatar && activeUser.avatar) {
-        navAvatar.src = activeUser.avatar;
+      // 2. Configure Profile Button with Avatar & Name
+      if (navAvatar) {
+        navAvatar.src = typeof TourismHubStore.getUserAvatar === 'function'
+          ? TourismHubStore.getUserAvatar(activeUser)
+          : (activeUser.avatar || '');
+      }
+      if (navName) {
+        navName.textContent = activeUser.name || (adminAuth ? 'Operator' : 'Tourist');
+      }
+      if (navRole) {
+        navRole.textContent = adminAuth ? (activeUser.role || 'Admin Clearance') : (activeUser.badge || 'Verified Tourist');
       }
       if (profileBtn) {
         profileBtn.style.display = 'flex';
-        profileBtn.title = `Profile: ${activeUser.name} (Click for Passes & Options)`;
+        profileBtn.style.cursor = 'pointer';
+        profileBtn.title = `Profile: ${activeUser.name} (Go to Profile)`;
       }
     } else {
       // Show Sign In button when not signed in
@@ -830,6 +830,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+
+  // --- 13B. Interactive FAQ Accordion ---
+  function initFaqAccordion() {
+    const faqButtons = document.querySelectorAll('.faq-question-btn');
+    faqButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const item = btn.closest('.faq-item');
+        if (!item) return;
+        const isOpen = item.classList.contains('active');
+
+        document.querySelectorAll('.faq-item').forEach(otherItem => {
+          otherItem.classList.remove('active');
+          const otherBtn = otherItem.querySelector('.faq-question-btn');
+          if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+        });
+
+        if (!isOpen) {
+          item.classList.add('active');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  }
+  initFaqAccordion();
 
   // --- 14. Real-Time Cross-Tab Synchronization Listener ---
   if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {

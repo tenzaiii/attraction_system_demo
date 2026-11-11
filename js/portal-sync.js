@@ -288,7 +288,7 @@
                 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
                   <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Active Passes</span>
                   <div style="font-size: 1.6rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">${passes.length}</div>
-                  <span style="font-size: 0.75rem; color: #64748b;">99.8% Turnstile Rate</span>
+                  <span style="font-size: 0.75rem; color: #64748b;">99.8% Digital Gate Rate</span>
                 </div>
               </div>
               <h4 style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 0.75rem;">Hourly Occupancy Curve</h4>
@@ -322,19 +322,10 @@
               </div>
               <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
                 <div>
-                  <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 0.4rem;">Display Currency</label>
-                  <select id="settingCurrency" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 8px;">
-                    <option value="PHP">Philippine Peso (₱ / PHP)</option>
-                    <option value="USD" selected>US Dollar ($ / USD)</option>
-                    <option value="SGD">Singapore Dollar (S$ / SGD)</option>
-                    <option value="EUR">Euro (€ / EUR)</option>
-                  </select>
-                </div>
-                <div>
                   <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 0.4rem;">Audio Chimes on Pass Scan</label>
                   <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: #475569; cursor: pointer;">
                     <input type="checkbox" id="settingSound" checked>
-                    <span>Play acoustic confirmation chime on turnstile entry</span>
+                    <span>Play acoustic confirmation chime on gate entry</span>
                   </label>
                 </div>
                 <div>
@@ -447,27 +438,37 @@
           widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
           if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
-          if (imgEl && adminAuth.avatar) imgEl.src = adminAuth.avatar;
+          if (imgEl && window.TourismHubStore && typeof TourismHubStore.getUserAvatar === 'function') {
+            imgEl.src = TourismHubStore.getUserAvatar(adminAuth);
+          } else if (imgEl && adminAuth.avatar) {
+            imgEl.src = adminAuth.avatar;
+          }
           widget.onclick = function (e) {
-            if (window.toggleProfileDropdown) {
-              window.toggleProfileDropdown(e, widget);
+            if (window.navigateToProfilePage) {
+              window.navigateToProfilePage(e);
             } else {
-              location.href = 'admin.html';
+              location.href = 'profile.html';
             }
           };
-          widget.title = 'Operator: ' + adminAuth.name + ' (Click for Menu)';
+          widget.title = 'Operator: ' + adminAuth.name + ' (Go to Profile)';
         } else if (isClientLoggedIn) {
           widget.style.display = 'flex';
           widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = clientAuth.name || 'Tourist';
           if (roleEl) roleEl.textContent = clientAuth.badge || 'Verified Tourist';
-          if (imgEl && clientAuth.avatar) imgEl.src = clientAuth.avatar;
+          if (imgEl && window.TourismHubStore && typeof TourismHubStore.getUserAvatar === 'function') {
+            imgEl.src = TourismHubStore.getUserAvatar(clientAuth);
+          } else if (imgEl && clientAuth.avatar) {
+            imgEl.src = clientAuth.avatar;
+          }
           widget.onclick = function (e) {
-            if (window.toggleProfileDropdown) {
-              window.toggleProfileDropdown(e, widget);
+            if (window.navigateToProfilePage) {
+              window.navigateToProfilePage(e);
+            } else {
+              location.href = 'profile.html';
             }
           };
-          widget.title = 'Logged in as ' + clientAuth.name + ' (Click for Menu)';
+          widget.title = 'Logged in as ' + clientAuth.name + ' (Go to Profile)';
         } else {
           // Hide tourist name and profile icon completely when exploring as guest
           widget.style.display = 'none';
@@ -521,9 +522,12 @@
       refreshCurrentPage();
     });
 
-    // Listen for live Supabase sync
+    // Listen for live Supabase sync and avatar updates
     window.addEventListener('supabaseSyncComplete', () => {
       refreshCurrentPage();
+    });
+    window.addEventListener('tourismhub:avatarUpdated', () => {
+      checkAdminFeaturesVisibility();
     });
   }
 

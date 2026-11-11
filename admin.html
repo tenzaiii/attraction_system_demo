@@ -116,8 +116,8 @@
 
       <!-- Sidebar Footer User Profile -->
       <div class="sidebar-footer">
-        <div class="user-snippet">
-          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80"
+        <div class="user-snippet" onclick="window.location.href='profile.html'" style="cursor: pointer;" title="View Profile">
+          <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='40' fill='%230284c7'/%3E%3Ctext x='50%25' y='52%25' dominant-baseline='middle' text-anchor='middle' font-family='Plus Jakarta Sans,Inter,sans-serif' font-size='28' font-weight='400' fill='%23ffffff'%3EJR%3C/text%3E%3C/svg%3E"
             alt="Administrator Profile" class="user-avatar">
           <div class="user-info">
             <div class="user-name">Juan Miguel Repas</div>
@@ -166,7 +166,7 @@
           <!-- System Status Pill -->
           <div class="header-status-pill">
             <span class="status-dot-pulse"></span>
-            <span>Turnstiles & Cloud Sync Active</span>
+            <span>Digital Gates & Cloud Sync Active</span>
           </div>
 
           <!-- Dark / Light Mode Toggle Button -->
@@ -255,7 +255,7 @@
               </div>
               <div class="kpi-value" id="kpiPassesScanned">504 pax</div>
               <div class="kpi-subtext">
-                <span class="kpi-trend-positive">✓ Direct turnstile</span> verification
+                <span class="kpi-trend-positive">✓ Direct gate</span> verification
               </div>
             </div>
 
@@ -463,7 +463,7 @@
           <div class="section-heading-row">
             <div class="section-title-wrap">
               <h2>QR Tourist Pass Scanning & Verification</h2>
-              <p>Simulate turnstile scanner or manually verify encrypted visitor passes at the gate.</p>
+              <p>Simulate gate scanner or manually verify encrypted visitor passes at the entrance.</p>
             </div>
           </div>
 
@@ -530,7 +530,7 @@
               <!-- Recent Scans Table -->
               <div class="recent-scans-box">
                 <div class="recent-scans-header">
-                  <h3>Recent Turnstile Entry Log</h3>
+                  <h3>Recent Gate Entry Log</h3>
                   <span style="font-size: 0.75rem; color: var(--text-muted);">Real-time Entry Transactions</span>
                 </div>
                 <table class="scans-table">
@@ -782,7 +782,7 @@
           <div class="form-row-2">
             <div class="form-group">
               <label for="attrFormPrice">Admission / Pass Label *</label>
-              <input type="text" id="attrFormPrice" class="form-control" placeholder="e.g. Heritage Pass $15" required>
+              <input type="text" id="attrFormPrice" class="form-control" placeholder="e.g. Heritage Pass ₱15" required>
             </div>
             <div class="form-group">
               <label for="attrFormCapacity">Capacity Cap Per Time-Slot *</label>

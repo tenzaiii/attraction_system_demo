@@ -111,6 +111,7 @@
         }
 
         const roleKey = profile.role_key || profile.role || 'tourist';
+        const rawAvatar = profile.avatar && !String(profile.avatar).includes('images.unsplash.com/photo-') ? profile.avatar : '';
         const sessionUser = {
           id: profile.id,
           name: profile.name,
@@ -121,7 +122,7 @@
           badge: profile.badge || (roleKey === 'admin' ? 'Chief Operator' : roleKey === 'officer' ? 'Field Security' : 'Verified Tourist'),
           country: profile.country || 'Philippines',
           phone: profile.phone || '',
-          avatar: profile.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
+          avatar: rawAvatar,
           terminal: profile.terminal || null,
           authenticatedAt: new Date().toISOString()
         };
@@ -166,7 +167,7 @@
           country: country || 'Philippines',
           phone: phone || '',
           badge: 'New Tourist Member',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
+          avatar: ''
         };
 
         const { data, error } = await supabaseClient
@@ -244,6 +245,48 @@
       }
     },
 
+    async updateUserPassword(emailOrId, currentPassword, newPassword) {
+      if (!supabaseClient) {
+        return { success: false, message: 'Database client is not connected.' };
+      }
+      try {
+        const identity = String(emailOrId || '').trim();
+        if (!identity) {
+          return { success: false, message: 'The signed-in profile could not be identified.' };
+        }
+
+        let query = supabaseClient.from('profiles').select('id, password_hash');
+        query = identity.includes('@')
+          ? query.ilike('email', identity.toLowerCase())
+          : query.eq('id', identity);
+        const { data: profile, error: lookupError } = await query.maybeSingle();
+        if (lookupError) throw lookupError;
+        if (!profile) {
+          return { success: false, notFound: true, message: 'The profile was not found in the database.' };
+        }
+
+        if (profile.password_hash !== currentPassword) {
+          return { success: false, message: 'Current password is incorrect.' };
+        }
+
+        const { data: updatedProfile, error: updateError } = await supabaseClient
+          .from('profiles')
+          .update({ password_hash: newPassword, updated_at: new Date().toISOString() })
+          .eq('id', profile.id)
+          .select('id')
+          .maybeSingle();
+        if (updateError) throw updateError;
+        if (!updatedProfile) {
+          return { success: false, message: 'The database did not update the password.' };
+        }
+
+        return { success: true };
+      } catch (error) {
+        console.error('[Supabase] Password update failed:', error);
+        return { success: false, message: error.message || 'Could not update password in database.' };
+      }
+    },
+
     // =========================================================================
     // CATALOG & ATTRACTIONS DATA (Supabase Sync)
     // =========================================================================
@@ -262,8 +305,8 @@
         rating: row.rating ? String(row.rating) : '4.8',
         reviews: row.reviews ? String(row.reviews) : '1.2k',
         price: row.price !== null && row.price !== undefined ? Number(row.price) : 20,
-        priceLabel: row.price_label || (row.price ? `$${row.price}` : 'Free'),
-        admission: row.admission || 'Standard Admission',
+        priceLabel: (row.price_label ? String(row.price_label).replace(/\$(\d+)/g, '₱$1') : null) || (row.price ? `₱${row.price}` : 'Free'),
+        admission: (row.admission ? String(row.admission).replace(/\$(\d+)/g, '₱$1') : 'Standard Admission'),
         operatingHours: row.operating_hours || '08:00 AM - 06:00 PM',
         capacityPerSlot: row.capacity_per_slot || 100,
         image: row.image || 'assets/hero-banner.jpg',
@@ -290,7 +333,7 @@
         rating: String(item.rating || '4.8'),
         reviews: String(item.reviews || '100'),
         price: priceVal,
-        price_label: item.priceLabel || item.price_label || (priceVal ? `$${priceVal}` : 'Free'),
+        price_label: item.priceLabel || item.price_label || (priceVal ? `₱${priceVal}` : 'Free'),
         admission: item.admission || 'Standard Admission',
         operating_hours: item.operatingHours || item.operating_hours || '08:00 AM - 06:00 PM',
         capacity_per_slot: Number(item.capacityPerSlot || item.capacity_per_slot || 100),
@@ -517,7 +560,7 @@
         date: row.pass_date || 'Today',
         slot: row.time_slot || '09:00 AM - 12:00 PM',
         passType: 'Standard Tourist Pass',
-        amount: `$${amtNum.toFixed(2)}`,
+        amount: `₱${amtNum.toFixed(2)}`,
         status: row.status || 'valid',
         checkedInAt: checkedInTime,
         scannedAt: row.scanned_at || null,
@@ -621,9 +664,9 @@
     },
 
     /**
-     * Update pass status in Supabase `passes` table when scanned at turnstile
+     * Update pass status in Supabase `passes` table when scanned at entrance gate
      */
-    async updatePassScanStatus(code, status, scannedBy = 'Turnstile Scanner') {
+    async updatePassScanStatus(code, status, scannedBy = 'Digital Gate Scanner') {
       if (!supabaseClient || !code) return null;
       try {
         const cleanCode = String(code).trim().toUpperCase();

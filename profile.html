@@ -22,38 +22,65 @@
   </script>
 
   <style>
-    .profile-tabs-nav {
+    .profile-workspace-layout {
       display: flex;
-      gap: 0.5rem;
-      border-bottom: 2px solid var(--border);
-      margin-bottom: 1.5rem;
-      overflow-x: auto;
+      align-items: flex-start;
+      gap: 1.75rem;
+    }
+
+    .profile-tabs-nav {
+      width: 260px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.75rem;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 88px;
+    }
+
+    [data-theme="dark"] .profile-tabs-nav {
+      background-color: #1e293b;
+      border-color: #334155;
     }
 
     .profile-tab-btn {
-      padding: 0.85rem 1.4rem;
+      width: 100%;
+      padding: 0.82rem 1rem;
       font-size: 0.92rem;
       font-weight: 700;
       color: var(--text-muted);
       border: none;
+      border-radius: 10px;
       background: transparent;
       cursor: pointer;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s;
+      justify-content: flex-start;
+      text-align: left;
+      gap: 0.65rem;
+      transition: all 0.2s ease;
       white-space: nowrap;
     }
 
     .profile-tab-btn:hover {
       color: var(--primary);
+      background: rgba(2, 132, 199, 0.08);
     }
 
     .profile-tab-btn.active {
       color: var(--primary);
-      border-bottom-color: var(--primary);
+      background: rgba(2, 132, 199, 0.14);
+    }
+
+    .profile-tabs-content {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
     }
 
     .profile-tab-pane {
@@ -62,6 +89,85 @@
 
     .profile-tab-pane.active {
       display: block;
+    }
+
+    @media (max-width: 860px) {
+      .profile-workspace-layout {
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      .profile-tabs-nav {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        position: static;
+        padding: 0.5rem;
+      }
+
+      .profile-tab-btn {
+        width: auto;
+        flex-shrink: 0;
+        padding: 0.65rem 1rem;
+      }
+    }
+
+    .security-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .security-input {
+      width: 100%;
+      padding: 0.72rem 2.75rem 0.72rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-page);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.92rem;
+    }
+
+    .security-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .security-pwd-toggle {
+      position: absolute;
+      right: 0.65rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .security-alert {
+      display: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .security-alert.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .security-alert.success {
+      display: block;
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.35);
     }
 
     .profile-hero-card {
@@ -330,8 +436,8 @@
       </a>
 
       <div class="user-profile-wrapper">
-        <div class="portal-user-profile" id="userProfileBtn" title="My Profile & Options">
-          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+        <div class="portal-user-profile" id="userProfileBtn" title="My Profile & Options" style="cursor: pointer;">
+          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'400'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
             alt="User Avatar" class="portal-avatar-img" id="topAvatar">
           <div class="portal-user-meta">
             <span class="portal-user-name" id="topUserName">Tourist User</span>
@@ -478,7 +584,7 @@
       <div class="profile-hero-card">
         <div class="profile-user-left">
           <div class="profile-avatar-container">
-            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'400'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
               alt="Profile Avatar" class="profile-avatar-large" id="heroAvatar">
             <label for="profilePhotoInput" class="avatar-upload-badge" title="Upload and crop profile photo (max 5 MB)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
@@ -517,124 +623,162 @@
         </div>
       </div>
 
-      <!-- Tab Navigation -->
-      <div class="profile-tabs-nav">
-        <button type="button" class="profile-tab-btn active" id="tabBtnPasses" onclick="switchProfileTab('passes')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
-          <span>My QR Passes (<span id="passTabCount">0</span>)</span>
-        </button>
-        <button type="button" class="profile-tab-btn" id="tabBtnFavorites" onclick="switchProfileTab('favorites')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-          <span>Saved Favorites (<span id="favTabCount">0</span>)</span>
-        </button>
-        <button type="button" class="profile-tab-btn" id="tabBtnSettings" onclick="switchProfileTab('settings')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span>Settings & Preferences</span>
-        </button>
-        <button type="button" class="profile-tab-btn" id="tabBtnAccount" onclick="switchProfileTab('account')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
-          <span>Account & Security</span>
-        </button>
+      <!-- Workspace Layout: Left Sidebar Tabs + Tab Content -->
+      <div class="profile-workspace-layout">
+
+        <!-- Left Sidebar Tab Navigation -->
+        <aside class="profile-tabs-nav" aria-label="Profile Sections">
+          <button type="button" class="profile-tab-btn active" id="tabBtnAccount" onclick="switchProfileTab('account')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+            <span>Account & Security</span>
+          </button>
+          <button type="button" class="profile-tab-btn" id="tabBtnFavorites" onclick="switchProfileTab('favorites')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span>Saved Favorites (<span id="favTabCount">0</span>)</span>
+          </button>
+          <button type="button" class="profile-tab-btn" id="tabBtnPasses" onclick="switchProfileTab('passes')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
+            <span>My QR Passes (<span id="passTabCount">0</span>)</span>
+          </button>
+          <button type="button" class="profile-tab-btn" id="tabBtnSettings" onclick="switchProfileTab('settings')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Settings & Preferences</span>
+          </button>
+        </aside>
+
+        <!-- Main Tab Content Panes -->
+        <div class="profile-tabs-content">
+
+          <!-- ======================================================================
+               TAB 1 (Default Front): Account & Security
+               ====================================================================== -->
+          <section class="profile-tab-pane active" id="paneAccount">
+            <div class="settings-group-card">
+              <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">Account Profile Metadata</h3>
+              
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <div style="padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px;">
+                  <small style="color: var(--text-muted);">Registered Name</small>
+                  <div style="font-weight: 700; color: var(--text-main);" id="accName">Maria Santos</div>
+                </div>
+                <div style="padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px;">
+                  <small style="color: var(--text-muted);">Account Email</small>
+                  <div style="font-weight: 700; color: var(--text-main);" id="accEmail">maria.santos@email.com</div>
+                </div>
+                <div style="padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px;">
+                  <small style="color: var(--text-muted);">Country / Nationality</small>
+                  <div style="font-weight: 700; color: var(--text-main);" id="accCountry">Philippines</div>
+                </div>
+                <div style="padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px;">
+                  <small style="color: var(--text-muted);">Mobile Contact</small>
+                  <div style="font-weight: 700; color: var(--text-main);" id="accPhone">+63 917 555 0192</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security & Change Password Card -->
+            <div class="settings-group-card">
+              <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">Security & Password</h3>
+              <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1.25rem;">Update your account password to keep your passes and profile secure.</p>
+
+              <div id="passwordChangeAlert" class="security-alert" role="alert"></div>
+
+              <form id="changePasswordForm" style="display: flex; flex-direction: column; gap: 1rem; max-width: 480px;">
+                <div>
+                  <label for="currentPasswordInput" style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Current Password</label>
+                  <div class="security-input-wrap">
+                    <input type="password" id="currentPasswordInput" class="security-input" placeholder="Enter your current password" required autocomplete="current-password">
+                    <button type="button" class="security-pwd-toggle" onclick="toggleSecurityPwd('currentPasswordInput', this)" aria-label="Toggle current password visibility">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="newPasswordInput" style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">New Password</label>
+                  <div class="security-input-wrap">
+                    <input type="password" id="newPasswordInput" class="security-input" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password">
+                    <button type="button" class="security-pwd-toggle" onclick="toggleSecurityPwd('newPasswordInput', this)" aria-label="Toggle new password visibility">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="confirmPasswordInput" style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Confirm New Password</label>
+                  <div class="security-input-wrap">
+                    <input type="password" id="confirmPasswordInput" class="security-input" placeholder="Re-enter your new password" minlength="6" required autocomplete="new-password">
+                    <button type="button" class="security-pwd-toggle" onclick="toggleSecurityPwd('confirmPasswordInput', this)" aria-label="Toggle confirm password visibility">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div style="margin-top: 0.25rem;">
+                  <button type="submit" id="btnUpdatePassword" class="btn-primary-blue" style="border: none; cursor: pointer; padding: 0.72rem 1.4rem;">
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- ======================================================================
+               TAB 2: Saved Favorites & Destinations
+               ====================================================================== -->
+          <section class="profile-tab-pane" id="paneFavorites">
+            <div id="profileFavoritesList" class="profile-pass-grid">
+              <!-- Populated by script -->
+            </div>
+          </section>
+
+          <!-- ======================================================================
+               TAB 3: Compiled Digital QR Passes
+               ====================================================================== -->
+          <section class="profile-tab-pane" id="panePasses">
+            <div id="profilePassesList" class="profile-pass-grid">
+              <!-- Digital Passes populated by script -->
+            </div>
+          </section>
+
+          <!-- ======================================================================
+               TAB 4: Settings & Preferences
+               ====================================================================== -->
+          <section class="profile-tab-pane" id="paneSettings">
+            
+            <!-- Appearance & Theme Settings -->
+            <div class="settings-group-card">
+              <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">Appearance & Visuals</h3>
+              <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1.25rem;">Personalize how the TourismHub interface looks across all your devices.</p>
+
+              <div class="settings-row">
+                <div>
+                  <strong style="color: var(--text-main); font-size: 0.95rem;">Dark Mode Theme</strong>
+                  <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Switch between light aesthetic and high-contrast dark mode.</div>
+                </div>
+                <label class="switch-ui">
+                  <input type="checkbox" id="themeToggle" onchange="toggleDarkMode(this.checked)">
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group-card">
+              <div class="settings-row">
+                <div>
+                  <strong style="color: var(--text-main); font-size: 0.95rem;">Real-Time Sync Engine</strong>
+                  <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Keep passes, weather alerts, and capacity updated live across open tabs.</div>
+                </div>
+                <span style="font-size: 0.82rem; color: #10b981; font-weight: 700; background: rgba(16, 185, 129, 0.15); padding: 0.25rem 0.65rem; border-radius: 999px;">
+                  ✓ Cloud Realtime Active
+                </span>
+              </div>
+            </div>
+
+          </section>
+
+        </div>
       </div>
-
-      <!-- ======================================================================
-           TAB 1: Compiled Digital QR Passes
-           ====================================================================== -->
-      <section class="profile-tab-pane active" id="panePasses">
-        <div id="profilePassesList" class="profile-pass-grid">
-          <!-- Digital Passes populated by script -->
-        </div>
-      </section>
-
-      <!-- ======================================================================
-           TAB 2: Saved Favorites & Destinations
-           ====================================================================== -->
-      <section class="profile-tab-pane" id="paneFavorites">
-        <div id="profileFavoritesList" class="profile-pass-grid">
-          <!-- Populated by script -->
-        </div>
-      </section>
-
-      <!-- ======================================================================
-           TAB 2: Settings & Preferences (Moved from Sidebar Settings + Dark Mode)
-           ====================================================================== -->
-      <section class="profile-tab-pane" id="paneSettings">
-        
-        <!-- Appearance & Theme Settings -->
-        <div class="settings-group-card">
-          <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">Appearance & Visuals</h3>
-          <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1.25rem;">Personalize how the TourismHub interface looks across all your devices.</p>
-
-          <div class="settings-row">
-            <div>
-              <strong style="color: var(--text-main); font-size: 0.95rem;">Dark Mode Theme</strong>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Switch between light aesthetic and high-contrast dark mode.</div>
-            </div>
-            <label class="switch-ui">
-              <input type="checkbox" id="themeToggle" onchange="toggleDarkMode(this.checked)">
-              <span class="switch-slider"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div>
-              <strong style="color: var(--text-main); font-size: 0.95rem;">Display Currency</strong>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Default currency for attraction passes and admission totals.</div>
-            </div>
-            <select id="currencySelector" onchange="saveSetting('currency', this.value)" style="padding: 0.5rem 0.85rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-weight: 600;">
-              <option value="PHP">Philippine Peso (₱ / PHP)</option>
-              <option value="USD" selected>US Dollar ($ / USD)</option>
-              <option value="EUR">Euro (€ / EUR)</option>
-              <option value="SGD">Singapore Dollar (S$ / SGD)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="settings-group-card">
-         
-         
-
-          <div class="settings-row">
-            <div>
-              <strong style="color: var(--text-main); font-size: 0.95rem;">Real-Time Sync Engine</strong>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Keep passes, weather alerts, and capacity updated live across open tabs.</div>
-            </div>
-            <span style="font-size: 0.82rem; color: #10b981; font-weight: 700; background: rgba(16, 185, 129, 0.15); padding: 0.25rem 0.65rem; border-radius: 999px;">
-              ✓ Cloud Realtime Active
-            </span>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- ======================================================================
-           TAB 3: Account & Security
-           ====================================================================== -->
-      <section class="profile-tab-pane" id="paneAccount">
-        <div class="settings-group-card">
-          <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">Account Profile Metadata</h3>
-          
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1rem;">
-            <div style="padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px;">
-              <small style="color: var(--text-muted);">Registered Name</small>
-              <div style="font-weight: 700; color: var(--text-main);" id="accName">Maria Santos</div>
-            </div>
-            <div style="padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px;">
-              <small style="color: var(--text-muted);">Account Email</small>
-              <div style="font-weight: 700; color: var(--text-main);" id="accEmail">maria.santos@email.com</div>
-            </div>
-            <div style="padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px;">
-              <small style="color: var(--text-muted);">Country / Nationality</small>
-              <div style="font-weight: 700; color: var(--text-main);" id="accCountry">Philippines</div>
-            </div>
-            <div style="padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px;">
-              <small style="color: var(--text-muted);">Mobile Contact</small>
-              <div style="font-weight: 700; color: var(--text-main);" id="accPhone">+63 917 555 0192</div>
-            </div>
-          </div>
-
-        </div>
-      </section>
 
     </main>
   </div>
@@ -669,7 +813,7 @@
         <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0;" id="zoomModalTitle">Digital Pass QR Code</h3>
         <button class="modal-close" onclick="closeQrZoomModal()" aria-label="Close">&times;</button>
       </div>
-      <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1.25rem;" id="zoomModalSubtitle">Present this QR code at the attraction turnstile scanner</p>
+      <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1.25rem;" id="zoomModalSubtitle">Present this QR code at the attraction entrance scanner</p>
       
       <div style="background: #ffffff; padding: 18px; border-radius: 14px; border: 2px solid #e2e8f0; display: inline-block; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); margin-bottom: 1rem;">
         <img id="zoomModalQrImg" src="" alt="Zoomed QR Code" width="240" height="240" style="display: block; margin: 0 auto;" />
@@ -1020,15 +1164,71 @@
         if (adminBtn) adminBtn.style.display = 'inline-flex';
       }
 
-      const isPlaceholderAvatar = !user.avatar ||
-        user.avatar.includes('photo-1544005313') ||
-        user.avatar.includes('photo-153571387');
-      const avatar = isPlaceholderAvatar && typeof TourismHubStore.generateInitialsAvatar === 'function'
-        ? TourismHubStore.generateInitialsAvatar(user.name)
-        : (user.avatar || 'assets/hero-banner.jpg');
+      const avatar = typeof TourismHubStore.getUserAvatar === 'function'
+        ? TourismHubStore.getUserAvatar(user)
+        : (user.avatar || TourismHubStore.generateInitialsAvatar(user.name));
       document.getElementById('topAvatar').src = avatar;
       document.getElementById('heroAvatar').src = avatar;
       initProfilePhotoUpload();
+
+      // Security Password Visibility Helper
+      window.toggleSecurityPwd = function (inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        if (btn) {
+          btn.innerHTML = show
+            ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+        }
+      };
+
+      // Change Password Form Handler
+      const changePwdForm = document.getElementById('changePasswordForm');
+      const pwdAlert = document.getElementById('passwordChangeAlert');
+      if (changePwdForm) {
+        changePwdForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const currentPwd = document.getElementById('currentPasswordInput')?.value || '';
+          const newPwd = document.getElementById('newPasswordInput')?.value || '';
+          const confirmPwd = document.getElementById('confirmPasswordInput')?.value || '';
+          const submitBtn = document.getElementById('btnUpdatePassword');
+
+          const showPwdAlert = (msg, isError) => {
+            if (!pwdAlert) return;
+            pwdAlert.textContent = msg;
+            pwdAlert.className = 'security-alert ' + (isError ? 'error' : 'success');
+          };
+
+          if (newPwd.length < 6) {
+            showPwdAlert('New password must be at least 6 characters long.', true);
+            return;
+          }
+          if (newPwd !== confirmPwd) {
+            showPwdAlert('New password and confirmation do not match.', true);
+            return;
+          }
+
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Updating...';
+          }
+          const result = await TourismHubStore.changePassword(currentPwd, newPwd);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Update Password';
+          }
+
+          if (result && result.success) {
+            showPwdAlert(result.message || 'Password updated successfully!', false);
+            changePwdForm.reset();
+            if (window.showPortalToast) window.showPortalToast(result.message || 'Password updated!');
+          } else {
+            showPwdAlert((result && result.message) || 'Failed to update password.', true);
+          }
+        });
+      }
 
       // Account Tab Details
       document.getElementById('accName').textContent = user.name || '';
@@ -1040,16 +1240,16 @@
       renderProfileFavorites();
       window.addEventListener('favoritesUpdated', renderProfileFavorites);
 
-      // Handle URL hash tab routing
+      // Handle URL hash tab routing (Account & Security is default front tab)
       const hash = window.location.hash.replace('#', '');
       if (hash === 'favorites') {
         switchProfileTab('favorites');
       } else if (hash === 'settings') {
         switchProfileTab('settings');
-      } else if (hash === 'account') {
-        switchProfileTab('account');
       } else if (hash === 'passes') {
         switchProfileTab('passes');
+      } else {
+        switchProfileTab('account');
       }
 
       // QR Code Zoom & Download Helpers

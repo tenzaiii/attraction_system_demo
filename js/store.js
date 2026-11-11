@@ -9,10 +9,18 @@
     PASSES: 'tourismhub_temp_passes_v1',
     LOGS: 'tourismhub_temp_logs_v1',
     ADMIN_AUTH: 'tourismhub_temp_admin_auth_v1',
+    ADMIN_PASSWORDS: 'tourismhub_temp_admin_passwords_v1',
     CLIENT_AUTH: 'tourismhub_temp_client_auth_v1',
     CLIENT_USERS: 'tourismhub_temp_client_users_v1',
     FAVORITES: 'tourismhub_temp_favorites_v1'
   };
+
+  function isMockAvatarUrl(url) {
+    if (!url || typeof url !== 'string') return true;
+    const clean = url.trim();
+    if (!clean) return true;
+    return clean.includes('images.unsplash.com/photo-') || clean === 'assets/hero-banner.jpg';
+  }
 
   // Default Seed Admin & Operator Accounts
   const DEFAULT_ADMIN_USERS = [
@@ -25,19 +33,19 @@
       roleKey: 'admin',
       department: 'Department of Tourism • National Operations',
       badge: 'Chief Operator',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+      avatar: '',
       terminal: 'MNL-HQ-01'
     },
     {
       id: 'admin-002',
       name: 'Carlos Mendoza',
-      email: 'turnstile@tourismhub.gov.ph',
+      email: 'gate@tourismhub.gov.ph',
       password: 'gate2026',
-      role: 'Turnstile Gate Officer',
+      role: 'Receptionist / Gate Officer',
       roleKey: 'officer',
       department: 'Luneta & Intramuros Entry Stations',
-      badge: 'Field Security',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+      badge: 'Field Operations',
+      avatar: '',
       terminal: 'LNT-GATE-04'
     }
   ];
@@ -52,7 +60,7 @@
       country: 'Philippines',
       phone: null,
       badge: 'Verified Resident Tourist',
-      avatar: 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22128%22%20height%3D%22128%22%20viewBox%3D%220%200%20128%20128%22%3E%0A%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22grad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230284c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230369a1%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22128%22%20height%3D%22128%22%20rx%3D%2264%22%20fill%3D%22url(%23grad)%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2264%22%20y%3D%2274%22%20font-family%3D%22-apple-system%2C%20BlinkMacSystemFont%2C%20\'Segoe%20UI\'%2C%20Roboto%2C%20Helvetica%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2246%22%20font-weight%3D%22800%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20letter-spacing%3D%221.5%22%3EMS%3C%2Ftext%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E'
+      avatar: ''
     },
     {
       id: '06038a82-9062-430b-a3b6-d848e0e06e30',
@@ -62,7 +70,7 @@
       country: 'Philippines',
       phone: null,
       badge: 'International Explorer',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+      avatar: ''
     },
     {
       id: '87313fe7-603f-413d-b98d-2cd18003fbe0',
@@ -72,7 +80,7 @@
       country: 'aaaa',
       phone: '1231312',
       badge: 'New Tourist Member',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
+      avatar: ''
     },
     {
       id: '1672fe3b-2b7e-4c1a-a41d-0f407ff35d2f',
@@ -82,7 +90,7 @@
       country: 'Planet Namek',
       phone: '',
       badge: 'New Tourist Member',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
+      avatar: ''
     }
   ];
 
@@ -96,8 +104,8 @@
       rating: '4.8',
       reviews: '1.2k',
       price: 15,
-      priceLabel: 'Free / Guided $15',
-      admission: 'Free Entry / Guided $15',
+      priceLabel: 'Free / Guided ₱15',
+      admission: 'Free Entry / Guided ₱15',
       operatingHours: '06:00 AM - 09:00 PM',
       capacityPerSlot: 150,
       image: 'assets/rizal-monument.jpg',
@@ -114,8 +122,8 @@
       rating: '4.8',
       reviews: '2.1k',
       price: 20,
-      priceLabel: 'Pass from $20',
-      admission: 'Heritage Pass $20',
+      priceLabel: 'Pass from ₱20',
+      admission: 'Heritage Pass ₱20',
       operatingHours: '08:00 AM - 06:00 PM',
       capacityPerSlot: 120,
       image: 'assets/rizal-monument.jpg',
@@ -132,8 +140,8 @@
       rating: '4.7',
       reviews: '980',
       price: 25,
-      priceLabel: 'Day Pass $25',
-      admission: 'Environmental Pass $25',
+      priceLabel: 'Day Pass ₱25',
+      admission: 'Environmental Pass ₱25',
       operatingHours: '05:30 AM - 10:00 PM',
       capacityPerSlot: 200,
       image: 'assets/white-beach.jpg',
@@ -150,8 +158,8 @@
       rating: '4.9',
       reviews: '850',
       price: 35,
-      priceLabel: 'Event Access $35',
-      admission: 'Special Event Access $35',
+      priceLabel: 'Event Access ₱35',
+      admission: 'Special Event Access ₱35',
       operatingHours: '07:00 AM - 11:00 PM',
       capacityPerSlot: 300,
       image: 'assets/pahiyas-festival.jpg',
@@ -168,8 +176,8 @@
       rating: '4.9',
       reviews: '3.4k',
       price: 45,
-      priceLabel: 'Tour Pass $45',
-      admission: 'Eco-Tour Permit $45',
+      priceLabel: 'Tour Pass ₱45',
+      admission: 'Eco-Tour Permit ₱45',
       operatingHours: '06:00 AM - 05:00 PM',
       capacityPerSlot: 90,
       image: 'assets/hero-banner.jpg',
@@ -186,7 +194,7 @@
       rating: '4.8',
       reviews: '100',
       price: 20,
-      priceLabel: '$20',
+      priceLabel: '₱20',
       admission: 'TESTING TESTING',
       operatingHours: '23',
       capacityPerSlot: 2321,
@@ -204,7 +212,7 @@
       rating: '4.8',
       reviews: '100',
       price: 20,
-      priceLabel: '$20',
+      priceLabel: '₱20',
       admission: 'Free',
       operatingHours: '24/7',
       capacityPerSlot: 102000,
@@ -347,7 +355,7 @@
       slot: '09:00 AM - 12:00 PM',
       passType: 'Standard Admission',
       status: 'valid',
-      amount: '$0.00',
+      amount: '₱0.00',
       validDate: '2026-11-10'
     },
     'PASS-8448-BEA': {
@@ -360,7 +368,7 @@
       slot: '09:00 AM - 12:00 PM',
       passType: 'Eco-Tour Permit',
       status: 'valid',
-      amount: '$45.00',
+      amount: '₱45.00',
       validDate: '2026-10-20'
     }
   };
@@ -408,6 +416,57 @@
   if (!localStorage.getItem(KEYS.LOGS)) {
     setItem(KEYS.LOGS, DEFAULT_LOGS);
   }
+
+  // Purge legacy mock profile avatars and non-Peso defaults from localStorage
+  (function sanitizeCachedStoreState() {
+    try {
+      localStorage.removeItem('tourismhub_setting_currency');
+
+      const sanitizeUser = (u) => {
+        if (!u || typeof u !== 'object') return u;
+        if (isMockAvatarUrl(u.avatar) || (typeof u.avatar === 'string' && u.avatar.includes('font-weight%3D%22800%22'))) {
+          return { ...u, avatar: '' };
+        }
+        return u;
+      };
+
+      const rawUsers = getItem(KEYS.CLIENT_USERS, null);
+      if (Array.isArray(rawUsers)) {
+        const cleanedUsers = rawUsers.map(sanitizeUser);
+        localStorage.setItem(KEYS.CLIENT_USERS, JSON.stringify(cleanedUsers));
+      }
+
+      const rawClientAuth = getItem(KEYS.CLIENT_AUTH, null);
+      if (rawClientAuth) {
+        localStorage.setItem(KEYS.CLIENT_AUTH, JSON.stringify(sanitizeUser(rawClientAuth)));
+      }
+
+      const rawAdminAuth = getItem(KEYS.ADMIN_AUTH, null);
+      if (rawAdminAuth) {
+        localStorage.setItem(KEYS.ADMIN_AUTH, JSON.stringify(sanitizeUser(rawAdminAuth)));
+      }
+
+      const rawCatalog = getItem(KEYS.CATALOG, null);
+      if (Array.isArray(rawCatalog)) {
+        const pesoCatalog = rawCatalog.map(item => ({
+          ...item,
+          priceLabel: typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : item.priceLabel,
+          admission: typeof item.admission === 'string' ? item.admission.replace(/\$(\d+)/g, '₱$1') : item.admission
+        }));
+        localStorage.setItem(KEYS.CATALOG, JSON.stringify(pesoCatalog));
+      }
+
+      const rawPasses = getItem(KEYS.PASSES, null);
+      if (rawPasses && typeof rawPasses === 'object') {
+        Object.values(rawPasses).forEach(p => {
+          if (p && typeof p.amount === 'string' && p.amount.startsWith('$')) {
+            p.amount = '₱' + p.amount.slice(1);
+          }
+        });
+        localStorage.setItem(KEYS.PASSES, JSON.stringify(rawPasses));
+      }
+    } catch (e) {}
+  })();
 
   // Public Store API
   const TourismHubStore = {
@@ -586,7 +645,7 @@
       const pass = passes[cleanCode];
       const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const activeOperator = this.getAdminAuth();
-      const scannedBy = activeOperator ? `${activeOperator.name} (${activeOperator.terminal || 'Turnstile'})` : 'Turnstile Gate Scanner';
+      const scannedBy = activeOperator ? `${activeOperator.name} (${activeOperator.terminal || 'Express Gate'})` : 'Digital Gate Scanner';
 
       if (!pass) {
         this.addLog({
@@ -695,13 +754,24 @@
       return DEFAULT_ADMIN_USERS;
     },
     getClientUsers() {
-      return getItem(KEYS.CLIENT_USERS, DEFAULT_CLIENT_USERS);
+      const users = getItem(KEYS.CLIENT_USERS, DEFAULT_CLIENT_USERS);
+      return Array.isArray(users) ? users.map(u => (isMockAvatarUrl(u?.avatar) ? { ...u, avatar: '' } : u)) : DEFAULT_CLIENT_USERS;
     },
     getAdminAuth() {
-      return getItem(KEYS.ADMIN_AUTH, null);
+      const admin = getItem(KEYS.ADMIN_AUTH, null);
+      if (admin && isMockAvatarUrl(admin.avatar)) {
+        admin.avatar = '';
+      }
+      return admin;
     },
     setAdminAuth(user) {
       setItem(KEYS.ADMIN_AUTH, user);
+    },
+    getUserAvatar(user) {
+      if (user && !isMockAvatarUrl(user.avatar)) {
+        return user.avatar;
+      }
+      return this.generateInitialsAvatar(user && user.name ? user.name : 'User');
     },
     async adminLogin(email, password) {
       // 1. Try online Supabase profiles database first if connected
@@ -709,6 +779,9 @@
         try {
           const onlineRes = await TourismHubSupabase.loginUser(email, password);
           if (onlineRes && onlineRes.success) {
+            if (isMockAvatarUrl(onlineRes.user?.avatar)) {
+              onlineRes.user.avatar = '';
+            }
             this.setAdminAuth(onlineRes.user);
             return onlineRes;
           } else if (onlineRes && !onlineRes.success) {
@@ -725,7 +798,9 @@
       if (!match) {
         return { success: false, message: 'Operator ID or email address not found in system directory.' };
       }
-      if (match.password !== password) {
+      const pwdOverrides = getItem(KEYS.ADMIN_PASSWORDS, {});
+      const expectedPassword = (pwdOverrides && pwdOverrides[match.email.toLowerCase()]) || match.password;
+      if (expectedPassword !== password) {
         return { success: false, message: 'Incorrect operator password. Please re-enter credentials.' };
       }
       const sessionUser = { ...match };
@@ -739,7 +814,11 @@
       return { success: true };
     },
     getClientAuth() {
-      return getItem(KEYS.CLIENT_AUTH, null);
+      const client = getItem(KEYS.CLIENT_AUTH, null);
+      if (client && isMockAvatarUrl(client.avatar)) {
+        client.avatar = '';
+      }
+      return client;
     },
     setClientAuth(user) {
       setItem(KEYS.CLIENT_AUTH, user);
@@ -750,6 +829,9 @@
         try {
           const onlineRes = await TourismHubSupabase.loginUser(email, password);
           if (onlineRes && onlineRes.success) {
+            if (isMockAvatarUrl(onlineRes.user?.avatar)) {
+              onlineRes.user.avatar = '';
+            }
             this.setClientAuth(onlineRes.user);
             return onlineRes;
           } else if (onlineRes && !onlineRes.success) {
@@ -781,6 +863,9 @@
         try {
           const onlineRes = await TourismHubSupabase.registerTourist(name, email, password, country, phone);
           if (onlineRes && onlineRes.success) {
+            if (isMockAvatarUrl(onlineRes.user?.avatar)) {
+              onlineRes.user.avatar = '';
+            }
             this.setClientAuth(onlineRes.user);
             return onlineRes;
           } else if (onlineRes && !onlineRes.success) {
@@ -805,7 +890,7 @@
         country: country || 'Philippines',
         phone: phone || '',
         badge: 'New Tourist Member',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
+        avatar: ''
       };
       users.push(newUser);
       setItem(KEYS.CLIENT_USERS, users);
@@ -831,8 +916,71 @@
         '"': '&quot;',
         "'": '&apos;'
       })[char]);
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs><rect width="128" height="128" rx="64" fill="url(#grad)"/><text x="64" y="74" font-family="sans-serif" font-size="46" font-weight="800" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">${safeInitials}</text></svg>`;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs><rect width="128" height="128" rx="64" fill="url(#grad)"/><text x="64" y="73" font-family="sans-serif" font-size="44" font-weight="400" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">${safeInitials}</text></svg>`;
       return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    },
+    async changePassword(currentPassword, newPassword) {
+      const admin = this.getAdminAuth();
+      const client = this.getClientAuth();
+      const activeUser = admin || client;
+      if (!activeUser) {
+        return { success: false, message: 'Sign in before changing your password.' };
+      }
+
+      const current = String(currentPassword || '');
+      const next = String(newPassword || '');
+      if (!current) {
+        return { success: false, message: 'Enter your current password.' };
+      }
+      if (next.length < 6) {
+        return { success: false, message: 'New password must be at least 6 characters.' };
+      }
+      if (current === next) {
+        return { success: false, message: 'New password must be different from your current password.' };
+      }
+
+      let synced = false;
+      if (window.TourismHubSupabase && TourismHubSupabase.isReady() && typeof TourismHubSupabase.updateUserPassword === 'function') {
+        const remoteRes = await TourismHubSupabase.updateUserPassword(activeUser.id || activeUser.email, current, next);
+        if (remoteRes && !remoteRes.success && !remoteRes.notFound) {
+          return remoteRes;
+        }
+        if (remoteRes && remoteRes.success) {
+          synced = true;
+        }
+      }
+
+      const emailLower = (activeUser.email || '').toLowerCase().trim();
+      if (admin) {
+        const pwdOverrides = getItem(KEYS.ADMIN_PASSWORDS, {}) || {};
+        const adminSeed = DEFAULT_ADMIN_USERS.find(u => u.email.toLowerCase() === emailLower);
+        const currentStored = pwdOverrides[emailLower] || (adminSeed ? adminSeed.password : null);
+        if (!synced && currentStored !== null && currentStored !== current) {
+          return { success: false, message: 'Current password is incorrect.' };
+        }
+        pwdOverrides[emailLower] = next;
+        setItem(KEYS.ADMIN_PASSWORDS, pwdOverrides);
+      } else {
+        const users = this.getClientUsers();
+        const match = users.find(u => (u.email || '').toLowerCase().trim() === emailLower || u.id === activeUser.id);
+        if (match) {
+          if (!synced && match.password !== current) {
+            return { success: false, message: 'Current password is incorrect.' };
+          }
+          match.password = next;
+          setItem(KEYS.CLIENT_USERS, users);
+        } else if (!synced) {
+          return { success: false, message: 'Account record could not be verified locally.' };
+        }
+      }
+
+      return {
+        success: true,
+        synced,
+        message: synced
+          ? 'Password updated and synced to your account.'
+          : 'Password updated successfully for this device.'
+      };
     },
     async updateProfileAvatar(avatarUrl) {
       if (typeof avatarUrl !== 'string' || !avatarUrl.startsWith('data:image/')) {

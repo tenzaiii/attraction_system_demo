@@ -180,9 +180,12 @@
       `;
     } else {
       // Guest Visitor Dropdown
+      const guestAvatar = window.TourismHubStore && typeof TourismHubStore.generateInitialsAvatar === 'function'
+        ? TourismHubStore.generateInitialsAvatar('Guest Visitor')
+        : "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'400'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EGV%3C%2Ftext%3E%3C%2Fsvg%3E";
       dropdown.innerHTML = `
         <div class="dropdown-header">
-          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="Guest" class="dropdown-avatar">
+          <img src="${guestAvatar}" alt="Guest" class="dropdown-avatar">
           <div class="dropdown-user-info">
             <div class="dropdown-user-name">Welcome, Visitor</div>
             <div class="dropdown-user-email">Guest Session</div>
@@ -216,42 +219,34 @@
     }
   }
 
-  // Universal handler: toggles interactive profile dropdown menu
-  window.toggleProfileDropdown = function (event, widgetEl) {
+  // Universal helper: clicking profile avatar or name directs to dedicated Profile page
+  window.navigateToProfilePage = function (event) {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
-
-    const targetWidget = widgetEl || (event ? event.currentTarget : null) || document.querySelector('.portal-user-profile');
-    if (!targetWidget) return;
-
-    // Use widget's parent wrapper if available, or targetWidget itself
-    const wrapper = targetWidget.closest('.user-profile-wrapper') || targetWidget.parentElement || targetWidget;
-    wrapper.style.position = 'relative';
-
-    const dropdown = getOrCreateDropdown(wrapper);
-    const wasActive = dropdown.classList.contains('active');
-
-    // Close any other open dropdowns first
-    closeAllDropdowns();
-
-    if (!wasActive) {
-      renderDropdownContent(dropdown);
-      dropdown.classList.add('active');
+    const auth = getActiveUser();
+    if (auth.user) {
+      window.location.href = 'profile.html';
+    } else {
+      window.location.href = 'login.html?redirect=profile.html';
     }
+  };
+
+  // Universal handler: directs profile clicks to Profile page (or toggles dropdown only when explicitly requested)
+  window.toggleProfileDropdown = function (event, widgetEl) {
+    return window.navigateToProfilePage(event);
   };
 
   // Wire profile triggers and outside click handler on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Ensure position relative on wrappers and profile buttons
+    // 1. Ensure position relative on wrappers and wire profile avatar/name clicks to profile.html
     document.querySelectorAll('.portal-user-profile').forEach(widget => {
-      // Clear inline onclick so our handler controls it
       widget.removeAttribute('onclick');
+      widget.style.cursor = 'pointer';
 
       let wrapper = widget.closest('.user-profile-wrapper');
       if (!wrapper) {
-        // Wrap widget in a user-profile-wrapper if not already wrapped
         wrapper = document.createElement('div');
         wrapper.className = 'user-profile-wrapper';
         widget.parentNode.insertBefore(wrapper, widget);
@@ -259,8 +254,9 @@
       }
       wrapper.style.position = 'relative';
 
-      widget.addEventListener('click', function (e) {
-        window.toggleProfileDropdown(e, widget);
+      widget.addEventListener('click', window.navigateToProfilePage);
+      widget.querySelectorAll('.portal-user-name, .portal-avatar-img').forEach(el => {
+        el.style.cursor = 'pointer';
       });
     });
 

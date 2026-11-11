@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activeBar.innerHTML = `
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: rgba(56, 189, 248, 0.12); border: 1.5px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1.25rem;">
             <div style="display: flex; align-items: center; gap: 0.6rem;">
-              <img src="${current.avatar || 'assets/hero-banner.jpg'}" alt="${current.name}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #38bdf8;">
+              <img src="${TourismHubStore.getUserAvatar ? TourismHubStore.getUserAvatar(current) : TourismHubStore.generateInitialsAvatar(current.name)}" alt="${current.name}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #38bdf8;">
               <div style="font-size: 0.82rem; color: #e0f2fe; line-height: 1.3;">
                 <strong>Active: ${current.name}</strong><br>
                 <span style="font-size: 0.72rem; color: #38bdf8;">${current.role}</span>

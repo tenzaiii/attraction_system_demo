@@ -27,6 +27,25 @@ window.toggleAdminTheme = function () {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  function syncAdminSidebarProfile() {
+    if (!window.TourismHubStore) return;
+    const admin = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
+    if (!admin) return;
+    const avatarEl = document.querySelector('.sidebar-footer .user-avatar');
+    const nameEl = document.querySelector('.sidebar-footer .user-name');
+    const roleEl = document.querySelector('.sidebar-footer .user-role');
+    if (avatarEl) {
+      avatarEl.src = TourismHubStore.getUserAvatar
+        ? TourismHubStore.getUserAvatar(admin)
+        : TourismHubStore.generateInitialsAvatar(admin.name || 'Admin');
+    }
+    if (nameEl && admin.name) nameEl.textContent = admin.name;
+    if (roleEl && admin.role) roleEl.textContent = admin.role;
+  }
+
+  syncAdminSidebarProfile();
+  window.addEventListener('tourismhub:avatarUpdated', syncAdminSidebarProfile);
+
   // Sync admin theme button icons
   updateAdminThemeUI(document.documentElement.getAttribute('data-theme') === 'dark');
 
@@ -45,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'historical',
       status: 'active',
       operatingHours: '06:00 AM - 09:00 PM',
-      admission: 'Free Entry / Guided $15',
+      admission: 'Free Entry / Guided ₱15',
       price: 15,
       capacityPerSlot: 150,
       image: 'assets/rizal-monument.jpg',
@@ -59,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'historical',
       status: 'active',
       operatingHours: '08:00 AM - 06:00 PM',
-      admission: 'Heritage Pass $20',
+      admission: 'Heritage Pass ₱20',
       price: 20,
       capacityPerSlot: 120,
       image: 'assets/rizal-monument.jpg',
@@ -73,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'beach',
       status: 'active',
       operatingHours: '05:30 AM - 10:00 PM',
-      admission: 'Environmental Pass $25',
+      admission: 'Environmental Pass ₱25',
       price: 25,
       capacityPerSlot: 200,
       image: 'assets/white-beach.jpg',
@@ -87,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'beach',
       status: 'maintenance',
       operatingHours: '07:00 AM - 04:00 PM',
-      admission: 'Eco-Tour Pass $45',
+      admission: 'Eco-Tour Pass ₱45',
       price: 45,
       capacityPerSlot: 80,
       image: 'assets/hero-banner.jpg',
@@ -101,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'festival',
       status: 'active',
       operatingHours: '07:00 AM - 08:00 PM',
-      admission: 'Fiesta Access $35',
+      admission: 'Fiesta Access ₱35',
       price: 35,
       capacityPerSlot: 300,
       image: 'assets/pahiyas-festival.jpg',
@@ -209,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Recent Entry Scans Log (Aligned with actual system passes)
   let recentScansList = [
-    { time: '10:14 AM', code: 'TEST-PROBE-001', name: 'Test Visitor', attraction: 'Rizal Monument', pax: 1, gate: 'North Turnstile 2', status: 'Approved' },
+    { time: '10:14 AM', code: 'TEST-PROBE-001', name: 'Test Visitor', attraction: 'Rizal Monument', pax: 1, gate: 'North Entrance Gate 2', status: 'Approved' },
     { time: '10:08 AM', code: 'PASS-8448-BEA', name: 'Maria Santos', attraction: 'Big Lagoon', pax: 1, gate: 'Station 1 Gate A', status: 'Approved' }
   ];
 
@@ -272,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     scanner: {
       title: 'QR Tourist Pass Scanner',
-      sub: 'Validate digital passes and record attendance logs at attraction turnstiles.'
+      sub: 'Validate digital passes and record attendance logs at attraction entrance gates.'
     },
     analytics: {
       title: 'Admin Analytics Dashboard',
@@ -865,7 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: 'Unregistered Pass',
         attraction: 'N/A',
         pax: 0,
-        gate: 'Turnstile A1',
+        gate: 'Gate A1',
         status: 'Rejected'
       });
       renderRecentScans();
@@ -906,7 +925,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Turnstile A1 Express',
+        gate: 'Gate A1 Express',
         status: 'Approved'
       });
 
@@ -930,7 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Turnstile A1 Express',
+        gate: 'Gate A1 Express',
         status: 'Rejected'
       });
 
@@ -952,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Turnstile A1 Express',
+        gate: 'Gate A1 Express',
         status: 'Rejected'
       });
     }
@@ -1002,7 +1021,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="validation-field">
           <label>Gate Verification</label>
-          <span>Turnstile A1 • Fast Track</span>
+          <span>Gate A1 • Fast Track</span>
         </div>
       </div>
     `;

@@ -245,13 +245,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Populate quick demo card avatars dynamically using non-bold initials
+  // Populate quick demo card avatars dynamically using stored uploaded photo or non-bold initials
   if (window.TourismHubStore && TourismHubStore.generateInitialsAvatar) {
+    const allStoredUsers = [
+      ...(TourismHubStore.getClientUsers ? TourismHubStore.getClientUsers() : []),
+      ...(TourismHubStore.getAdminUsers ? TourismHubStore.getAdminUsers() : [])
+    ];
     document.querySelectorAll('.quick-account-card').forEach(card => {
       const nameEl = card.querySelector('.quick-user-name');
       const avatarEl = card.querySelector('.quick-user-avatar');
       if (nameEl && avatarEl) {
-        avatarEl.src = TourismHubStore.generateInitialsAvatar(nameEl.textContent.trim());
+        const displayName = nameEl.textContent.trim();
+        const onclickAttr = card.getAttribute('onclick') || '';
+        const emailMatch = onclickAttr.match(/['"]([^'"]+@[^'"]+)['"]/);
+        const cardEmail = emailMatch ? emailMatch[1].toLowerCase() : '';
+        const matched = allStoredUsers.find(u =>
+          (cardEmail && (u.email || '').toLowerCase() === cardEmail) ||
+          (u.name || '').trim().toLowerCase() === displayName.toLowerCase()
+        );
+        avatarEl.src = matched && TourismHubStore.getUserAvatar
+          ? TourismHubStore.getUserAvatar(matched)
+          : TourismHubStore.generateInitialsAvatar(displayName);
       }
     });
   }
