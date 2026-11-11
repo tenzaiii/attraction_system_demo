@@ -360,8 +360,11 @@
     },
     'PASS-8448-BEA': {
       code: 'PASS-8448-BEA',
+      userId: '39c673f7-433a-4259-9569-8deb1904688f',
       visitorName: 'Maria Santos',
-      visitorEmail: 'maria.santos@traveler.ph',
+      visitorEmail: 'maria.santos@email.com',
+      bookedByUserId: '39c673f7-433a-4259-9569-8deb1904688f',
+      bookedByEmail: 'maria.santos@email.com',
       partySize: 1,
       attractionId: 'el-nido-big-lagoon',
       attraction: 'Big Lagoon Marine Sanctuary',
@@ -459,8 +462,15 @@
       const rawPasses = getItem(KEYS.PASSES, null);
       if (rawPasses && typeof rawPasses === 'object') {
         Object.values(rawPasses).forEach(p => {
-          if (p && typeof p.amount === 'string' && p.amount.startsWith('$')) {
+          if (!p) return;
+          if (typeof p.amount === 'string' && p.amount.startsWith('$')) {
             p.amount = '₱' + p.amount.slice(1);
+          }
+          if (p.code === 'PASS-8448-BEA' && (!p.userId || p.visitorEmail === 'maria.santos@traveler.ph')) {
+            p.userId = '39c673f7-433a-4259-9569-8deb1904688f';
+            p.visitorEmail = 'maria.santos@email.com';
+            p.bookedByUserId = '39c673f7-433a-4259-9569-8deb1904688f';
+            p.bookedByEmail = 'maria.santos@email.com';
           }
         });
         localStorage.setItem(KEYS.PASSES, JSON.stringify(rawPasses));
@@ -611,14 +621,37 @@
       const p = this.getPasses();
       return Array.isArray(p) ? p : Object.values(p || {});
     },
+    isPassOwnedByUser(pass, user) {
+      if (!pass || !user) return false;
+      const activeUserId = user.id ? String(user.id).trim() : '';
+      const passUserId = (pass.bookedByUserId || pass.userId) ? String(pass.bookedByUserId || pass.userId).trim() : '';
+      if (activeUserId && passUserId && activeUserId === passUserId) return true;
+
+      const activeEmail = (user.email || '').toLowerCase().trim();
+      const bookedEmail = (pass.bookedByEmail || pass.visitorEmail || '').toLowerCase().trim();
+      return Boolean(activeEmail && bookedEmail && activeEmail === bookedEmail);
+    },
+    getUserPasses(user) {
+      const activeUser = user || this.getClientAuth() || this.getAdminAuth();
+      if (!activeUser) return [];
+      return this.getPassesArray().filter(pass => this.isPassOwnedByUser(pass, activeUser));
+    },
     savePasses(passes) {
       setItem(KEYS.PASSES, passes);
     },
     addPass(pass) {
       const passes = this.getPasses();
       const code = String(pass.code || '').toUpperCase().trim();
-      pass.code = code;
-      passes[code] = pass;
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const enrichedPass = {
+        ...pass,
+        code,
+        userId: pass.userId || activeUser?.id || null,
+        bookedByUserId: pass.bookedByUserId || pass.userId || activeUser?.id || null,
+        bookedByEmail: pass.bookedByEmail || activeUser?.email || pass.visitorEmail || '',
+        visitorEmail: pass.visitorEmail || activeUser?.email || ''
+      };
+      passes[code] = enrichedPass;
       this.savePasses(passes);
 
       // If tied to an attraction, update capacity booked count
@@ -634,10 +667,10 @@
 
       // Online Supabase Sync
       if (window.TourismHubSupabase && typeof TourismHubSupabase.insertPass === 'function' && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.insertPass(pass).catch(err => console.warn('[Store] Supabase addPass sync error:', err));
+        TourismHubSupabase.insertPass(enrichedPass).catch(err => console.warn('[Store] Supabase addPass sync error:', err));
       }
 
-      return pass;
+      return enrichedPass;
     },
     validatePass(code) {
       const cleanCode = String(code || '').toUpperCase().trim();

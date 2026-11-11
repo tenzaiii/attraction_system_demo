@@ -305,7 +305,6 @@
           <option value="capacity-asc">Capacity (Low to High)</option>
           <option value="booked-desc">Most Booked</option>
           <option value="available-desc">Most Available</option>
-          <option value="status-full">Full Status First</option>
         </select>
 
         <button class="btn-primary-blue admin-only-feature" id="addScheduleBtn" onclick="openPortalModal('addScheduleModal')" style="display: none;">
@@ -339,7 +338,6 @@
             <th>Capacity</th>
             <th>Booked</th>
             <th>Available</th>
-            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -374,9 +372,8 @@
             <td><strong>120</strong></td>
             <td>80</td>
             <td><span class="avail-count-green">40</span></td>
-            <td><span class="portal-pill-badge status-normal">Normal</span></td>
             <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Resort Pool', 120, 80, 40, 'Normal')">View</button></td>
+                onclick="openCapacityDetails('Resort Pool', 120, 80, 40)">View</button></td>
           </tr>
 
           <!-- Row 2: Wellness Spa -->
@@ -408,9 +405,8 @@
             <td><strong>100</strong></td>
             <td>100</td>
             <td><span class="avail-count-red">0</span></td>
-            <td><span class="portal-pill-badge status-full">Full</span></td>
             <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Wellness Spa', 100, 100, 0, 'Full')">View</button></td>
+                onclick="openCapacityDetails('Wellness Spa', 100, 100, 0)">View</button></td>
           </tr>
 
           <!-- Row 3: Riverside Restaurant -->
@@ -442,9 +438,8 @@
             <td><strong>200</strong></td>
             <td>150</td>
             <td><span class="avail-count-green">50</span></td>
-            <td><span class="portal-pill-badge status-normal">Normal</span></td>
             <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Riverside Restaurant', 200, 150, 50, 'Normal')">View</button></td>
+                onclick="openCapacityDetails('Riverside Restaurant', 200, 150, 50)">View</button></td>
           </tr>
 
           <!-- Row 4: Kids Club -->
@@ -476,9 +471,8 @@
             <td><strong>50</strong></td>
             <td>50</td>
             <td><span class="avail-count-red">0</span></td>
-            <td><span class="portal-pill-badge status-full">Full</span></td>
             <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Kids Club', 50, 50, 0, 'Full')">View</button></td>
+                onclick="openCapacityDetails('Kids Club', 50, 50, 0)">View</button></td>
           </tr>
 
           <!-- Row 5: Beach Festival -->
@@ -510,9 +504,8 @@
             <td><strong>500</strong></td>
             <td>320</td>
             <td><span class="avail-count-green">180</span></td>
-            <td><span class="portal-pill-badge status-normal">Normal</span></td>
             <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Beach Festival', 500, 320, 180, 'Normal')">View</button></td>
+                onclick="openCapacityDetails('Beach Festival', 500, 320, 180)">View</button></td>
           </tr>
 
           <!-- Row 6: Nature Trail -->
@@ -544,9 +537,8 @@
             <td><strong>80</strong></td>
             <td>60</td>
             <td><span class="avail-count-green">20</span></td>
-            <td><span class="portal-pill-badge status-normal">Normal</span></td>
             <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Nature Trail', 80, 60, 20, 'Normal')">View</button></td>
+                onclick="openCapacityDetails('Nature Trail', 80, 60, 20)">View</button></td>
           </tr>
 
         </tbody>
@@ -620,7 +612,6 @@
       <div style="padding: 1.5rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
           <h4 id="capModalName" style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0;">Attraction Name</h4>
-          <span id="capModalStatus" class="portal-pill-badge blue">Normal</span>
         </div>
 
         <div style="margin-bottom: 1.25rem;">
@@ -839,11 +830,6 @@
         if (criterion === 'capacity-asc') return capacityA - capacityB;
         if (criterion === 'booked-desc') return bookedB - bookedA;
         if (criterion === 'available-desc') return availableB - availableA;
-        if (criterion === 'status-full') {
-          const fullA = a.querySelector('.status-full') ? 1 : 0;
-          const fullB = b.querySelector('.status-full') ? 1 : 0;
-          return fullB - fullA;
-        }
         return Number(a.getAttribute('data-default-order')) - Number(b.getAttribute('data-default-order'));
       });
 
@@ -882,15 +868,11 @@
       });
     });
 
-    window.openCapacityDetails = function (name, cap, booked, avail, status) {
+    window.openCapacityDetails = function (name, cap, booked, avail) {
       document.getElementById('capModalName').textContent = name;
       document.getElementById('capModalMax').textContent = cap;
       document.getElementById('capModalBooked').textContent = booked;
       document.getElementById('capModalAvail').textContent = avail;
-      
-      const statusBadge = document.getElementById('capModalStatus');
-      statusBadge.textContent = status;
-      statusBadge.className = `portal-pill-badge ${status.toLowerCase() === 'full' ? 'status-full' : 'status-normal'}`;
 
       const pct = cap > 0 ? Math.min(100, Math.round((booked / cap) * 100)) : 0;
       document.getElementById('capModalPercent').textContent = `${pct}%`;

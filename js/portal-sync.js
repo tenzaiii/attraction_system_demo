@@ -148,9 +148,6 @@
         }
 
         const available = Math.max(0, cap - booked);
-        const isFull = available === 0 || (booked >= cap);
-        const statusClass = isFull ? 'status-full' : 'status-normal';
-        const statusLabel = isFull ? 'Full' : 'Normal';
         const isEvent = item.type === 'festival' || item.type === 'event';
         const typeBadge = isEvent ? 'purple' : 'blue';
         const typeLabel = isEvent ? 'Event' : 'Attraction';
@@ -177,8 +174,7 @@
             <td><strong>${cap}</strong></td>
             <td>${booked}</td>
             <td><span class="${available > 0 ? 'avail-count-green' : 'avail-count-red'}">${available}</span></td>
-            <td><span class="portal-pill-badge ${statusClass}">${statusLabel}</span></td>
-            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${cap}, ${booked}, ${available}, '${statusLabel}')">View</button></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${cap}, ${booked}, ${available})">View</button></td>
           </tr>
         `;
       }).join('');

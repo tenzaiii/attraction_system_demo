@@ -342,7 +342,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- 8. Dynamic "My Digital Passes" Renderer & QR Zoom/Download ---
+  function getOwnedPassByCode(code) {
+    if (!window.TourismHubStore || typeof TourismHubStore.getUserPasses !== 'function') return null;
+    const cleanCode = String(code || '').toUpperCase().trim();
+    return TourismHubStore.getUserPasses().find(p => String(p.code || '').toUpperCase().trim() === cleanCode) || null;
+  }
+
   window.downloadPassQr = async function (code) {
+    if (!getOwnedPassByCode(code)) {
+      if (typeof showToast === 'function') showToast('QR codes are only visible to the user who booked the pass.');
+      return;
+    }
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=16&data=${encodeURIComponent(code)}`;
     try {
       const response = await fetch(qrUrl);
@@ -362,6 +372,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.zoomPassQr = function (code, attraction, visitorName) {
+    if (!getOwnedPassByCode(code)) {
+      if (typeof showToast === 'function') showToast('QR codes are only visible to the user who booked the pass.');
+      return;
+    }
     let modal = document.getElementById('globalQrZoomModal');
     if (modal) modal.remove();
     const html = `
@@ -390,12 +404,27 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderMyTickets() {
     const ticketsBody = document.getElementById('myTicketsModalBody');
     if (!ticketsBody || !window.TourismHubStore) return;
-    const passes = Object.values(TourismHubStore.getPasses());
+    const activeUser = (TourismHubStore.getClientAuth && TourismHubStore.getClientAuth()) ||
+                       (TourismHubStore.getAdminAuth && TourismHubStore.getAdminAuth());
+
+    if (!activeUser) {
+      ticketsBody.innerHTML = `
+        <div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+          <p style="margin-bottom: 1rem;">Please sign in to view QR codes for passes you have booked.</p>
+          <a href="login.html?redirect=index.html" class="btn-primary-blue" style="display: inline-flex; text-decoration: none;">Sign In to View Passes</a>
+        </div>
+      `;
+      return;
+    }
+
+    const passes = typeof TourismHubStore.getUserPasses === 'function'
+      ? TourismHubStore.getUserPasses(activeUser)
+      : [];
 
     if (passes.length === 0) {
       ticketsBody.innerHTML = `
         <div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
-          <p>No active digital passes found. Book an attraction pass to generate a QR pass!</p>
+          <p>No active digital passes booked under your account yet. Reserve an attraction pass to generate your private QR pass!</p>
         </div>
       `;
       return;
@@ -547,7 +576,9 @@ document.addEventListener('DOMContentLoaded', () => {
           code: passCode,
           visitorName: guestName,
           visitorEmail: activeUser?.email || `${guestName.toLowerCase().replace(/\s+/g, '.')}@traveler.ph`,
+          bookedByEmail: activeUser?.email || '',
           userId: activeUser?.id || null,
+          bookedByUserId: activeUser?.id || null,
           partySize: count,
           attractionId: attraction.id,
           attraction: attraction.title,
@@ -703,9 +734,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (badgeEl) badgeEl.textContent = activeUser.badge || (adminAuth ? 'Operator Clearance' : 'Verified Tourist');
     if (avatarEl && activeUser.avatar) avatarEl.src = activeUser.avatar;
 
-    // Compiled QR Passes list
-    const rawPasses = TourismHubStore.getPasses() || {};
-    const passes = Array.isArray(rawPasses) ? rawPasses : Object.values(rawPasses);
+    // Compiled QR Passes list (only passes booked by the active user)
+    const passes = typeof TourismHubStore.getUserPasses === 'function'
+      ? TourismHubStore.getUserPasses(activeUser)
+      : [];
     const passesList = document.getElementById('dropdownPassesList');
     const passesCountEl = document.getElementById('dropdownPassesCount');
 

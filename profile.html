@@ -1252,8 +1252,18 @@
         switchProfileTab('account');
       }
 
+      function isOwnedProfilePass(code) {
+        if (!window.TourismHubStore || typeof TourismHubStore.getUserPasses !== 'function') return false;
+        const cleanCode = String(code || '').toUpperCase().trim();
+        return TourismHubStore.getUserPasses(user).some(p => String(p.code || '').toUpperCase().trim() === cleanCode);
+      }
+
       // QR Code Zoom & Download Helpers
       window.openQrZoomModal = function (code, attraction, visitorName) {
+        if (!isOwnedProfilePass(code)) {
+          if (window.showPortalToast) showPortalToast('QR codes are only visible to the user who booked the pass.');
+          return;
+        }
         const modal = document.getElementById('qrZoomModal');
         const img = document.getElementById('zoomModalQrImg');
         const titleEl = document.getElementById('zoomModalTitle');
@@ -1286,6 +1296,10 @@
       };
 
       window.downloadPassQr = async function (code, attraction) {
+        if (!isOwnedProfilePass(code)) {
+          if (window.showPortalToast) showPortalToast('QR codes are only visible to the user who booked the pass.');
+          return;
+        }
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=16&data=${encodeURIComponent(code)}`;
         try {
           const response = await fetch(qrUrl);
@@ -1307,10 +1321,11 @@
         }
       };
 
-      // Compiled Passes
+      // Compiled Passes (strictly scoped to the authenticated pass booker)
       function renderProfilePasses() {
-        const rawPasses = TourismHubStore.getPasses() || {};
-        const passes = Array.isArray(rawPasses) ? rawPasses : Object.values(rawPasses);
+        const passes = typeof TourismHubStore.getUserPasses === 'function'
+          ? TourismHubStore.getUserPasses(user)
+          : [];
         document.getElementById('passTabCount').textContent = passes.length;
         const listEl = document.getElementById('profilePassesList');
 

@@ -577,11 +577,15 @@
       const rawAmt = typeof pass.amount === 'number'
         ? pass.amount
         : parseFloat(String(pass.amount || '0').replace(/[^0-9.-]+/g, '')) || 0;
+      const rawUserId = pass.userId || pass.bookedByUserId || null;
+      const validUuid = rawUserId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(rawUserId))
+        ? String(rawUserId)
+        : null;
       return {
         pass_code: String(pass.code || '').toUpperCase().trim(),
         visitor_name: pass.visitorName || pass.touristName || 'Tourist Guest',
-        visitor_email: pass.visitorEmail || null,
-        user_id: pass.userId || null,
+        visitor_email: pass.bookedByEmail || pass.visitorEmail || null,
+        user_id: validUuid,
         attraction_id: pass.attractionId || null,
         attraction_title: pass.attraction || 'Attraction Entry',
         party_size: Number(pass.partySize || pass.pax || 1),

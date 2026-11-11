@@ -99,14 +99,12 @@
 
     const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
 
-    // Get count of passes and favorites
+    // Get count of passes and favorites scoped to current user
     let passCount = 0;
     let favCount = 0;
     if (window.TourismHubStore) {
-      if (typeof TourismHubStore.getPasses === 'function') {
-        const rawPasses = TourismHubStore.getPasses();
-        const passesArr = Array.isArray(rawPasses) ? rawPasses : Object.values(rawPasses || {});
-        passCount = passesArr.length;
+      if (typeof TourismHubStore.getUserPasses === 'function') {
+        passCount = TourismHubStore.getUserPasses(user).length;
       }
       if (typeof TourismHubStore.getFavorites === 'function') {
         favCount = (TourismHubStore.getFavorites() || []).length;

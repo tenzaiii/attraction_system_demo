@@ -604,17 +604,11 @@ document.addEventListener('DOMContentLoaded', () => {
     capacitySlotsGrid.innerHTML = slots.map(slot => {
       const percentage = Math.min(100, Math.round((slot.booked / slot.max) * 100));
       let fillClass = 'normal';
-      let statusClass = 'open';
-      let statusText = 'Available';
 
       if (percentage >= 100) {
         fillClass = 'danger';
-        statusClass = 'sold-out';
-        statusText = 'At Capacity (Full)';
       } else if (percentage >= 80) {
         fillClass = 'warning';
-        statusClass = 'near-full';
-        statusText = 'Near Capacity (80%+)';
       }
 
       return `
@@ -624,7 +618,6 @@ document.addEventListener('DOMContentLoaded', () => {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               ${slot.time}
             </span>
-            <span class="slot-status-pill ${statusClass}">${statusText}</span>
           </div>
 
           <div class="slot-progress-wrap">
