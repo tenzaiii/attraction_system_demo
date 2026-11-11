@@ -114,7 +114,12 @@
     }
 
     if (user) {
-      const avatarUrl = user.avatar || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
+      let avatarUrl = user.avatar;
+      if (!avatarUrl || avatarUrl.includes('photo-1544005313') || avatarUrl.includes('photo-153571387')) {
+        avatarUrl = window.TourismHubStore && typeof TourismHubStore.generateInitialsAvatar === 'function'
+          ? TourismHubStore.generateInitialsAvatar(user.name)
+          : (avatarUrl || 'assets/hero-banner.jpg');
+      }
       const name = user.name || (isAdmin ? 'Operator' : 'Tourist');
       const email = user.email || '';
       const badge = isAdmin ? (user.role || 'Admin Clearance') : (user.badge || 'Verified Tourist');

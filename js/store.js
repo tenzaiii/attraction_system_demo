@@ -819,6 +819,63 @@
       setItem(KEYS.CLIENT_AUTH, null);
       return { success: true };
     },
+    generateInitialsAvatar(name) {
+      const parts = String(name || 'User').trim().split(/\s+/).filter(Boolean);
+      const initials = (parts.length > 1
+        ? parts[0][0] + parts[parts.length - 1][0]
+        : (parts[0] || 'U').slice(0, 2)).toUpperCase();
+      const safeInitials = initials.replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&apos;'
+      })[char]);
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs><rect width="128" height="128" rx="64" fill="url(#grad)"/><text x="64" y="74" font-family="sans-serif" font-size="46" font-weight="800" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">${safeInitials}</text></svg>`;
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    },
+    async updateProfileAvatar(avatarUrl) {
+      if (typeof avatarUrl !== 'string' || !avatarUrl.startsWith('data:image/')) {
+        return { success: false, message: 'Choose a valid image before saving your profile photo.' };
+      }
+
+      const admin = this.getAdminAuth();
+      const client = this.getClientAuth();
+      const activeUser = admin || client;
+      if (!activeUser) {
+        return { success: false, message: 'Sign in before updating your profile photo.' };
+      }
+
+      const updatedUser = { ...activeUser, avatar: avatarUrl };
+      if (admin) {
+        this.setAdminAuth(updatedUser);
+      } else {
+        this.setClientAuth(updatedUser);
+        const users = this.getClientUsers();
+        const match = users.find(user => user.email === activeUser.email || user.id === activeUser.id);
+        if (match) {
+          match.avatar = avatarUrl;
+          setItem(KEYS.CLIENT_USERS, users);
+        }
+      }
+
+      let synced = false;
+      let message = 'Profile photo saved on this device.';
+      if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        const result = await TourismHubSupabase.updateUserProfileAvatar(activeUser.id || activeUser.email, avatarUrl);
+        if (!result || !result.success) {
+          message = `Photo saved on this device, but cloud sync failed: ${result && result.message ? result.message : 'Unknown database error'}`;
+        } else {
+          synced = true;
+          message = 'Profile photo saved and synced.';
+        }
+      }
+
+      window.dispatchEvent(new CustomEvent('tourismhub:avatarUpdated', {
+        detail: { avatar: avatarUrl, user: updatedUser }
+      }));
+      return { success: true, avatar: avatarUrl, synced, message };
+    },
 
     // =========================================================================
     // FAVORITES / WISHLIST MANAGEMENT

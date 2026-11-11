@@ -202,6 +202,48 @@
       }
     },
 
+    async updateUserProfileAvatar(emailOrId, avatarUrl) {
+      if (!supabaseClient) {
+        return { success: false, message: 'Database client is not connected.' };
+      }
+      if (typeof avatarUrl !== 'string' || !avatarUrl.startsWith('data:image/')) {
+        return { success: false, message: 'The profile photo data is invalid.' };
+      }
+
+      try {
+        const identity = String(emailOrId || '').trim();
+        if (!identity) {
+          return { success: false, message: 'The signed-in profile could not be identified.' };
+        }
+
+        let query = supabaseClient.from('profiles').select('id');
+        query = identity.includes('@')
+          ? query.ilike('email', identity.toLowerCase())
+          : query.eq('id', identity);
+        const { data: profile, error: lookupError } = await query.maybeSingle();
+        if (lookupError) throw lookupError;
+        if (!profile) {
+          return { success: false, message: 'The profile was not found in the database.' };
+        }
+
+        const { data: updatedProfile, error: updateError } = await supabaseClient
+          .from('profiles')
+          .update({ avatar: avatarUrl, updated_at: new Date().toISOString() })
+          .eq('id', profile.id)
+          .select('id')
+          .maybeSingle();
+        if (updateError) throw updateError;
+        if (!updatedProfile) {
+          return { success: false, message: 'The database did not update this profile photo.' };
+        }
+
+        return { success: true, avatar: avatarUrl };
+      } catch (error) {
+        console.error('[Supabase] Profile photo update failed:', error);
+        return { success: false, message: error.message || 'The database could not save the profile photo.' };
+      }
+    },
+
     // =========================================================================
     // CATALOG & ATTRACTIONS DATA (Supabase Sync)
     // =========================================================================

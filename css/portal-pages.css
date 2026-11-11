@@ -2180,3 +2180,200 @@
   display: none !important;
 }
 
+/* Capacity date picker */
+.calendar-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.calendar-dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font: 600 0.85rem var(--font-body);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.calendar-dropdown-btn:hover,
+.calendar-dropdown-btn[aria-expanded="true"] {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.calendar-caret-icon {
+  transition: transform 0.2s ease;
+}
+
+.calendar-dropdown-btn[aria-expanded="true"] .calendar-caret-icon {
+  transform: rotate(180deg);
+}
+
+.calendar-dropdown-menu {
+  position: absolute;
+  z-index: 100;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 320px;
+  max-width: calc(100vw - 2rem);
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18);
+}
+
+.calendar-dropdown-menu[hidden] {
+  display: none;
+}
+
+.calendar-view-card {
+  padding: 0.65rem;
+  margin-bottom: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+}
+
+.calendar-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-month-title {
+  color: var(--text-main);
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.calendar-nav-btn {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.calendar-nav-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--primary);
+}
+
+.calendar-weekdays-grid,
+.calendar-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  text-align: center;
+}
+
+.calendar-weekdays-grid {
+  margin-bottom: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.calendar-days-grid {
+  gap: 3px;
+}
+
+.calendar-day-cell {
+  display: flex;
+  min-width: 0;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-main);
+  font: 500 0.8rem var(--font-body);
+  cursor: pointer;
+}
+
+.calendar-day-cell:hover:not(.empty) {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.calendar-day-cell.empty {
+  pointer-events: none;
+}
+
+.calendar-day-cell.today {
+  box-shadow: inset 0 0 0 1px var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.calendar-day-cell.selected {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.calendar-menu-header {
+  padding: 0.35rem 0.4rem 0.4rem;
+  margin: 0.4rem 0 0.25rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.calendar-menu-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.calendar-preset-chip {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--bg-subtle);
+  color: var(--text-main);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.calendar-preset-chip:hover {
+  border-color: var(--primary);
+}
+
+.calendar-preset-chip.selected {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.calendar-help-text {
+  margin: 0.65rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .calendar-dropdown-menu {
+    right: auto;
+    left: 0;
+  }
+}
+
