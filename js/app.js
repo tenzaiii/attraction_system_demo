@@ -829,7 +829,6 @@ document.addEventListener('DOMContentLoaded', () => {
         profileBtn.style.display = 'none';
       }
     }
-    }
   }
 
   // --- 14. Real-Time Cross-Tab Synchronization Listener ---

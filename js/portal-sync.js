@@ -469,22 +469,8 @@
           };
           widget.title = 'Logged in as ' + clientAuth.name + ' (Click for Menu)';
         } else {
-<<<<<<< HEAD
-          if (nameEl) nameEl.textContent = 'Tourist Portal';
-          if (roleEl) roleEl.textContent = 'Sign In / Register';
-          if (imgEl) imgEl.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
-          widget.onclick = function (e) {
-            if (window.toggleProfileDropdown) {
-              window.toggleProfileDropdown(e, widget);
-            } else {
-              location.href = 'login.html';
-            }
-          };
-          widget.title = 'Tourist Account / Sign In';
-=======
           // Hide tourist name and profile icon completely when exploring as guest
           widget.style.display = 'none';
->>>>>>> fbc8af7 (feat: integrate Supabase backend sync and dynamic catalog rendering in attractions module)
         }
       });
     }
