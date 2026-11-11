@@ -1,0 +1,179 @@
+/* ==========================================================================
+   Dark Mode Overrides
+   Many elements use hardcoded inline light colors (style="background:#fff").
+   These rules remap them to theme-aware colors when dark mode is active.
+   Load this file LAST on every page.
+   ========================================================================== */
+
+[data-theme="dark"] {
+  --dm-bg-page: #0b1220;
+  --dm-bg-card: #111a2e;
+  --dm-bg-subtle: #1a2540;
+  --dm-border: #26324d;
+  --dm-text-main: #e2e8f0;
+  --dm-text-muted: #94a3b8;
+  color-scheme: dark;
+}
+
+/* --- Light backgrounds -> dark surfaces --- */
+[data-theme="dark"] [style*="background: #fff"],
+[data-theme="dark"] [style*="background:#fff"],
+[data-theme="dark"] [style*="background: #ffffff"],
+[data-theme="dark"] [style*="background-color: #fff"],
+[data-theme="dark"] [style*="background: white"] {
+  background: var(--dm-bg-card) !important;
+}
+
+[data-theme="dark"] [style*="background: #f8fafc"],
+[data-theme="dark"] [style*="background: #f1f5f9"],
+[data-theme="dark"] [style*="background: #e2e8f0"],
+[data-theme="dark"] [style*="background: var(--bg-subtle, #f8fafc)"] {
+  background: var(--dm-bg-subtle) !important;
+}
+
+/* Keep white behind QR codes so they stay scannable */
+[data-theme="dark"] .profile-pass-item [style*="background: #ffffff"] {
+  background: #ffffff !important;
+}
+
+/* Tinted info/success banners */
+[data-theme="dark"] [style*="background: #f0f9ff"],
+[data-theme="dark"] [style*="background: #e0f2fe"] {
+  background: rgba(2, 132, 199, 0.15) !important;
+}
+[data-theme="dark"] [style*="background: #f0fdf4"],
+[data-theme="dark"] [style*="background: #d1fae5"] {
+  background: rgba(16, 185, 129, 0.15) !important;
+}
+[data-theme="dark"] [style*="background: #fee2e2"] {
+  background: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* --- Dark text -> light text --- */
+[data-theme="dark"] [style*="color: #0f172a"],
+[data-theme="dark"] [style*="color:#0f172a"],
+[data-theme="dark"] [style*="color: #1e293b"],
+[data-theme="dark"] [style*="color: #334155"],
+[data-theme="dark"] [style*="color: var(--text-main, #0f172a)"] {
+  color: var(--dm-text-main) !important;
+}
+[data-theme="dark"] [style*="color: #475569"],
+[data-theme="dark"] [style*="color: #64748b"] {
+  color: var(--dm-text-muted) !important;
+}
+[data-theme="dark"] [style*="color: #166534"],
+[data-theme="dark"] [style*="color: #15803d"] {
+  color: #86efac !important;
+}
+[data-theme="dark"] [style*="color: #0369a1"] {
+  color: #7dd3fc !important;
+}
+
+/* Text inside the white QR box must stay dark */
+[data-theme="dark"] .profile-pass-item [style*="background: #ffffff"] [style*="color: #0f172a"] {
+  color: #0f172a !important;
+}
+
+/* --- Borders --- */
+[data-theme="dark"] [style*="border: 1px solid #e2e8f0"],
+[data-theme="dark"] [style*="border: 1px solid #cbd5e1"],
+[data-theme="dark"] [style*="border: 1px dashed var(--border)"] {
+  border-color: var(--dm-border) !important;
+}
+
+/* --- Generic components without dark styles --- */
+[data-theme="dark"] .modal-dialog,
+[data-theme="dark"] .user-profile-dropdown,
+[data-theme="dark"] .portal-data-table,
+[data-theme="dark"] .settings-group-card,
+[data-theme="dark"] .profile-hero-card,
+[data-theme="dark"] .profile-pass-item,
+[data-theme="dark"] .scanner-viewport-card {
+  background: var(--dm-bg-card) !important;
+  color: var(--dm-text-main);
+  border-color: var(--dm-border) !important;
+}
+
+[data-theme="dark"] .scanner-page-title,
+[data-theme="dark"] .scanner-controls-title {
+  color: var(--dm-text-main) !important;
+}
+
+[data-theme="dark"] .scanner-page-subtitle,
+[data-theme="dark"] .scanner-controls-desc,
+[data-theme="dark"] .scanner-helper-note {
+  color: var(--dm-text-muted) !important;
+}
+
+[data-theme="dark"] .scanner-viewport-right {
+  background: rgba(26, 37, 64, 0.55) !important;
+  border-color: var(--dm-border) !important;
+}
+
+@media (max-width: 768px) {
+  [data-theme="dark"] .scanner-viewport-right {
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+}
+
+[data-theme="dark"] .scanner-page-header-icon {
+  background: rgba(2, 132, 199, 0.2) !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .scanner-eyebrow-badge {
+  background: rgba(2, 132, 199, 0.16) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .scanner-status-indicator:not(.is-live),
+[data-theme="dark"] .scanner-switch-cam-pill,
+[data-theme="dark"] .scanner-btn-upload,
+[data-theme="dark"] .scanner-manual-group {
+  background: var(--dm-bg-subtle) !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text-main) !important;
+}
+
+[data-theme="dark"] .scanner-manual-label {
+  color: var(--dm-text-muted) !important;
+}
+
+[data-theme="dark"] .scanner-section-divider::before,
+[data-theme="dark"] .scanner-section-divider::after {
+  background: var(--dm-border) !important;
+}
+
+[data-theme="dark"] .modal-title,
+[data-theme="dark"] .modal-dialog label,
+[data-theme="dark"] .modal-dialog h3,
+[data-theme="dark"] .modal-dialog h4,
+[data-theme="dark"] .dropdown-user-name {
+  color: var(--dm-text-main) !important;
+}
+
+[data-theme="dark"] .portal-data-table th {
+  background: var(--dm-bg-subtle) !important;
+  color: var(--dm-text-muted) !important;
+}
+[data-theme="dark"] .portal-data-table td {
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text-main);
+}
+
+[data-theme="dark"] .modal-dialog input,
+[data-theme="dark"] .modal-dialog select,
+[data-theme="dark"] .modal-dialog textarea,
+[data-theme="dark"] main input[type="text"],
+[data-theme="dark"] main input[type="number"] {
+  background: var(--dm-bg-subtle) !important;
+  color: var(--dm-text-main) !important;
+  border-color: var(--dm-border) !important;
+}
+
+[data-theme="dark"] .modal-close {
+  color: var(--dm-text-muted);
+}
+

@@ -24,6 +24,7 @@
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   </script>
+  <link rel="stylesheet" href="css/dark-overrides.css">
 </head>
 
 <body>
@@ -210,13 +211,13 @@
       <!-- Nav Action Buttons & Profile (Matching Screenshot) -->
       <div class="nav-actions">
         <!-- Search Trigger -->
-        <!-- <button class="nav-icon-btn" aria-label="Search" onclick="document.getElementById('heroSearchInput')?.focus()">
+        <button class="nav-icon-btn" aria-label="Search" onclick="document.getElementById('heroSearchInput')?.focus()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
             stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-        </button> -->
+        </button>
 
         <!-- Admin Dashboard Quick Button (Admin Only) -->
         <a href="admin.html" class="nav-admin-dashboard-btn admin-only-feature" style="display: none;" title="Admin Operator Dashboard">
@@ -226,13 +227,14 @@
             <rect x="14" y="12" width="7" height="9"></rect>
             <rect x="3" y="16" width="7" height="5"></rect>
           </svg>
+          <span>Admin Dashboard</span>
         </a>
 
         <!-- Dark / Light Mode Toggle Button -->
-        <!-- <button class="nav-icon-btn topbar-theme-toggle-btn" id="globalDarkModeBtn" onclick="toggleGlobalTheme()" aria-label="Toggle Theme" title="Toggle Theme">
+        <button class="nav-icon-btn topbar-theme-toggle-btn" id="globalDarkModeBtn" onclick="toggleGlobalTheme()" aria-label="Toggle Theme" title="Toggle Theme">
           <svg class="theme-btn-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           <svg class="theme-btn-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button> -->
+        </button>
 
         <!-- Notification Bell with Badge (0 as in screenshot) -->
         <button class="nav-icon-btn" aria-label="Notifications" onclick="openNotificationsModal()">
@@ -246,8 +248,8 @@
 
         <div class="user-profile-wrapper">
           <div class="portal-user-profile" id="userProfileBtn" title="Account / Options">
-            <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
-              alt="Tourist Profile" class="portal-avatar-img" id="userNavAvatar" style="background: var(--bg-subtle);">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+              alt="Tourist Profile" class="portal-avatar-img">
             <div class="portal-user-meta">
               <span class="portal-user-name">Tourist Portal</span>
               <span class="portal-user-role">Sign In / Register</span>
@@ -509,7 +511,7 @@
             <div class="faq-answer-panel">
               <p>Immediately after booking, your digital pass is generated with an encrypted QR code. You will receive
                 an SMS and email with your pass, which can also be saved to Apple Wallet or Google Wallet. Simply show
-                your mobile screen at the attraction express gate or scanner terminal for direct scanning.</p>
+                your mobile screen at the attraction turnstile or express gate for direct scanning.</p>
             </div>
           </div>
 
@@ -722,12 +724,12 @@
           <input type="hidden" id="bookingAttractionId" value="rizal-monument">
 
           <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem;">
-            <img id="bookingModalImg" src="assets/qc-memorial-circle.jpg" alt="Attraction"
+            <img id="bookingModalImg" src="assets/rizal-monument.jpg" alt="Attraction"
               style="width: 80px; height: 80px; border-radius: var(--radius-sm); object-fit: cover;">
             <div>
               <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
                 Rate Per Visitor</div>
-              <div id="bookingModalPrice" style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">₱150</div>
+              <div id="bookingModalPrice" style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">$15</div>
               <div style="font-size: 0.82rem; color: var(--secondary); font-weight: 600;">✓ Free cancellation up to 24h
               </div>
             </div>
@@ -763,7 +765,7 @@
             style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-top: 1px solid var(--border); margin-bottom: 1.25rem;">
             <span style="font-weight: 700;">Total Price:</span>
             <span id="bookingTotalPrice"
-              style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">₱150</span>
+              style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">$15</span>
           </div>
 
           <button type="submit"
@@ -827,7 +829,7 @@
                 d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v2h-4v-2zm-4 0h2v4h-2v-4zm2 2h2v2h-2v-2zm2 2h2v2h-2v-2zm-6 2h4v2h-4v-2z" />
             </svg>
             <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; color: var(--text-muted);">SCAN
-              AT EXPRESS GATE</span>
+              AT TURNSTILE</span>
           </div>
         </div>
 
@@ -997,11 +999,6 @@
         </div>
 
         <div style="display: flex; gap: 0.75rem;">
-          <button
-            onclick="showToast('Simulated QR scan success: Pass #TH-892410 verified! Entry Granted.'); closeModal('qrScannerModal')"
-            style="flex: 1; padding: 0.85rem; background: #10b981; color: #ffffff; font-weight: 700; border-radius: var(--radius-full);">
-            Test QR Validation
-          </button>
           <button onclick="closeModal('qrScannerModal')"
             style="flex: 1; padding: 0.85rem; background: var(--bg-subtle); color: var(--text-main); font-weight: 700; border-radius: var(--radius-full); border: 1px solid var(--border);">
             Cancel

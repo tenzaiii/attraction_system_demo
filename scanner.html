@@ -20,6 +20,7 @@
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   </script>
+  <link rel="stylesheet" href="css/dark-overrides.css">
 </head>
 
 <body>
@@ -200,32 +201,25 @@
       </a>
 
       <div class="user-profile-wrapper">
-        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options" style="display: none;">
-          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
-            alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
+        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+            alt="Tourist Profile" class="portal-avatar-img">
           <div class="portal-user-meta">
             <span class="portal-user-name">Tourist Portal</span>
             <span class="portal-user-role">Sign In / Register</span>
           </div>
         </div>
       </div>
-
-      <!-- Tourist Login Link (Shown when exploring as guest) -->
-      <a href="login.html" class="auth-signin-link" id="navSignInLink" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.84rem; font-weight: 600; color: #0284c7; text-decoration: none; padding: 0.42rem 0.85rem; border: 1.5px solid #0284c7; border-radius: 9999px; transition: all 0.2s;" title="Tourist Portal Sign In & Registration">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        <span>Sign In</span>
-      </a>
     </div>
   </header>
 
   <!-- Main Scanner Content (Matching Image 4) -->
   <main class="portal-main-wrapper">
 
-    <!-- Section Header (Matching Image 4) -->
-    <div style="display: flex; align-items: flex-start; gap: 0.85rem; margin-bottom: 1.5rem;">
-      <div
-        style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #0f172a;">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+    <!-- Section Header -->
+    <div class="scanner-page-header">
+      <div class="scanner-page-header-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
           stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="7" height="7"></rect>
           <rect x="14" y="3" width="7" height="7"></rect>
@@ -234,66 +228,105 @@
         </svg>
       </div>
       <div>
-        <h1
-          style="font-family: var(--font-heading); font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-bottom: 0.2rem;">
-          QR Scanner</h1>
-        <p style="font-size: 0.9rem; color: #64748b;">Scan tourist pass to verify and check in visitors.</p>
+        <span class="scanner-eyebrow-badge">Turnstile Gate Verification</span>
+        <h1 class="scanner-page-title">QR Pass Scanner</h1>
+        <p class="scanner-page-subtitle">Scan a digital QR pass or enter the reference code to validate visitor entry.</p>
       </div>
     </div>
 
-    <!-- Scanner Viewfinder Card (Exact Match from Image 4) -->
+    <!-- Scanner Kiosk Card (Wide 2-Column on PC, Portrait on Mobile) -->
     <div class="scanner-viewport-card">
-      <div class="scanner-camera-frame" id="cameraFrame" style="background-image: url('assets/hero-banner.jpg');">
+      <div class="scanner-kiosk-grid">
 
-        <!-- Top Right Switch Camera Icon Button -->
-        <button class="scanner-top-switch-btn" title="Switch Camera" onclick="toggleCameraView()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-            <circle cx="12" cy="13" r="4" />
-          </svg>
-        </button>
+        <!-- Left Column: Live Camera Viewfinder -->
+        <div class="scanner-viewport-left">
+          <!-- Card Top Status Header -->
+          <div class="scanner-kiosk-header">
+            <div class="scanner-status-indicator" id="scannerStatusPill">
+              <span class="scanner-status-dot" id="scannerStatusDot"></span>
+              <span id="scannerStatusLabel">Standby • Ready to Scan</span>
+            </div>
+            <button type="button" class="scanner-switch-cam-pill" title="Switch Front / Rear Camera" onclick="switchScannerCamera()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+              <span>Flip Lens</span>
+            </button>
+          </div>
 
-        <!-- Centered QR Reticle Box with White Brackets & QR Code Icon -->
-        <div class="scanner-reticle-box">
-          <div class="scanner-laser-line"></div>
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm13-2h3v2h-3zm-3 2h2v3h-2zm2 3h4v3h-4zm-2 1h2v2h-2zm4-6h2v2h-2z" />
-          </svg>
+          <!-- Camera Viewfinder (Landscape on PC, Portrait on Mobile) -->
+          <div class="scanner-camera-frame" id="cameraFrame" style="background-image: url('assets/hero-banner.jpg');">
+            <!-- Live HTML5 QR Camera Reader Container -->
+            <div id="liveQrReader" class="scanner-live-reader"></div>
+
+            <!-- Centered QR Reticle Box -->
+            <div class="scanner-reticle-box" id="scannerReticleOverlay">
+              <div class="scanner-laser-line"></div>
+              <svg viewBox="0 0 24 24" fill="currentColor" id="scannerReticleSvg">
+                <path
+                  d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm13-2h3v2h-3zm-3 2h2v3h-2zm2 3h4v3h-4zm-2 1h2v2h-2zm4-6h2v2h-2z" />
+              </svg>
+            </div>
+
+            <!-- Instruction Pill -->
+            <div class="scanner-instruction-text" id="scannerInstructionText">Align QR code inside the frame</div>
+          </div>
         </div>
 
-        <!-- Instruction Text -->
-        <div class="scanner-instruction-text">Point the camera at the QR code</div>
+        <!-- Right Column: Verification Controls Panel -->
+        <div class="scanner-viewport-right">
+          <div class="scanner-controls-intro">
+            <h2 class="scanner-controls-title">Verification Controls</h2>
+            <p class="scanner-controls-desc">Use your device camera, upload a saved QR pass screenshot, or verify manually by code.</p>
+          </div>
 
-        <!-- Bottom Flash / Capture Icon Button -->
-        <button class="scanner-flash-btn" id="cameraSnapBtn" title="Capture / Scan" onclick="simulateQRScan()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3" />
-            <path
-              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
-        </button>
+          <!-- Level 1: Primary Scan Action Buttons -->
+          <div class="scanner-primary-actions">
+            <button type="button" id="toggleCameraActionBtn" class="scanner-btn-camera" onclick="toggleLiveCamera()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span id="cameraBtnLabel">Start Live Camera</span>
+            </button>
 
-      </div>
+            <label for="qrFileInput" class="scanner-btn-upload">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span>Upload QR Image</span>
+            </label>
+            <input type="file" id="qrFileInput" accept="image/*" style="display: none;" onchange="scanUploadedQrImage(event)">
+          </div>
 
-      <!-- Quick Manual Verification & Test Strip -->
-      <div
-        style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 0.65rem; flex: 1; max-width: 480px;">
-          <input type="text" id="manualPassInput" placeholder="Enter Tourist Pass Code (e.g. PASS-8842-MNL)..."
-            style="flex: 1; padding: 0.65rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: monospace; font-size: 0.9rem;">
-          <button class="btn-primary-blue" onclick="validateManualCode()">Verify Code</button>
+          <!-- Visual Divider -->
+          <div class="scanner-section-divider">
+            <span>or verify by reference code</span>
+          </div>
+
+          <!-- Level 2: Manual Pass Reference Input -->
+          <div class="scanner-manual-group">
+            <label for="manualPassInput" class="scanner-manual-label">Pass Reference Code</label>
+            <div class="scanner-manual-row">
+              <input type="text" id="manualPassInput" class="scanner-manual-input" placeholder="e.g. PASS-8448-BEA" autocomplete="off" onkeydown="if(event.key==='Enter') validateManualCode()">
+              <button type="button" class="scanner-btn-verify" onclick="validateManualCode()">Verify</button>
+            </div>
+          </div>
+
+          <!-- Subtle Helper Note -->
+          <div class="scanner-helper-note">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Verified passes automatically sync with the live Supabase turnstile log.</span>
+          </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Simulate Scans:</span>
-          <button class="portal-filter-tab" style="padding: 0.35rem 0.75rem; font-size: 0.76rem;"
-            onclick="triggerScan('PASS-8842-MNL', 'Juan Dela Cruz', 'Rizal Monument & Luneta Park', true)">Valid
-            Pass</button>
-          <button class="portal-filter-tab" style="padding: 0.35rem 0.75rem; font-size: 0.76rem;"
-            onclick="triggerScan('PASS-9912-EXP', 'Carlos Mendoza', 'Intramuros Heritage Tour', false)">Expired
-            Pass</button>
-        </div>
       </div>
     </div>
 
@@ -319,15 +352,15 @@
           </thead>
           <tbody id="scansTableBody">
 
-            <!-- Row 1: Juan Dela Cruz -->
+            <!-- Row 1: Test Visitor -->
             <tr>
-              <td>10:24 AM</td>
-              <td><strong>Juan Dela Cruz</strong></td>
-              <td>Sample: Attraction 1</td>
+              <td>10:14 AM</td>
+              <td><strong>Test Visitor</strong></td>
+              <td>Rizal Monument</td>
               <td><span class="valid-dot-pill">Valid</span></td>
               <td style="text-align: right;">
                 <button class="action-arrow-btn" style="margin-left: auto;"
-                  onclick="showScanReceipt('Juan Dela Cruz', 'Sample: Attraction 1', 'PASS-8842-MNL', '10:24 AM', 'Valid')">
+                  onclick="showScanReceipt('Test Visitor', 'Rizal Monument', 'TEST-PROBE-001', '10:14 AM', 'Valid')">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
@@ -337,45 +370,13 @@
 
             <!-- Row 2: Maria Santos -->
             <tr>
-              <td>10:18 AM</td>
+              <td>10:08 AM</td>
               <td><strong>Maria Santos</strong></td>
-              <td>Sample Event 1</td>
+              <td>Big Lagoon Marine Sanctuary</td>
               <td><span class="valid-dot-pill">Valid</span></td>
               <td style="text-align: right;">
                 <button class="action-arrow-btn" style="margin-left: auto;"
-                  onclick="showScanReceipt('Maria Santos', 'Sample Event 1', 'PASS-5120-BCY', '10:18 AM', 'Valid')">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-
-            <!-- Row 3: Carlos Reyes -->
-            <tr>
-              <td>10:12 AM</td>
-              <td><strong>Carlos Reyes</strong></td>
-              <td>Sample Attraction 2</td>
-              <td><span class="valid-dot-pill">Valid</span></td>
-              <td style="text-align: right;">
-                <button class="action-arrow-btn" style="margin-left: auto;"
-                  onclick="showScanReceipt('Carlos Reyes', 'Sample Attraction 2', 'PASS-4412-RES', '10:12 AM', 'Valid')">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-
-            <!-- Row 4: Ana Lim -->
-            <tr>
-              <td>10:05 AM</td>
-              <td><strong>Ana Lim</strong></td>
-              <td>Sample Event 2</td>
-              <td><span class="invalid-dot-pill">Invalid</span></td>
-              <td style="text-align: right;">
-                <button class="action-arrow-btn" style="margin-left: auto;"
-                  onclick="showScanReceipt('Ana Lim', 'Sample Event 2', 'PASS-0019-EXP', '10:05 AM', 'Invalid')">
+                  onclick="showScanReceipt('Maria Santos', 'Big Lagoon Marine Sanctuary', 'PASS-8448-BEA', '10:08 AM', 'Valid')">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
@@ -428,7 +429,7 @@
   <div class="modal-overlay" id="scannedHistoryModal" role="dialog" aria-modal="true">
     <div class="modal-dialog" style="max-width: 600px;">
       <div class="modal-header">
-        <h3 class="modal-title">Digital Gate Scan Audit History</h3>
+        <h3 class="modal-title">Turnstile Scan Audit History</h3>
         <button class="modal-close" onclick="closePortalModal('scannedHistoryModal')">&times;</button>
       </div>
       <div style="padding: 1.5rem;">
@@ -456,6 +457,8 @@
 
   <!-- Supabase CDN Client & Config -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/supabase-client.js"></script>
 
@@ -465,91 +468,257 @@
   <script src="js/profile-dropdown.js"></script>
   <script src="js/portal-sync.js"></script>
   <script>
-    const sampleBackgrounds = [
-      'assets/hero-banner.jpg',
-      'assets/white-beach.jpg',
-      'assets/rizal-monument.jpg',
-      'assets/pahiyas-festival.jpg'
-    ];
-    let bgIndex = 0;
+    let html5QrScanner = null;
+    let isCameraActive = false;
+    let currentFacingMode = 'environment';
+    let lastScannedCode = '';
+    let lastScanTimestamp = 0;
 
-    function toggleCameraView() {
-      bgIndex = (bgIndex + 1) % sampleBackgrounds.length;
-      document.getElementById('cameraFrame').style.backgroundImage = `url('${sampleBackgrounds[bgIndex]}')`;
+    // Extract clean pass code from raw QR payload (supports plain code, JSON, or URL)
+    function extractPassCode(rawText) {
+      if (!rawText) return '';
+      const trimmed = String(rawText).trim();
+      try {
+        if (trimmed.startsWith('{')) {
+          const parsed = JSON.parse(trimmed);
+          if (parsed.code || parsed.pass_code) return String(parsed.code || parsed.pass_code).toUpperCase().trim();
+        }
+      } catch (e) {}
+      const match = trimmed.match(/(PASS-[A-Z0-9-]+|TEST-[A-Z0-9-]+)/i);
+      if (match) return match[1].toUpperCase();
+      return trimmed.toUpperCase();
     }
 
-    function simulateQRScan() {
-      triggerScan('PASS-8842-MNL', 'Juan Dela Cruz', 'Rizal Monument & Luneta Park', true);
+    // Play audio feedback beep on scan
+    function playScanBeep(isSuccess) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = isSuccess ? 'sine' : 'sawtooth';
+        osc.frequency.setValueAtTime(isSuccess ? 880 : 240, ctx.currentTime);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + (isSuccess ? 0.15 : 0.3));
+      } catch (e) {}
     }
 
-    function validateManualCode() {
+    async function toggleLiveCamera() {
+      const frameEl = document.getElementById('cameraFrame');
+      const readerEl = document.getElementById('liveQrReader');
+      const btnLabel = document.getElementById('cameraBtnLabel');
+      const toggleBtn = document.getElementById('toggleCameraActionBtn');
+      const instrText = document.getElementById('scannerInstructionText');
+      const reticleBox = document.getElementById('scannerReticleOverlay');
+      const statusPill = document.getElementById('scannerStatusPill');
+      const statusLabel = document.getElementById('scannerStatusLabel');
+
+      if (isCameraActive && html5QrScanner) {
+        try {
+          await html5QrScanner.stop();
+          html5QrScanner.clear();
+        } catch (err) {
+          console.warn('Error stopping scanner:', err);
+        }
+        isCameraActive = false;
+        if (frameEl) frameEl.classList.remove('camera-live');
+        if (readerEl) readerEl.style.display = 'none';
+        if (reticleBox) reticleBox.style.display = 'flex';
+        if (instrText) {
+          instrText.style.display = 'block';
+          instrText.textContent = 'Align QR code inside the frame';
+        }
+        if (btnLabel) btnLabel.textContent = 'Start Live Camera';
+        if (toggleBtn) toggleBtn.classList.remove('is-live');
+        if (statusPill) statusPill.classList.remove('is-live');
+        if (statusLabel) statusLabel.textContent = 'Standby • Ready to Scan';
+        return;
+      }
+
+      if (typeof Html5Qrcode === 'undefined') {
+        if (window.showPortalToast) showPortalToast('QR camera library is loading, please try again.', 'warning');
+        return;
+      }
+
+      try {
+        if (frameEl) frameEl.classList.add('camera-live');
+        if (readerEl) readerEl.style.display = 'block';
+        if (reticleBox) reticleBox.style.display = 'none';
+        if (instrText) instrText.style.display = 'none';
+
+        html5QrScanner = new Html5Qrcode('liveQrReader');
+
+        await html5QrScanner.start(
+          { facingMode: currentFacingMode },
+          { fps: 12, qrbox: { width: 220, height: 220 } },
+          async (decodedText) => {
+            const now = Date.now();
+            const code = extractPassCode(decodedText);
+            if (!code) return;
+            // Debounce identical scans within 3.5 seconds
+            if (code === lastScannedCode && now - lastScanTimestamp < 3500) return;
+            lastScannedCode = code;
+            lastScanTimestamp = now;
+
+            await processPassVerification(code);
+          },
+          () => {
+            // Frame scan error ignored while searching for QR
+          }
+        );
+
+        isCameraActive = true;
+        if (btnLabel) btnLabel.textContent = 'Stop Camera';
+        if (toggleBtn) toggleBtn.classList.add('is-live');
+        if (statusPill) statusPill.classList.add('is-live');
+        if (statusLabel) statusLabel.textContent = 'Live Camera Active';
+      } catch (err) {
+        console.warn('Camera access failed:', err);
+        if (frameEl) frameEl.classList.remove('camera-live');
+        if (readerEl) readerEl.style.display = 'none';
+        if (reticleBox) reticleBox.style.display = 'flex';
+        if (statusPill) statusPill.classList.remove('is-live');
+        if (statusLabel) statusLabel.textContent = 'Camera Unavailable';
+        if (instrText) {
+          instrText.style.display = 'block';
+          instrText.textContent = 'Camera unavailable. Upload a QR image or enter pass code below.';
+        }
+        if (window.showPortalToast) {
+          showPortalToast('Could not access camera. You can upload a QR image or enter pass code below.', 'warning');
+        }
+      }
+    }
+
+    async function switchScannerCamera() {
+      currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+      if (isCameraActive) {
+        await toggleLiveCamera(); // stop current
+        await toggleLiveCamera(); // restart with new facingMode
+      } else {
+        await toggleLiveCamera();
+      }
+    }
+
+    async function scanUploadedQrImage(event) {
+      const file = event.target?.files?.[0];
+      if (!file) return;
+
+      if (typeof Html5Qrcode === 'undefined') {
+        if (window.showPortalToast) showPortalToast('QR decoder not available.', 'warning');
+        return;
+      }
+
+      try {
+        if (isCameraActive && html5QrScanner) {
+          await toggleLiveCamera();
+        }
+        const fileScanner = new Html5Qrcode('liveQrReader');
+        const decodedText = await fileScanner.scanFile(file, false);
+        fileScanner.clear();
+        const code = extractPassCode(decodedText);
+        if (code) {
+          await processPassVerification(code);
+        }
+      } catch (err) {
+        console.warn('QR image decode failed:', err);
+        playScanBeep(false);
+        if (window.showPortalToast) {
+          showPortalToast('No valid QR code found in the selected image.', 'warning');
+        }
+      } finally {
+        event.target.value = '';
+      }
+    }
+
+    async function validateManualCode() {
       const input = document.getElementById('manualPassInput');
-      const code = (input?.value || '').trim();
-      if (!code) {
+      const raw = (input?.value || '').trim();
+      if (!raw) {
         if (window.showPortalToast) {
           showPortalToast('Please enter a tourist pass reference code.', 'warning');
         }
         return;
       }
-
-      if (window.TourismHubStore && typeof TourismHubStore.validatePass === 'function') {
-        const res = TourismHubStore.validatePass(code);
-        triggerScan(code, res.pass?.visitorName || 'Tourist Guest', res.pass?.attraction || 'Attraction Entry', res.valid);
-      } else {
-        const isValid = !code.includes('EXP') && !code.includes('INV');
-        triggerScan(code, 'Guest Tourist', 'General Access', isValid);
-      }
+      const code = extractPassCode(raw);
       if (input) input.value = '';
+      await processPassVerification(code);
     }
 
-    function triggerScan(code, name, attraction, isValid) {
+    // Core Pass Verification & Supabase Sync
+    async function processPassVerification(code) {
+      const cleanCode = String(code || '').toUpperCase().trim();
+      if (!cleanCode) return;
+
+      let res = null;
+      if (window.TourismHubStore && typeof TourismHubStore.validatePassAsync === 'function') {
+        res = await TourismHubStore.validatePassAsync(cleanCode);
+      } else if (window.TourismHubStore && typeof TourismHubStore.validatePass === 'function') {
+        res = TourismHubStore.validatePass(cleanCode);
+      } else {
+        const isValid = !cleanCode.includes('EXP') && !cleanCode.includes('INV');
+        res = { valid: isValid, status: isValid ? 'valid' : 'invalid', pass: { visitorName: 'Guest Tourist', attraction: 'General Access' } };
+      }
+
+      const isValid = Boolean(res && (res.valid || res.status === 'valid'));
+      const visitorName = res?.pass?.visitorName || res?.pass?.touristName || 'Unregistered Visitor';
+      const attractionName = res?.pass?.attraction || 'Unrecognized Pass';
+      const statusReason = res?.status === 'already_used'
+        ? 'Already Used'
+        : res?.status === 'expired'
+          ? 'Expired'
+          : isValid
+            ? 'Valid'
+            : 'Invalid';
+
+      playScanBeep(isValid);
       const now = new Date();
       const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-      // Save log to TourismHubStore to sync real-time entries
-      if (window.TourismHubStore && typeof TourismHubStore.addLog === 'function') {
-        TourismHubStore.addLog({
-          time: timeStr,
-          pass: code,
-          visitor: name,
-          attraction: attraction,
-          party: '1 pax',
-          result: isValid ? 'Approved' : 'Denied (Invalid)'
-        });
-      }
-
-      showScanReceipt(name, attraction, code, timeStr, isValid ? 'Valid' : 'Invalid');
+      showScanReceipt(visitorName, attractionName, cleanCode, timeStr, statusReason, res?.message);
 
       if (window.showPortalToast) {
         showPortalToast(
-          isValid ? `Verified entry pass for ${name}` : `Gate alert: ${code} is invalid or expired`,
+          isValid
+            ? `Verified & checked in ${visitorName} (${cleanCode}) — Synced to Supabase`
+            : `Turnstile alert: ${cleanCode} — ${res?.message || 'Invalid or already used'}`,
           isValid ? 'success' : 'warning'
         );
       }
     }
 
-    function showScanReceipt(name, attraction, code, time, status) {
+    function showScanReceipt(name, attraction, code, time, status, customMessage) {
       document.getElementById('receiptVisitor').textContent = name;
       document.getElementById('receiptAttraction').textContent = attraction;
       document.getElementById('receiptCode').textContent = code;
       document.getElementById('receiptTime').textContent = time;
 
       const badge = document.getElementById('scanResultBadge');
-      if (status === 'Valid') {
+      if (status === 'Valid' || status === 'Approved') {
         badge.innerHTML = `<span class="valid-dot-pill" style="font-size: 0.95rem; padding: 0.4rem 1.2rem;">Pass Status: Valid Verified Entry</span>`;
+      } else if (status === 'Already Used') {
+        badge.innerHTML = `<span class="invalid-dot-pill" style="font-size: 0.95rem; padding: 0.4rem 1.2rem;">Pass Status: Duplicate Scan (Already Used)</span>`;
       } else {
-        badge.innerHTML = `<span class="invalid-dot-pill" style="font-size: 0.95rem; padding: 0.4rem 1.2rem;">Pass Status: Invalid / Expired Pass</span>`;
+        badge.innerHTML = `<span class="invalid-dot-pill" style="font-size: 0.95rem; padding: 0.4rem 1.2rem;">Pass Status: ${customMessage || 'Invalid / Expired Pass'}</span>`;
       }
 
       openPortalModal('scanModal');
     }
+
+    // Enter key support on manual input
+    document.getElementById('manualPassInput')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') validateManualCode();
+    });
 
     function openScannedHistory() {
       const tbody = document.getElementById('historyModalBody');
       if (tbody && window.TourismHubStore) {
         const logs = TourismHubStore.getLogs();
         if (logs.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 1.5rem;">No gate scans recorded yet today.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 1.5rem;">No turnstile scans recorded yet today.</td></tr>`;
         } else {
           tbody.innerHTML = logs.map(l => `
             <tr>

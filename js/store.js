@@ -14,7 +14,7 @@
     FAVORITES: 'tourismhub_temp_favorites_v1'
   };
 
-  // Default Seed Admin & Operator Accounts (Mock profile photos removed, defaults to null / initials)
+  // Default Seed Admin & Operator Accounts
   const DEFAULT_ADMIN_USERS = [
     {
       id: 'admin-001',
@@ -25,7 +25,7 @@
       roleKey: 'admin',
       department: 'Department of Tourism • National Operations',
       badge: 'Chief Operator',
-      avatar: null,
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
       terminal: 'MNL-HQ-01'
     },
     {
@@ -33,36 +33,56 @@
       name: 'Carlos Mendoza',
       email: 'turnstile@tourismhub.gov.ph',
       password: 'gate2026',
-      role: 'Receptionist',
+      role: 'Turnstile Gate Officer',
       roleKey: 'officer',
       department: 'Luneta & Intramuros Entry Stations',
       badge: 'Field Security',
-      avatar: null,
-      terminal: 'GATE-01'
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+      terminal: 'LNT-GATE-04'
     }
   ];
 
-  // Default Seed Client / Tourist Accounts (Mock profile photos removed, defaults to null / initials)
+  // Default Seed Client / Tourist Accounts
   const DEFAULT_CLIENT_USERS = [
     {
-      id: 'client-001',
+      id: '39c673f7-433a-4259-9569-8deb1904688f',
       name: 'Maria Santos',
       email: 'maria.santos@email.com',
       password: 'tourist123',
       country: 'Philippines',
-      phone: '+63 917 555 0192',
+      phone: null,
       badge: 'Verified Resident Tourist',
-      avatar: null
+      avatar: 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22128%22%20height%3D%22128%22%20viewBox%3D%220%200%20128%20128%22%3E%0A%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22grad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230284c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230369a1%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22128%22%20height%3D%22128%22%20rx%3D%2264%22%20fill%3D%22url(%23grad)%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2264%22%20y%3D%2274%22%20font-family%3D%22-apple-system%2C%20BlinkMacSystemFont%2C%20\'Segoe%20UI\'%2C%20Roboto%2C%20Helvetica%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2246%22%20font-weight%3D%22800%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20letter-spacing%3D%221.5%22%3EMS%3C%2Ftext%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E'
     },
     {
-      id: 'client-002',
+      id: '06038a82-9062-430b-a3b6-d848e0e06e30',
       name: 'Alex Tan',
       email: 'alex.tan@visitor.sg',
       password: 'tourist123',
-      country: 'Singapore',
-      phone: '+65 9123 4567',
+      country: 'Philippines',
+      phone: null,
       badge: 'International Explorer',
-      avatar: null
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+    },
+    {
+      id: '87313fe7-603f-413d-b98d-2cd18003fbe0',
+      name: 'aaa',
+      email: 'aaa@email.com',
+      password: 'aaa123',
+      country: 'aaaa',
+      phone: '1231312',
+      badge: 'New Tourist Member',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
+    },
+    {
+      id: '1672fe3b-2b7e-4c1a-a41d-0f407ff35d2f',
+      name: 'JB JACOB',
+      email: 'jacob@email.com',
+      password: 'jacob123',
+      country: 'Planet Namek',
+      phone: '',
+      badge: 'New Tourist Member',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
     }
   ];
 
@@ -75,9 +95,9 @@
       type: 'historical',
       rating: '4.8',
       reviews: '1.2k',
-      price: 150,
-      priceLabel: 'Free / Guided ₱150',
-      admission: 'Free Entry / Guided ₱150',
+      price: 15,
+      priceLabel: 'Free / Guided $15',
+      admission: 'Free Entry / Guided $15',
       operatingHours: '06:00 AM - 09:00 PM',
       capacityPerSlot: 150,
       image: 'assets/rizal-monument.jpg',
@@ -93,9 +113,9 @@
       type: 'historical',
       rating: '4.8',
       reviews: '2.1k',
-      price: 200,
-      priceLabel: 'Pass from ₱200',
-      admission: 'Heritage Pass ₱200',
+      price: 20,
+      priceLabel: 'Pass from $20',
+      admission: 'Heritage Pass $20',
       operatingHours: '08:00 AM - 06:00 PM',
       capacityPerSlot: 120,
       image: 'assets/rizal-monument.jpg',
@@ -111,9 +131,9 @@
       type: 'beach',
       rating: '4.7',
       reviews: '980',
-      price: 250,
-      priceLabel: 'Day Pass ₱250',
-      admission: 'Environmental Pass ₱250',
+      price: 25,
+      priceLabel: 'Day Pass $25',
+      admission: 'Environmental Pass $25',
       operatingHours: '05:30 AM - 10:00 PM',
       capacityPerSlot: 200,
       image: 'assets/white-beach.jpg',
@@ -129,9 +149,9 @@
       type: 'festival',
       rating: '4.9',
       reviews: '850',
-      price: 350,
-      priceLabel: 'Event Access ₱350',
-      admission: 'Special Event Access ₱350',
+      price: 35,
+      priceLabel: 'Event Access $35',
+      admission: 'Special Event Access $35',
       operatingHours: '07:00 AM - 11:00 PM',
       capacityPerSlot: 300,
       image: 'assets/pahiyas-festival.jpg',
@@ -147,9 +167,9 @@
       type: 'beach',
       rating: '4.9',
       reviews: '3.4k',
-      price: 450,
-      priceLabel: 'Tour Pass ₱450',
-      admission: 'Eco-Tour Permit ₱450',
+      price: 45,
+      priceLabel: 'Tour Pass $45',
+      admission: 'Eco-Tour Permit $45',
       operatingHours: '06:00 AM - 05:00 PM',
       capacityPerSlot: 90,
       image: 'assets/hero-banner.jpg',
@@ -159,22 +179,40 @@
       description: 'Emerald lagoon surrounded by towering karst limestone cliffs with strictly monitored eco-kayak time limits.'
     },
     {
-      id: 'sinulog-festival',
-      title: 'Sinulog Grand Mardi Gras',
-      category: 'Festival',
-      type: 'festival',
-      rating: '4.9',
-      reviews: '1.5k',
-      price: 300,
-      priceLabel: 'Grandstand ₱300',
-      admission: 'Grandstand Pass ₱300',
-      operatingHours: '07:00 AM - 09:00 PM',
-      capacityPerSlot: 250,
-      image: 'assets/pahiyas-festival.jpg',
-      badge: 'Cultural Fiesta',
-      location: 'Cebu City, Cebu',
+      id: 'testing-testing',
+      title: 'TESTING TESTING',
+      category: 'TESTING TESTING',
+      type: 'historical',
+      rating: '4.8',
+      reviews: '100',
+      price: 20,
+      priceLabel: '$20',
+      admission: 'TESTING TESTING',
+      operatingHours: '23',
+      capacityPerSlot: 2321,
+      image: 'assets/hero-banner.jpg',
+      badge: 'Featured',
+      location: 'TESTING TESTING',
+      status: 'maintenance',
+      description: 'TESTING TESTING'
+    },
+    {
+      id: 'bayan-glori',
+      title: 'Bayan Glori',
+      category: 'Historical Monument',
+      type: 'historical',
+      rating: '4.8',
+      reviews: '100',
+      price: 20,
+      priceLabel: '$20',
+      admission: 'Free',
+      operatingHours: '24/7',
+      capacityPerSlot: 102000,
+      image: 'assets/hero-banner.jpg',
+      badge: 'Featured',
+      location: 'Bayan, Q.C.',
       status: 'active',
-      description: 'The country\'s grandest cultural and religious celebration with synchronized street dancing and traditional beats.'
+      description: 'Traffic and Traffic'
     }
   ];
 
@@ -206,109 +244,131 @@
       { id: 'en-2', time: '10:00 AM - 01:00 PM', booked: 88, max: 90, status: 'near-full' },
       { id: 'en-3', time: '01:00 PM - 04:00 PM', booked: 25, max: 90, status: 'open' }
     ],
-    'sinulog-festival': [
-      { id: 'sn-1', time: '08:00 AM - 01:00 PM', booked: 240, max: 250, status: 'near-full' },
-      { id: 'sn-2', time: '01:00 PM - 06:00 PM', booked: 248, max: 250, status: 'at-capacity' }
+    'testing-testing': [
+      { id: 'tt-1', time: '08:00 AM - 12:00 PM', booked: 120, max: 2321, status: 'open' },
+      { id: 'tt-2', time: '01:00 PM - 05:00 PM', booked: 350, max: 2321, status: 'open' }
+    ],
+    'bayan-glori': [
+      { id: 'bg-1', time: '08:00 AM - 12:00 PM', booked: 1200, max: 102000, status: 'open' },
+      { id: 'bg-2', time: '01:00 PM - 05:00 PM', booked: 2400, max: 102000, status: 'open' }
     ]
   };
 
-  // Default Seed Data: Announcements & Advisories
+  // Default Seed Data: Announcements & Advisories (Synchronized with Supabase)
   const DEFAULT_ANNOUNCEMENTS = [
     {
-      id: 'ann-1',
-      title: 'Tropical Storm Advisory: Gale Warning in Visayas',
+      id: 1,
+      title: 'Severe Weather Advisory: Signal No. 1',
       type: 'weather',
       priority: 'urgent',
       target: 'White Beach Eco-Tourism Reserve',
-      text: 'Water activities temporarily suspended until 02:00 PM due to high swell alerts. Shoreline walkway remains open.',
-      timestamp: '15 mins ago',
+      text: 'Typhoon approaching coastal Luzon. Outdoor activities in Boracay may be suspended if warning elevates.',
+      author: 'Operations Desk',
+      timestamp: 'Today',
       active: true
     },
     {
-      id: 'ann-2',
-      title: 'Schedule Notice: Fort Santiago Evening Illumination Tour',
+      id: 2,
+      title: 'Extended Operating Hours for Rizal Park',
       type: 'schedule',
-      priority: 'notice',
-      target: 'Intramuros Walled City Heritage',
-      text: 'Special historic twilight walk starts at 06:30 PM tonight at Plaza Roma gate. Passes valid at gate.',
-      timestamp: '1 hour ago',
+      priority: 'normal',
+      target: 'Rizal Monument & Luneta Park',
+      text: 'Luneta heritage grounds will remain open until 10:00 PM on Friday for the cultural laser light showcase.',
+      author: 'Park Administration',
+      timestamp: 'Today',
       active: true
     },
     {
-      id: 'ann-3',
-      title: 'Traffic Advisory: Lucban Town Perimeter Regulated',
+      id: 3,
+      title: 'Pahiyas Festival Float Parade Registration',
       type: 'event',
-      priority: 'warning',
+      priority: 'normal',
       target: 'Pahiyas Harvest Festival',
-      text: 'Designated tourist shuttle park-and-ride lot active at Diversion Road to prevent historic center congestion.',
-      timestamp: '3 hours ago',
+      text: 'Registration for the grand street float procession is now officially open for accredited cultural delegations.',
+      author: 'Cultural Affairs Committee',
+      timestamp: 'Today',
+      active: true
+    },
+    {
+      id: 7,
+      title: 'Test Broadcast Advisory',
+      type: 'announcement',
+      priority: 'normal',
+      target: 'System Operations',
+      text: 'Testing connection from TourismHub integration',
+      author: 'System Operations',
+      timestamp: 'Recent',
+      active: true
+    },
+    {
+      id: 8,
+      title: 'TESTING 1',
+      type: 'event',
+      priority: 'urgent',
+      target: 'Pahiyas Harvest Festival',
+      text: 'TESTING TESTING TESTING',
+      author: 'Pahiyas Harvest Festival',
+      timestamp: 'Recent',
+      active: true
+    },
+    {
+      id: 10,
+      title: 'TEST 3',
+      type: 'event',
+      priority: 'normal',
+      target: 'Broadcast to All Attractions',
+      text: 'TESTING TESTINGTESTING TESTINGTESTING TESTINGTESTING TESTING',
+      author: 'Broadcast to All Attractions',
+      timestamp: 'Recent',
+      active: true
+    },
+    {
+      id: 11,
+      title: 'BEEP BEEP',
+      type: 'event',
+      priority: 'urgent',
+      target: 'Broadcast to All Attractions',
+      text: 'aaaaa',
+      author: 'Broadcast to All Attractions',
+      timestamp: 'Recent',
       active: true
     }
   ];
 
-  // Default Seed Data: Pre-registered Tourist Passes
+  // Default Seed Data: Pre-registered Tourist Passes (Exact Supabase Data)
   const DEFAULT_PASSES = {
-    'PASS-8842-MNL': {
-      code: 'PASS-8842-MNL',
-      visitorName: 'Juan Dela Cruz',
-      visitorEmail: 'juan.delacruz@email.ph',
-      partySize: 2,
-      attractionId: 'rizal-monument',
-      attraction: 'Rizal Monument & Luneta Park',
-      slot: '11:00 AM - 02:00 PM',
-      passType: 'Standard VIP Access',
-      status: 'valid',
-      amount: '₱300.00',
-      validDate: 'Today'
-    },
-    'PASS-5120-BCY': {
-      code: 'PASS-5120-BCY',
-      visitorName: 'Maria Santos',
-      visitorEmail: 'maria.s@worldmail.com',
+    'TEST-PROBE-001': {
+      code: 'TEST-PROBE-001',
+      visitorName: 'Test Visitor',
+      visitorEmail: 'test.visitor@email.ph',
       partySize: 1,
-      attractionId: 'white-beach-boracay',
-      attraction: 'White Beach Eco-Tourism Reserve',
-      slot: '02:00 PM - 06:00 PM',
-      passType: 'Eco Day Pass',
+      attractionId: 'rizal-monument',
+      attraction: 'Rizal Monument',
+      slot: '09:00 AM - 12:00 PM',
+      passType: 'Standard Admission',
       status: 'valid',
-      amount: '₱250.00',
-      validDate: 'Today'
+      amount: '$0.00',
+      validDate: '2026-11-10'
     },
-    'PASS-9912-EXP': {
-      code: 'PASS-9912-EXP',
-      visitorName: 'Carlos Mendoza',
-      visitorEmail: 'carlos.m@example.com',
-      partySize: 3,
-      attractionId: 'intramuros-walled-city',
-      attraction: 'Intramuros Walled City Heritage',
-      slot: '08:30 AM - 11:30 AM',
-      passType: 'Morning Heritage Walk',
-      status: 'expired',
-      amount: '₱600.00',
-      validDate: 'Yesterday (Expired)'
-    },
-    'PASS-3310-USD': {
-      code: 'PASS-3310-USD',
-      visitorName: 'Elena Rostova',
-      visitorEmail: 'elena.rostova@travel.org',
-      partySize: 2,
+    'PASS-8448-BEA': {
+      code: 'PASS-8448-BEA',
+      visitorName: 'Maria Santos',
+      visitorEmail: 'maria.santos@traveler.ph',
+      partySize: 1,
       attractionId: 'el-nido-big-lagoon',
       attraction: 'Big Lagoon Marine Sanctuary',
-      slot: '07:00 AM - 10:00 AM',
-      passType: 'Eco Kayak Permit',
-      status: 'already_used',
-      amount: '₱900.00',
-      validDate: 'Today (Checked In 07:15 AM)'
+      slot: '09:00 AM - 12:00 PM',
+      passType: 'Eco-Tour Permit',
+      status: 'valid',
+      amount: '$45.00',
+      validDate: '2026-10-20'
     }
   };
 
   // Default Check-in Logs
   const DEFAULT_LOGS = [
-    { time: '11:24 AM', pass: 'PASS-8842-MNL', visitor: 'Juan Dela Cruz', attraction: 'Rizal Monument', party: '2 pax', result: 'Approved' },
-    { time: '11:15 AM', pass: 'PASS-7721-BCY', visitor: 'Grace Tan', attraction: 'White Beach', party: '4 pax', result: 'Approved' },
-    { time: '10:58 AM', pass: 'PASS-9912-EXP', visitor: 'Carlos Mendoza', attraction: 'Intramuros', party: '3 pax', result: 'Denied (Expired)' },
-    { time: '10:42 AM', pass: 'PASS-3310-USD', visitor: 'Elena Rostova', attraction: 'Big Lagoon', party: '2 pax', result: 'Duplicate Denied' },
-    { time: '10:30 AM', pass: 'PASS-2210-PHS', visitor: 'Mateo Gomez', attraction: 'Pahiyas Festival', party: '1 pax', result: 'Approved' }
+    { time: '11:24 AM', pass: 'TEST-PROBE-001', visitor: 'Test Visitor', attraction: 'Rizal Monument', party: '1 pax', result: 'Approved' },
+    { time: '10:15 AM', pass: 'PASS-8448-BEA', visitor: 'Maria Santos', attraction: 'Big Lagoon Marine Sanctuary', party: '1 pax', result: 'Approved' }
   ];
 
   // Helper Functions for Safe LocalStorage
@@ -332,28 +392,7 @@
     }
   }
 
-  // Initialize store and purge legacy mock unsplash avatars from localStorage
-  try {
-    [KEYS.ADMIN_AUTH, KEYS.CLIENT_AUTH].forEach(k => {
-      const auth = getItem(k, null);
-      if (auth && auth.avatar && (auth.avatar.includes('unsplash.com') || auth.avatar.includes('photo-15'))) {
-        auth.avatar = null;
-        localStorage.setItem(k, JSON.stringify(auth));
-      }
-    });
-    const clientUsers = getItem(KEYS.CLIENT_USERS, null);
-    if (clientUsers && Array.isArray(clientUsers)) {
-      let modified = false;
-      clientUsers.forEach(u => {
-        if (u.avatar && (u.avatar.includes('unsplash.com') || u.avatar.includes('photo-15'))) {
-          u.avatar = null;
-          modified = true;
-        }
-      });
-      if (modified) localStorage.setItem(KEYS.CLIENT_USERS, JSON.stringify(clientUsers));
-    }
-  } catch (e) {}
-
+  // Initialize store if keys don't exist
   if (!localStorage.getItem(KEYS.CATALOG)) {
     setItem(KEYS.CATALOG, DEFAULT_CATALOG);
   }
@@ -509,18 +548,19 @@
     getPasses() {
       return getItem(KEYS.PASSES, DEFAULT_PASSES);
     },
+    getPassesArray() {
+      const p = this.getPasses();
+      return Array.isArray(p) ? p : Object.values(p || {});
+    },
     savePasses(passes) {
       setItem(KEYS.PASSES, passes);
     },
     addPass(pass) {
       const passes = this.getPasses();
-      passes[pass.code] = pass;
+      const code = String(pass.code || '').toUpperCase().trim();
+      pass.code = code;
+      passes[code] = pass;
       this.savePasses(passes);
-
-      // Online Supabase Sync
-      if (window.TourismHubSupabase && typeof TourismHubSupabase.insertPass === 'function' && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.insertPass(pass).catch(err => console.warn('[Store] Supabase insertPass sync error:', err));
-      }
 
       // If tied to an attraction, update capacity booked count
       if (pass.attractionId) {
@@ -532,69 +572,95 @@
           this.saveCapacityData(capacity);
         }
       }
+
+      // Online Supabase Sync
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.insertPass === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.insertPass(pass).catch(err => console.warn('[Store] Supabase addPass sync error:', err));
+      }
+
       return pass;
     },
     validatePass(code) {
+      const cleanCode = String(code || '').toUpperCase().trim();
       const passes = this.getPasses();
-      const pass = passes[code];
+      const pass = passes[cleanCode];
       const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const activeOperator = this.getAdminAuth();
+      const scannedBy = activeOperator ? `${activeOperator.name} (${activeOperator.terminal || 'Turnstile'})` : 'Turnstile Gate Scanner';
 
       if (!pass) {
         this.addLog({
           time: nowTime,
-          pass: code,
+          pass: cleanCode,
           visitor: 'Unknown Visitor',
           attraction: 'Unknown',
           party: '1 pax',
           result: 'Invalid (Unregistered)'
         });
-        return { status: 'invalid', message: 'Pass not found in system database' };
+        return { valid: false, status: 'invalid', message: 'Pass not found in system database' };
       }
 
       if (pass.status === 'expired') {
         this.addLog({
           time: nowTime,
-          pass: code,
+          pass: cleanCode,
           visitor: pass.visitorName,
           attraction: pass.attraction,
-          party: `${pass.partySize} pax`,
+          party: `${pass.partySize || 1} pax`,
           result: 'Denied (Expired)'
         });
-        return { status: 'expired', pass, message: 'Pass time-window expired' };
+        return { valid: false, status: 'expired', pass, message: 'Pass time-window expired' };
       }
 
-      if (pass.status === 'already_used') {
+      if (pass.status === 'already_used' || pass.status === 'already-used' || pass.status === 'used') {
         this.addLog({
           time: nowTime,
-          pass: code,
+          pass: cleanCode,
           visitor: pass.visitorName,
           attraction: pass.attraction,
-          party: `${pass.partySize} pax`,
+          party: `${pass.partySize || 1} pax`,
           result: 'Duplicate Denied'
         });
-        return { status: 'already_used', pass, message: 'Pass already scanned previously' };
+        return { valid: false, status: 'already_used', pass, message: 'Pass already scanned previously' };
       }
 
-      // Mark pass as used
+      // Mark pass as used locally
       pass.status = 'already_used';
       pass.checkedInAt = nowTime;
       this.savePasses(passes);
 
-      // Online Supabase Status Update
-      if (window.TourismHubSupabase && typeof TourismHubSupabase.updatePassStatus === 'function' && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.updatePassStatus(code, 'already_used').catch(err => console.warn('[Store] Supabase updatePassStatus sync error:', err));
+      // Online Supabase Sync
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.updatePassScanStatus === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.updatePassScanStatus(cleanCode, 'already_used', scannedBy).catch(err => console.warn('[Store] Supabase updatePassScanStatus error:', err));
       }
 
       this.addLog({
         time: nowTime,
-        pass: code,
+        pass: cleanCode,
         visitor: pass.visitorName,
         attraction: pass.attraction,
-        party: `${pass.partySize} pax`,
+        party: `${pass.partySize || 1} pax`,
         result: 'Approved'
       });
 
-      return { status: 'valid', pass, message: 'Access Granted • Attendance Logged' };
+      return { valid: true, status: 'valid', pass, message: 'Access Granted • Attendance Logged' };
+    },
+    async validatePassAsync(code) {
+      const cleanCode = String(code || '').toUpperCase().trim();
+      // 1. Check live Supabase first if online so newly created passes on other devices are recognized immediately
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.getPassByCode === 'function' && TourismHubSupabase.isReady()) {
+        try {
+          const remotePass = await TourismHubSupabase.getPassByCode(cleanCode);
+          if (remotePass) {
+            const localPasses = this.getPasses();
+            localPasses[cleanCode] = remotePass;
+            this.savePasses(localPasses);
+          }
+        } catch (err) {
+          console.warn('[Store] Live pass lookup warning:', err);
+        }
+      }
+      return this.validatePass(cleanCode);
     },
 
     // 5. Entry Logs
@@ -632,27 +698,13 @@
       return getItem(KEYS.CLIENT_USERS, DEFAULT_CLIENT_USERS);
     },
     getAdminAuth() {
-      try {
-        const data = sessionStorage.getItem(KEYS.ADMIN_AUTH) || localStorage.getItem(KEYS.ADMIN_AUTH);
-        return data ? JSON.parse(data) : null;
-      } catch (e) {
-        return null;
-      }
+      return getItem(KEYS.ADMIN_AUTH, null);
     },
     setAdminAuth(user) {
-      try {
-        if (user) {
-          sessionStorage.setItem(KEYS.ADMIN_AUTH, JSON.stringify(user));
-          localStorage.setItem(KEYS.ADMIN_AUTH, JSON.stringify(user));
-        } else {
-          sessionStorage.removeItem(KEYS.ADMIN_AUTH);
-          localStorage.removeItem(KEYS.ADMIN_AUTH);
-        }
-        window.dispatchEvent(new CustomEvent('tourismhub:sync', { detail: { key: KEYS.ADMIN_AUTH, val: user } }));
-      } catch (e) {}
+      setItem(KEYS.ADMIN_AUTH, user);
     },
     async adminLogin(email, password) {
-      // 1. Authenticate against Supabase profiles table
+      // 1. Try online Supabase profiles database first if connected
       if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
         try {
           const onlineRes = await TourismHubSupabase.loginUser(email, password);
@@ -663,11 +715,11 @@
             return onlineRes;
           }
         } catch (e) {
-          console.warn('[Store] Supabase admin authentication error:', e);
+          console.warn('[Store] Online admin authentication error, checking local store:', e);
         }
       }
 
-      // 2. Default directory fallback if Supabase not reached
+      // 2. Temporary local storage authentication fallback
       const users = this.getAdminUsers();
       const match = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
       if (!match) {
@@ -683,31 +735,17 @@
       return { success: true, user: sessionUser };
     },
     adminLogout() {
-      this.setAdminAuth(null);
+      setItem(KEYS.ADMIN_AUTH, null);
       return { success: true };
     },
     getClientAuth() {
-      try {
-        const data = sessionStorage.getItem(KEYS.CLIENT_AUTH) || localStorage.getItem(KEYS.CLIENT_AUTH);
-        return data ? JSON.parse(data) : null;
-      } catch (e) {
-        return null;
-      }
+      return getItem(KEYS.CLIENT_AUTH, null);
     },
     setClientAuth(user) {
-      try {
-        if (user) {
-          sessionStorage.setItem(KEYS.CLIENT_AUTH, JSON.stringify(user));
-          localStorage.setItem(KEYS.CLIENT_AUTH, JSON.stringify(user));
-        } else {
-          sessionStorage.removeItem(KEYS.CLIENT_AUTH);
-          localStorage.removeItem(KEYS.CLIENT_AUTH);
-        }
-        window.dispatchEvent(new CustomEvent('tourismhub:sync', { detail: { key: KEYS.CLIENT_AUTH, val: user } }));
-      } catch (e) {}
+      setItem(KEYS.CLIENT_AUTH, user);
     },
     async clientLogin(email, password) {
-      // 1. Authenticate against Supabase profiles table
+      // 1. Try online Supabase profiles database first if connected
       if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
         try {
           const onlineRes = await TourismHubSupabase.loginUser(email, password);
@@ -718,11 +756,11 @@
             return onlineRes;
           }
         } catch (e) {
-          console.warn('[Store] Supabase client authentication error:', e);
+          console.warn('[Store] Online client authentication error, checking local store:', e);
         }
       }
 
-      // 2. Default directory fallback if Supabase not reached
+      // 2. Temporary local storage authentication fallback
       const users = this.getClientUsers();
       const match = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
       if (!match) {
@@ -738,7 +776,7 @@
       return { success: true, user: sessionUser };
     },
     async clientRegister(name, email, password, country, phone) {
-      // 1. Register new user directly in Supabase profiles table
+      // 1. Try online Supabase profiles database first if connected
       if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
         try {
           const onlineRes = await TourismHubSupabase.registerTourist(name, email, password, country, phone);
@@ -749,11 +787,11 @@
             return onlineRes;
           }
         } catch (e) {
-          console.warn('[Store] Supabase client registration error:', e);
+          console.warn('[Store] Online client registration error, falling back to local store:', e);
         }
       }
 
-      // 2. Fallback registration
+      // 2. Temporary local storage registration fallback
       const users = this.getClientUsers();
       const existing = users.find(u => (u.email || '').toLowerCase().trim() === (email || '').toLowerCase().trim());
       if (existing) {
@@ -778,156 +816,8 @@
       return { success: true, user: sessionUser };
     },
     clientLogout() {
-      this.setClientAuth(null);
+      setItem(KEYS.CLIENT_AUTH, null);
       return { success: true };
-    },
-
-    /**
-     * Change user password across active session and Supabase profiles table
-     */
-    async changePassword(currentPassword, newPassword) {
-      const activeUser = this.getClientAuth() || this.getAdminAuth();
-      if (!activeUser) {
-        return { success: false, message: 'You must be signed in to change your password.' };
-      }
-
-      if (!currentPassword) {
-        return { success: false, message: 'Please enter your current password.' };
-      }
-
-      if (!newPassword || newPassword.length < 6) {
-        return { success: false, message: 'New password must be at least 6 characters long.' };
-      }
-
-      if (currentPassword === newPassword) {
-        return { success: false, message: 'New password must be different from current password.' };
-      }
-
-      // 1. Try Supabase update
-      if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
-        try {
-          const res = await TourismHubSupabase.updateUserPassword(
-            activeUser.id || activeUser.email,
-            currentPassword,
-            newPassword
-          );
-          if (res && res.success) {
-            return res;
-          } else if (res && !res.success) {
-            return res;
-          }
-        } catch (e) {
-          console.warn('[Store] Supabase password update warning:', e);
-        }
-      }
-
-      // 2. Offline fallback check
-      if (activeUser.roleKey === 'admin' || activeUser.roleKey === 'officer') {
-        const admins = this.getAdminUsers();
-        const match = admins.find(a => a.email === activeUser.email);
-        if (match && match.password !== currentPassword) {
-          return { success: false, message: 'Current password is incorrect.' };
-        }
-      } else {
-        const clients = this.getClientUsers();
-        const match = clients.find(c => c.email === activeUser.email);
-        if (match && match.password !== currentPassword) {
-          return { success: false, message: 'Current password is incorrect.' };
-        }
-        if (match) {
-          match.password = newPassword;
-          setItem(KEYS.CLIENT_USERS, clients);
-        }
-      }
-
-      return { success: true, message: 'Password updated successfully!' };
-    },
-
-    /**
-     * Generate initials SVG data URI from user's full name (e.g. Maria Santos -> MS)
-     */
-    generateInitialsAvatar(name) {
-      const cleanName = String(name || 'User').trim();
-      const parts = cleanName.split(/\s+/).filter(Boolean);
-      let initials = 'U';
-      if (parts.length === 1) {
-        initials = parts[0].substring(0, 2).toUpperCase();
-      } else if (parts.length >= 2) {
-        initials = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-      }
-
-      // Generate SVG data URI with non-bold, regular font weight
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-        <defs>
-          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#0284c7"/>
-            <stop offset="100%" stop-color="#0369a1"/>
-          </linearGradient>
-        </defs>
-        <rect width="128" height="128" rx="64" fill="url(#grad)"/>
-        <text x="64" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="44" font-weight="500" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" letter-spacing="1">${initials}</text>
-      </svg>`;
-      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-    },
-
-    /**
-     * Resolve profile avatar for a user object: returns uploaded photo or non-bold initials icon
-     */
-    getUserAvatar(user) {
-      if (!user) {
-        return this.generateInitialsAvatar('User');
-      }
-      const raw = user.avatar;
-      // If no avatar, or contains legacy mock unsplash URLs, return generated initials icon
-      if (!raw || typeof raw !== 'string' || raw.includes('unsplash.com') || raw.includes('photo-15')) {
-        return this.generateInitialsAvatar(user.name);
-      }
-      return raw;
-    },
-
-    /**
-     * Update user profile photo across session, local store, and Supabase profiles table
-     */
-    async updateProfileAvatar(avatarUrl) {
-      const client = this.getClientAuth();
-      const admin = this.getAdminAuth();
-      const activeUser = admin || client;
-
-      if (!activeUser) {
-        return { success: false, message: 'No active session found.' };
-      }
-
-      activeUser.avatar = avatarUrl;
-      if (admin) {
-        this.setAdminAuth(activeUser);
-      } else {
-        this.setClientAuth(activeUser);
-        // Also update local cached directory
-        const clients = this.getClientUsers();
-        const match = clients.find(c => c.email === activeUser.email || c.id === activeUser.id);
-        if (match) {
-          match.avatar = avatarUrl;
-          setItem(KEYS.CLIENT_USERS, clients);
-        }
-      }
-
-      // Sync to Supabase profiles table
-      if (window.TourismHubSupabase && TourismHubSupabase.isReady()) {
-        try {
-          await TourismHubSupabase.updateUserProfileAvatar(
-            activeUser.id || activeUser.email,
-            avatarUrl
-          );
-        } catch (e) {
-          console.warn('[Store] Supabase avatar sync error:', e);
-        }
-      }
-
-      // Broadcast update event so all open pages & tabs refresh their avatars immediately
-      window.dispatchEvent(new CustomEvent('tourismhub:avatarUpdated', { detail: { avatar: avatarUrl, user: activeUser } }));
-      window.dispatchEvent(new CustomEvent('tourismhub:sync', { detail: { type: 'avatar', user: activeUser } }));
-
-      return { success: true, avatar: avatarUrl };
     },
 
     // =========================================================================
@@ -995,31 +885,32 @@
       try {
         console.log('⚡ [Store] Connecting to Supabase for live catalog and announcements synchronization...');
 
-        // 1. Fetch live catalog from Supabase (sole source of truth)
+        // 1. Fetch live catalog from Supabase
         const remoteCatalog = await TourismHubSupabase.fetchCatalog();
         if (Array.isArray(remoteCatalog) && remoteCatalog.length > 0) {
-          setItem(KEYS.CATALOG, remoteCatalog);
-          console.log(`⚡ [Store] Catalog synchronized (${remoteCatalog.length} items directly from Supabase).`);
+          const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG);
+          const catalogMap = new Map();
+          localCatalog.forEach(item => catalogMap.set(item.id, item));
+          remoteCatalog.forEach(item => catalogMap.set(item.id, item));
+          const merged = Array.from(catalogMap.values());
+          setItem(KEYS.CATALOG, merged);
+          console.log(`⚡ [Store] Catalog synchronized (${merged.length} items from Supabase & local cache).`);
         }
 
         // 2. Fetch live announcements from Supabase
         const remoteAnnouncements = await TourismHubSupabase.fetchAnnouncements();
-        if (Array.isArray(remoteAnnouncements)) {
+        if (Array.isArray(remoteAnnouncements) && remoteAnnouncements.length > 0) {
           setItem(KEYS.ANNOUNCEMENTS, remoteAnnouncements);
           console.log(`⚡ [Store] Announcements synchronized (${remoteAnnouncements.length} broadcasts from Supabase).`);
         }
 
         // 3. Fetch live passes from Supabase
-        if (typeof TourismHubSupabase.fetchPasses === 'function') {
-          const remotePasses = await TourismHubSupabase.fetchPasses();
-          if (Array.isArray(remotePasses)) {
-            const passMap = {};
-            remotePasses.forEach(p => {
-              if (p && p.code) passMap[p.code] = p;
-            });
-            setItem(KEYS.PASSES, passMap);
-            console.log(`⚡ [Store] Passes synchronized (${remotePasses.length} records from Supabase).`);
-          }
+        const remotePasses = await TourismHubSupabase.fetchPasses();
+        if (remotePasses && typeof remotePasses === 'object' && Object.keys(remotePasses).length > 0) {
+          const localPasses = getItem(KEYS.PASSES, DEFAULT_PASSES);
+          const mergedPasses = { ...localPasses, ...remotePasses };
+          setItem(KEYS.PASSES, mergedPasses);
+          console.log(`⚡ [Store] Passes synchronized (${Object.keys(mergedPasses).length} passes from Supabase & local cache).`);
         }
 
         // 4. Real-time subscription to postgres changes
@@ -1027,7 +918,11 @@
           onCatalogChange: async () => {
             const freshCatalog = await TourismHubSupabase.fetchCatalog();
             if (Array.isArray(freshCatalog) && freshCatalog.length > 0) {
-              setItem(KEYS.CATALOG, freshCatalog);
+              const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG);
+              const map = new Map();
+              localCatalog.forEach(item => map.set(item.id, item));
+              freshCatalog.forEach(item => map.set(item.id, item));
+              setItem(KEYS.CATALOG, Array.from(map.values()));
             }
           },
           onAnnouncementChange: async () => {
@@ -1037,15 +932,10 @@
             }
           },
           onPassChange: async () => {
-            if (typeof TourismHubSupabase.fetchPasses === 'function') {
-              const freshPasses = await TourismHubSupabase.fetchPasses();
-              if (Array.isArray(freshPasses)) {
-                const passMap = {};
-                freshPasses.forEach(p => {
-                  if (p && p.code) passMap[p.code] = p;
-                });
-                setItem(KEYS.PASSES, passMap);
-              }
+            const freshPasses = await TourismHubSupabase.fetchPasses();
+            if (freshPasses && typeof freshPasses === 'object') {
+              const localPasses = getItem(KEYS.PASSES, DEFAULT_PASSES);
+              setItem(KEYS.PASSES, { ...localPasses, ...freshPasses });
             }
           }
         });

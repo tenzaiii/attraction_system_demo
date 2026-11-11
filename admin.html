@@ -20,6 +20,7 @@
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   </script>
+  <link rel="stylesheet" href="css/dark-overrides.css">
 </head>
 
 <body>
@@ -116,11 +117,11 @@
       <!-- Sidebar Footer User Profile -->
       <div class="sidebar-footer">
         <div class="user-snippet">
-          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E" id="adminSidebarAvatar"
-            alt="Administrator Profile" class="user-avatar" style="background: var(--bg-subtle);">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80"
+            alt="Administrator Profile" class="user-avatar">
           <div class="user-info">
-            <div class="user-name" id="adminSidebarName">Juan Miguel Repas</div>
-            <div class="user-role" id="adminSidebarRole">Head of Tourism Ops</div>
+            <div class="user-name">Juan Miguel Repas</div>
+            <div class="user-role">Head of Tourism Ops</div>
           </div>
         </div>
         <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
@@ -165,7 +166,7 @@
           <!-- System Status Pill -->
           <div class="header-status-pill">
             <span class="status-dot-pulse"></span>
-            <span>Cloud Sync Active</span>
+            <span>Turnstiles & Cloud Sync Active</span>
           </div>
 
           <!-- Dark / Light Mode Toggle Button -->
@@ -254,7 +255,7 @@
               </div>
               <div class="kpi-value" id="kpiPassesScanned">504 pax</div>
               <div class="kpi-subtext">
-                <span class="kpi-trend-positive">✓ Direct express gate</span> verification
+                <span class="kpi-trend-positive">✓ Direct turnstile</span> verification
               </div>
             </div>
 
@@ -462,7 +463,7 @@
           <div class="section-heading-row">
             <div class="section-title-wrap">
               <h2>QR Tourist Pass Scanning & Verification</h2>
-              <p>Simulate digital scanner or manually verify encrypted visitor passes at the gate.</p>
+              <p>Simulate turnstile scanner or manually verify encrypted visitor passes at the gate.</p>
             </div>
           </div>
 
@@ -470,9 +471,10 @@
 
             <!-- Left: Viewfinder & Input Simulator -->
             <div class="scanner-camera-panel">
-              <div class="scanner-viewfinder-box">
-                <div class="scanner-laser-line"></div>
-                <div class="viewfinder-target">
+              <div class="scanner-viewfinder-box" id="adminCameraBox" style="position: relative; overflow: hidden;">
+                <div id="adminLiveQrReader" style="width: 100%; height: 100%; position: absolute; inset: 0; z-index: 2; display: none; background: #000;"></div>
+                <div class="scanner-laser-line" style="z-index: 5; pointer-events: none;"></div>
+                <div class="viewfinder-target" id="adminViewfinderTarget" style="z-index: 5; pointer-events: none;">
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <rect x="3" y="3" width="7" height="7"></rect>
                     <rect x="14" y="3" width="7" height="7"></rect>
@@ -482,25 +484,38 @@
                 </div>
               </div>
 
+              <!-- Live Camera & Image Upload Controls -->
+              <div style="display: flex; gap: 0.6rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                <button type="button" class="btn-primary" id="adminToggleCameraBtn" onclick="toggleAdminLiveCamera()" style="flex: 1; background: #10b981; border-color: #10b981; justify-content: center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  <span id="adminCameraBtnLabel">Start Live Camera</span>
+                </button>
+                <label for="adminQrFileInput" class="btn-secondary" style="flex: 1; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; margin: 0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <span>Upload QR Image</span>
+                </label>
+                <input type="file" id="adminQrFileInput" accept="image/*" style="display: none;" onchange="scanAdminQrImage(event)">
+              </div>
+
               <!-- Manual / Hardware Scanner Barcode Input -->
               <div class="scanner-manual-input-row">
-                <input type="text" id="scannerManualInput" placeholder="Scan or enter pass code (e.g. PASS-8842-MNL)..."
+                <input type="text" id="scannerManualInput" placeholder="Scan or enter pass code (e.g. PASS-8448-BEA)..."
                   autocomplete="off">
                 <button class="btn-primary" id="scanSubmitBtn">Verify Pass</button>
               </div>
 
-              <!-- Quick Test Presets -->
+              <!-- Quick Verification Presets -->
               <div class="scanner-preset-buttons">
-                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-light); align-self: center;">Test
-                  Presets:</span>
-                <button class="preset-chip" onclick="testPresetPass('PASS-8842-MNL')">✓ PASS-8842-MNL (Valid Manila
-                  Pass)</button>
-                <button class="preset-chip" onclick="testPresetPass('PASS-5120-BCY')">✓ PASS-5120-BCY (Valid Boracay
-                  Pass)</button>
-                <button class="preset-chip" onclick="testPresetPass('PASS-9912-EXP')">✕ PASS-9912-EXP (Expired
-                  Pass)</button>
-                <button class="preset-chip" onclick="testPresetPass('PASS-3310-USD')">✕ PASS-3310-USD (Already
-                  Used)</button>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-light); align-self: center;">Verified Passes:</span>
+                <button class="preset-chip" onclick="testPresetPass('TEST-PROBE-001')">✓ TEST-PROBE-001 (Rizal Monument)</button>
+                <button class="preset-chip" onclick="testPresetPass('PASS-8448-BEA')">✓ PASS-8448-BEA (Big Lagoon)</button>
               </div>
             </div>
 
@@ -515,7 +530,7 @@
               <!-- Recent Scans Table -->
               <div class="recent-scans-box">
                 <div class="recent-scans-header">
-                  <h3>Recent Gate Entry Log</h3>
+                  <h3>Recent Turnstile Entry Log</h3>
                   <span style="font-size: 0.75rem; color: var(--text-muted);">Real-time Entry Transactions</span>
                 </div>
                 <table class="scans-table">
@@ -767,7 +782,7 @@
           <div class="form-row-2">
             <div class="form-group">
               <label for="attrFormPrice">Admission / Pass Label *</label>
-              <input type="text" id="attrFormPrice" class="form-control" placeholder="e.g. Heritage Pass ₱150" required>
+              <input type="text" id="attrFormPrice" class="form-control" placeholder="e.g. Heritage Pass $15" required>
             </div>
             <div class="form-group">
               <label for="attrFormCapacity">Capacity Cap Per Time-Slot *</label>
@@ -790,23 +805,6 @@
               placeholder="Describe the historical importance, natural beauty, or tourist guidelines..."
               required></textarea>
           </div>
-
-          <div class="form-group" style="background: var(--bg-subtle); padding: 0.85rem; border-radius: 8px; border: 1px dashed var(--border);">
-            <label style="display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 0.35rem; color: var(--text-main);">
-              Event / Attraction Background Photo (Max 5MB)
-            </label>
-            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-              <input type="file" id="adminAttrPhotoInput" accept="image/png, image/jpeg, image/webp" style="display: none;">
-              <button type="button" class="btn-secondary" onclick="document.getElementById('adminAttrPhotoInput').click()" style="padding: 0.45rem 0.85rem; font-size: 0.82rem; cursor: pointer; border-radius: 6px; border: 1px solid var(--border);">
-                Choose Image File
-              </button>
-              <span id="adminAttrPhotoStatus" style="font-size: 0.78rem; color: var(--text-muted);">Default Banner</span>
-            </div>
-            <div id="adminAttrPhotoPreviewBox" style="display: none; margin-top: 0.75rem; border-radius: 8px; overflow: hidden; height: 110px; border: 1px solid var(--border); position: relative;">
-              <img id="adminAttrPhotoImg" src="" alt="Background Preview" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-              <button type="button" onclick="clearAdminAttrPhoto()" style="position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 4px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;" title="Remove uploaded photo">&times; Remove</button>
-            </div>
-          </div>
         </div>
 
         <div class="admin-modal-footer">
@@ -827,6 +825,8 @@
 
   <!-- Supabase CDN Client & Config -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/supabase-client.js"></script>
 

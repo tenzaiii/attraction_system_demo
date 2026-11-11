@@ -104,7 +104,9 @@
     let favCount = 0;
     if (window.TourismHubStore) {
       if (typeof TourismHubStore.getPasses === 'function') {
-        passCount = (TourismHubStore.getPasses() || []).length;
+        const rawPasses = TourismHubStore.getPasses();
+        const passesArr = Array.isArray(rawPasses) ? rawPasses : Object.values(rawPasses || {});
+        passCount = passesArr.length;
       }
       if (typeof TourismHubStore.getFavorites === 'function') {
         favCount = (TourismHubStore.getFavorites() || []).length;
@@ -112,9 +114,7 @@
     }
 
     if (user) {
-      const avatarUrl = (window.TourismHubStore && TourismHubStore.getUserAvatar)
-        ? TourismHubStore.getUserAvatar(user)
-        : (user.avatar || '');
+      const avatarUrl = user.avatar || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
       const name = user.name || (isAdmin ? 'Operator' : 'Tourist');
       const email = user.email || '';
       const badge = isAdmin ? (user.role || 'Admin Clearance') : (user.badge || 'Verified Tourist');
@@ -175,12 +175,9 @@
       `;
     } else {
       // Guest Visitor Dropdown
-      const guestAvatar = (window.TourismHubStore && TourismHubStore.generateInitialsAvatar)
-        ? TourismHubStore.generateInitialsAvatar('Guest Visitor')
-        : '';
       dropdown.innerHTML = `
         <div class="dropdown-header">
-          <img src="${guestAvatar}" alt="Guest" class="dropdown-avatar">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="Guest" class="dropdown-avatar">
           <div class="dropdown-user-info">
             <div class="dropdown-user-name">Welcome, Visitor</div>
             <div class="dropdown-user-email">Guest Session</div>
@@ -214,38 +211,69 @@
     }
   }
 
-  // Universal handler: navigate directly to dedicated Profile Page (or Login if guest)
-  window.navigateToProfilePage = function (event) {
+  // Universal handler: toggles interactive profile dropdown menu
+  window.toggleProfileDropdown = function (event, widgetEl) {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
-    const auth = getActiveUser();
-    if (auth && auth.user) {
-      window.location.href = 'profile.html';
-    } else {
-      window.location.href = 'login.html';
-    }
-  };
 
-  // Universal handler: backward compatibility alias
-  window.toggleProfileDropdown = function (event) {
-    window.navigateToProfilePage(event);
+    const targetWidget = widgetEl || (event ? event.currentTarget : null) || document.querySelector('.portal-user-profile');
+    if (!targetWidget) return;
+
+    // Use widget's parent wrapper if available, or targetWidget itself
+    const wrapper = targetWidget.closest('.user-profile-wrapper') || targetWidget.parentElement || targetWidget;
+    wrapper.style.position = 'relative';
+
+    const dropdown = getOrCreateDropdown(wrapper);
+    const wasActive = dropdown.classList.contains('active');
+
+    // Close any other open dropdowns first
+    closeAllDropdowns();
+
+    if (!wasActive) {
+      renderDropdownContent(dropdown);
+      dropdown.classList.add('active');
+    }
   };
 
   // Wire profile triggers and outside click handler on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Direct clicks on user profile widget, avatar, meta, and name to profile.html
-    document.querySelectorAll('.portal-user-profile, #userProfileBtn, .portal-user-name, .portal-user-meta').forEach(widget => {
+    // 1. Ensure position relative on wrappers and profile buttons
+    document.querySelectorAll('.portal-user-profile').forEach(widget => {
+      // Clear inline onclick so our handler controls it
       widget.removeAttribute('onclick');
-      widget.style.cursor = 'pointer';
+
+      let wrapper = widget.closest('.user-profile-wrapper');
+      if (!wrapper) {
+        // Wrap widget in a user-profile-wrapper if not already wrapped
+        wrapper = document.createElement('div');
+        wrapper.className = 'user-profile-wrapper';
+        widget.parentNode.insertBefore(wrapper, widget);
+        wrapper.appendChild(widget);
+      }
+      wrapper.style.position = 'relative';
 
       widget.addEventListener('click', function (e) {
-        window.navigateToProfilePage(e);
+        window.toggleProfileDropdown(e, widget);
       });
     });
 
-    // 2. Initialize topbar theme toggle icons to match current state
+    // 2. Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.user-profile-wrapper') && !e.target.closest('.portal-user-profile')) {
+        closeAllDropdowns();
+      }
+    });
+
+    // 3. Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeAllDropdowns();
+      }
+    });
+
+    // 4. Initialize topbar theme toggle icons to match current state
     const isDarkCurrent = document.documentElement.getAttribute('data-theme') === 'dark';
     updateThemeButtonIcons(isDarkCurrent);
   });

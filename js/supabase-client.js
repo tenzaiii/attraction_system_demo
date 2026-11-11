@@ -202,89 +202,6 @@
       }
     },
 
-    /**
-     * Update user password in Supabase `profiles` table
-     */
-    async updateUserPassword(emailOrId, currentPassword, newPassword) {
-      if (!supabaseClient) {
-        return { success: false, message: 'Database client not connected.' };
-      }
-      try {
-        const cleanIdent = String(emailOrId || '').trim().toLowerCase();
-        // 1. Fetch current profile
-        let query = supabaseClient.from('profiles').select('*');
-        if (cleanIdent.includes('@')) {
-          query = query.eq('email', cleanIdent);
-        } else {
-          query = query.eq('id', cleanIdent);
-        }
-        const { data, error } = await query.single();
-        if (error || !data) {
-          return { success: false, message: 'User profile not found in system directory.' };
-        }
-
-        // 2. Verify current password
-        if (data.password_hash !== currentPassword) {
-          return { success: false, message: 'Current password is incorrect. Please re-enter.' };
-        }
-
-        // 3. Update password hash
-        const { error: updateError } = await supabaseClient
-          .from('profiles')
-          .update({
-            password_hash: newPassword,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', data.id);
-
-        if (updateError) throw updateError;
-
-        console.log('⚡ [Supabase] Password successfully updated for profile:', data.email);
-        return { success: true, message: 'Password updated successfully!' };
-      } catch (err) {
-        console.warn('⚠️ [Supabase] updateUserPassword error:', err.message);
-        return { success: false, message: err.message || 'Failed to update password.' };
-      }
-    },
-
-    /**
-     * Update user avatar in Supabase `profiles` table (and Storage if available)
-     */
-    async updateUserProfileAvatar(emailOrId, avatarUrl) {
-      if (!supabaseClient) {
-        return { success: false, message: 'Database client not connected.' };
-      }
-      try {
-        const cleanIdent = String(emailOrId || '').trim().toLowerCase();
-        let query = supabaseClient.from('profiles').select('id, email');
-        if (cleanIdent.includes('@')) {
-          query = query.eq('email', cleanIdent);
-        } else {
-          query = query.eq('id', cleanIdent);
-        }
-        const { data, error } = await query.single();
-        if (error || !data) {
-          return { success: false, message: 'User profile not found in Supabase directory.' };
-        }
-
-        const { error: updateError } = await supabaseClient
-          .from('profiles')
-          .update({
-            avatar: avatarUrl,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', data.id);
-
-        if (updateError) throw updateError;
-
-        console.log('⚡ [Supabase] Avatar successfully updated in profiles table for:', data.email);
-        return { success: true, avatar: avatarUrl };
-      } catch (err) {
-        console.warn('⚠️ [Supabase] updateUserProfileAvatar error:', err.message);
-        return { success: false, message: err.message || 'Failed to update avatar in database.' };
-      }
-    },
-
     // =========================================================================
     // CATALOG & ATTRACTIONS DATA (Supabase Sync)
     // =========================================================================
@@ -302,8 +219,8 @@
         status: row.status || 'active',
         rating: row.rating ? String(row.rating) : '4.8',
         reviews: row.reviews ? String(row.reviews) : '1.2k',
-        price: row.price !== null && row.price !== undefined ? Number(row.price) : 150,
-        priceLabel: row.price_label || (row.price ? `₱${row.price}` : 'Free'),
+        price: row.price !== null && row.price !== undefined ? Number(row.price) : 20,
+        priceLabel: row.price_label || (row.price ? `$${row.price}` : 'Free'),
         admission: row.admission || 'Standard Admission',
         operatingHours: row.operating_hours || '08:00 AM - 06:00 PM',
         capacityPerSlot: row.capacity_per_slot || 100,
@@ -331,7 +248,7 @@
         rating: String(item.rating || '4.8'),
         reviews: String(item.reviews || '100'),
         price: priceVal,
-        price_label: item.priceLabel || item.price_label || (priceVal ? `₱${priceVal}` : 'Free'),
+        price_label: item.priceLabel || item.price_label || (priceVal ? `$${priceVal}` : 'Free'),
         admission: item.admission || 'Standard Admission',
         operating_hours: item.operatingHours || item.operating_hours || '08:00 AM - 06:00 PM',
         capacity_per_slot: Number(item.capacityPerSlot || item.capacity_per_slot || 100),
@@ -526,49 +443,75 @@
     },
 
     // =========================================================================
-    // PASSES & CAPACITY (Supabase Sync)
+    // TOURIST PASSES & QR SCANNER INTEGRATION (Supabase Sync)
     // =========================================================================
 
+    /**
+     * Map database row from `passes` table to client pass object
+     */
     mapPassFromDb(row) {
-      if (!row) return null;
+      if (!row || !row.pass_code) return null;
+      const amtNum = row.amount_paid !== null && row.amount_paid !== undefined ? Number(row.amount_paid) : 0;
+      let checkedInTime = null;
+      if (row.scanned_at) {
+        try {
+          checkedInTime = new Date(row.scanned_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } catch (e) {
+          checkedInTime = row.scanned_at;
+        }
+      }
       return {
-        code: row.pass_code,
-        visitorName: row.visitor_name,
+        id: row.id,
+        code: String(row.pass_code).toUpperCase().trim(),
+        visitorName: row.visitor_name || 'Tourist Guest',
+        touristName: row.visitor_name || 'Tourist Guest',
         visitorEmail: row.visitor_email || '',
-        partySize: row.party_size || 1,
-        attractionId: row.attraction_id,
-        attraction: row.attraction_title || 'Attraction Pass',
-        slot: row.time_slot || 'Standard Access',
-        passType: 'Standard Tourist Pass',
-        status: row.status || 'valid',
-        amount: row.amount_paid ? (String(row.amount_paid).startsWith('₱') ? row.amount_paid : `₱${row.amount_paid}`) : '₱250.00',
+        userId: row.user_id || null,
+        attractionId: row.attraction_id || 'rizal-monument',
+        attraction: row.attraction_title || 'Rizal Monument',
+        partySize: Number(row.party_size || 1),
+        pax: Number(row.party_size || 1),
         validDate: row.pass_date || 'Today',
-        issuedAt: row.created_at || new Date().toISOString()
+        date: row.pass_date || 'Today',
+        slot: row.time_slot || '09:00 AM - 12:00 PM',
+        passType: 'Standard Tourist Pass',
+        amount: `$${amtNum.toFixed(2)}`,
+        status: row.status || 'valid',
+        checkedInAt: checkedInTime,
+        scannedAt: row.scanned_at || null,
+        scannedBy: row.scanned_by || null,
+        created_at: row.created_at
       };
     },
 
+    /**
+     * Map client pass object to database row for `passes` table
+     */
     mapPassToDb(pass) {
       if (!pass) return null;
-      const amtNum = typeof pass.amount === 'number' ? pass.amount : parseFloat(String(pass.amount || '0').replace(/[^0-9.]/g, '')) || 0;
+      const rawAmt = typeof pass.amount === 'number'
+        ? pass.amount
+        : parseFloat(String(pass.amount || '0').replace(/[^0-9.-]+/g, '')) || 0;
       return {
-        pass_code: pass.code,
-        visitor_name: pass.visitorName || 'Tourist Guest',
+        pass_code: String(pass.code || '').toUpperCase().trim(),
+        visitor_name: pass.visitorName || pass.touristName || 'Tourist Guest',
         visitor_email: pass.visitorEmail || null,
+        user_id: pass.userId || null,
         attraction_id: pass.attractionId || null,
-        attraction_title: pass.attraction || 'Attraction Pass',
-        party_size: pass.partySize || 1,
-        pass_date: pass.validDate || new Date().toISOString().split('T')[0],
+        attraction_title: pass.attraction || 'Attraction Entry',
+        party_size: Number(pass.partySize || pass.pax || 1),
+        pass_date: pass.validDate || pass.date || new Date().toISOString().split('T')[0],
         time_slot: pass.slot || '09:00 AM - 12:00 PM',
-        amount_paid: amtNum,
+        amount_paid: rawAmt,
         status: pass.status || 'valid'
       };
     },
 
     /**
-     * Fetch all digital passes from Supabase `passes` table
+     * Fetch all passes from Supabase `passes` table
      */
     async fetchPasses() {
-      if (!supabaseClient) return [];
+      if (!supabaseClient) return null;
       try {
         const { data, error } = await supabaseClient
           .from('passes')
@@ -576,19 +519,47 @@
           .order('created_at', { ascending: false });
 
         if (error) throw error;
-        if (!Array.isArray(data)) return [];
-        return data.map(row => this.mapPassFromDb(row));
+        if (!Array.isArray(data)) return {};
+        const passesMap = {};
+        data.forEach(row => {
+          const mapped = this.mapPassFromDb(row);
+          if (mapped && mapped.code) {
+            passesMap[mapped.code] = mapped;
+          }
+        });
+        return passesMap;
       } catch (err) {
         console.warn('⚠️ [Supabase] Failed to fetch passes:', err.message);
-        return [];
+        return null;
       }
     },
 
     /**
-     * Insert a new tourist pass into Supabase `passes`
+     * Fetch a single pass by its pass_code directly from Supabase `passes` table
+     */
+    async getPassByCode(code) {
+      if (!supabaseClient || !code) return null;
+      try {
+        const cleanCode = String(code).trim().toUpperCase();
+        const { data, error } = await supabaseClient
+          .from('passes')
+          .select('*')
+          .ilike('pass_code', cleanCode)
+          .maybeSingle();
+
+        if (error) throw error;
+        return data ? this.mapPassFromDb(data) : null;
+      } catch (err) {
+        console.warn('⚠️ [Supabase] getPassByCode error:', err.message);
+        return null;
+      }
+    },
+
+    /**
+     * Insert or upsert a newly booked pass into Supabase `passes` table
      */
     async insertPass(pass) {
-      if (!supabaseClient) return null;
+      if (!supabaseClient || !pass) return null;
       try {
         const dbPayload = this.mapPassToDb(pass);
         const { data, error } = await supabaseClient
@@ -598,8 +569,9 @@
           .single();
 
         if (error) throw error;
-        console.log('⚡ [Supabase] Issued pass:', pass.code);
-        return { success: true, data: this.mapPassFromDb(data) };
+        const saved = this.mapPassFromDb(data);
+        console.log('⚡ [Supabase] Saved new tourist pass:', saved.code);
+        return { success: true, data: saved };
       } catch (err) {
         console.warn('⚠️ [Supabase] Failed to insert pass:', err.message);
         return { success: false, message: err.message };
@@ -607,21 +579,29 @@
     },
 
     /**
-     * Update pass status in Supabase `passes`
+     * Update pass status in Supabase `passes` table when scanned at turnstile
      */
-    async updatePassStatus(code, status) {
-      if (!supabaseClient) return null;
+    async updatePassScanStatus(code, status, scannedBy = 'Turnstile Scanner') {
+      if (!supabaseClient || !code) return null;
       try {
+        const cleanCode = String(code).trim().toUpperCase();
         const { data, error } = await supabaseClient
           .from('passes')
-          .update({ status: status, scanned_at: new Date().toISOString() })
-          .eq('pass_code', code)
-          .select();
+          .update({
+            status: status,
+            scanned_at: new Date().toISOString(),
+            scanned_by: scannedBy
+          })
+          .ilike('pass_code', cleanCode)
+          .select()
+          .maybeSingle();
 
         if (error) throw error;
-        return { success: true, data };
+        const updated = data ? this.mapPassFromDb(data) : null;
+        console.log(`⚡ [Supabase] Updated pass ${cleanCode} status to "${status}"`);
+        return { success: true, data: updated };
       } catch (err) {
-        console.warn('⚠️ [Supabase] Failed to update pass:', err.message);
+        console.warn('⚠️ [Supabase] Failed to update pass scan status:', err.message);
         return { success: false, message: err.message };
       }
     },

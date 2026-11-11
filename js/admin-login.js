@@ -57,14 +57,14 @@ function submitAdminLogin(email, password) {
   clearAlerts();
   setLoading(submitBtn, true);
 
-  setTimeout(() => {
+  setTimeout(async () => {
     setLoading(submitBtn, false);
     if (!window.TourismHubStore || typeof TourismHubStore.adminLogin !== 'function') {
       showNotice('Clearance database is initializing. Please retry.', 'error');
       return;
     }
 
-    const res = TourismHubStore.adminLogin(email, password);
+    const res = await TourismHubStore.adminLogin(email, password);
     if (res.success) {
       showNotice(`Clearance Verified: ${res.user.name} (${res.user.role}). Entering console...`, 'success');
       setTimeout(() => {
@@ -88,13 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (current) {
       const activeBar = document.getElementById('activeAdminSessionBar');
       if (activeBar) {
-        const adminAvatar = (TourismHubStore.getUserAvatar)
-          ? TourismHubStore.getUserAvatar(current)
-          : (current.avatar || '');
         activeBar.innerHTML = `
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: rgba(56, 189, 248, 0.12); border: 1.5px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1.25rem;">
             <div style="display: flex; align-items: center; gap: 0.6rem;">
-              <img src="${adminAvatar}" alt="${current.name}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #38bdf8;">
+              <img src="${current.avatar || 'assets/hero-banner.jpg'}" alt="${current.name}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #38bdf8;">
               <div style="font-size: 0.82rem; color: #e0f2fe; line-height: 1.3;">
                 <strong>Active: ${current.name}</strong><br>
                 <span style="font-size: 0.72rem; color: #38bdf8;">${current.role}</span>
@@ -108,17 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
     }
-  }
-
-  // Populate terminal demo cards with initials avatars
-  if (window.TourismHubStore && TourismHubStore.generateInitialsAvatar) {
-    document.querySelectorAll('.terminal-demo-card').forEach(card => {
-      const nameEl = card.querySelector('.terminal-demo-name');
-      const avatarEl = card.querySelector('.terminal-demo-avatar');
-      if (nameEl && avatarEl) {
-        avatarEl.src = TourismHubStore.generateInitialsAvatar(nameEl.textContent.trim());
-      }
-    });
   }
 
   if (form) {

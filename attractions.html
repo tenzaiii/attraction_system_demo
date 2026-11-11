@@ -21,6 +21,7 @@
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   </script>
+  <link rel="stylesheet" href="css/dark-overrides.css">
 </head>
 
 <body>
@@ -210,21 +211,15 @@
       </a>
 
       <div class="user-profile-wrapper">
-        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options" style="display: none;">
-          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
-            alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
+        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+            alt="Tourist Profile" class="portal-avatar-img">
           <div class="portal-user-meta">
             <span class="portal-user-name">Tourist Portal</span>
             <span class="portal-user-role">Sign In / Register</span>
           </div>
         </div>
       </div>
-
-      <!-- Tourist Login Link (Shown when exploring as guest) -->
-      <a href="login.html" class="auth-signin-link" id="navSignInLink" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.84rem; font-weight: 600; color: #0284c7; text-decoration: none; padding: 0.42rem 0.85rem; border: 1.5px solid #0284c7; border-radius: 9999px; transition: all 0.2s;" title="Tourist Portal Sign In & Registration">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        <span>Sign In</span>
-      </a>
     </div>
   </header>
 
@@ -954,8 +949,8 @@
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Admission Type</label>
             <select id="newEventAdmission" style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
               <option value="Free Access">Free Open Access</option>
-              <option value="Festival Pass">Festival Pass (₱200)</option>
-              <option value="VIP Pass">VIP Fast Track (₱450)</option>
+              <option value="Festival Pass">Festival Pass ($20)</option>
+              <option value="VIP Pass">VIP Fast Track ($45)</option>
             </select>
           </div>
           <div>
@@ -969,24 +964,6 @@
           <textarea id="newEventDesc" rows="2" required placeholder="Highlights of performances, celebrations, and schedules..."
             style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; resize: vertical;"></textarea>
         </div>
-
-        <div style="margin-bottom: 1.25rem; background: var(--bg-subtle); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px dashed var(--border);">
-          <label style="display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 0.35rem; color: var(--text-main);">
-            Event Background Photo (Max 5MB)
-          </label>
-          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-            <input type="file" id="newEventPhotoInput" accept="image/png, image/jpeg, image/webp" style="display: none;">
-            <button type="button" class="btn-secondary" onclick="document.getElementById('newEventPhotoInput').click()" style="padding: 0.45rem 0.85rem; font-size: 0.82rem; cursor: pointer; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-weight: 600;">
-              Choose Image File
-            </button>
-            <span id="newEventPhotoStatus" style="font-size: 0.78rem; color: var(--text-muted);">Default Festival Banner</span>
-          </div>
-          <div id="newEventPhotoPreviewBox" style="display: none; margin-top: 0.75rem; border-radius: 8px; overflow: hidden; height: 110px; border: 1px solid var(--border); position: relative;">
-            <img id="newEventPhotoImg" src="" alt="Event Background Preview" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-            <button type="button" onclick="clearEventPhotoUpload()" style="position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 4px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;" title="Remove uploaded photo">&times; Remove</button>
-          </div>
-        </div>
-
         <button type="submit" class="btn-primary-blue" style="width: 100%; justify-content: center;">Publish Event Schedule</button>
       </form>
     </div>
@@ -1136,72 +1113,6 @@
       }
     }
 
-    // Event Photo Upload state
-    let uploadedEventPhotoDataUrl = null;
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const photoInput = document.getElementById('newEventPhotoInput');
-      if (photoInput) {
-        photoInput.addEventListener('change', (e) => {
-          const file = e.target.files && e.target.files[0];
-          if (!file) return;
-
-          // 5MB Limit Validation
-          const MAX_SIZE_MB = 5;
-          if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-            alert(`Event photo exceeds ${MAX_SIZE_MB}MB limit! Please select a smaller photo.`);
-            photoInput.value = '';
-            return;
-          }
-
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            // Compress and format to 16:9 canvas
-            const img = new Image();
-            img.onload = function() {
-              const canvas = document.createElement('canvas');
-              canvas.width = 960;
-              canvas.height = 540;
-              const ctx = canvas.getContext('2d');
-
-              // Fit & cover 16:9 aspect
-              const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-              const w = img.width * scale;
-              const h = img.height * scale;
-              const x = (canvas.width - w) / 2;
-              const y = (canvas.height - h) / 2;
-
-              ctx.drawImage(img, x, y, w, h);
-              uploadedEventPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.85);
-
-              const previewBox = document.getElementById('newEventPhotoPreviewBox');
-              const previewImg = document.getElementById('newEventPhotoImg');
-              const status = document.getElementById('newEventPhotoStatus');
-              if (previewBox && previewImg) {
-                previewImg.src = uploadedEventPhotoDataUrl;
-                previewBox.style.display = 'block';
-              }
-              if (status) status.textContent = file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + 'MB)';
-            };
-            img.src = evt.target.result;
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-    });
-
-    function clearEventPhotoUpload() {
-      uploadedEventPhotoDataUrl = null;
-      const photoInput = document.getElementById('newEventPhotoInput');
-      if (photoInput) photoInput.value = '';
-      const previewBox = document.getElementById('newEventPhotoPreviewBox');
-      const previewImg = document.getElementById('newEventPhotoImg');
-      const status = document.getElementById('newEventPhotoStatus');
-      if (previewBox) previewBox.style.display = 'none';
-      if (previewImg) previewImg.src = '';
-      if (status) status.textContent = 'Default Festival Banner';
-    }
-
     function handlePortalAddEvent(e) {
       e.preventDefault();
       const title = document.getElementById('newEventTitle').value;
@@ -1221,7 +1132,7 @@
         operatingHours: hours,
         admission: adm,
         capacityPerSlot: cap,
-        image: uploadedEventPhotoDataUrl || 'assets/pahiyas-festival.jpg',
+        image: 'assets/pahiyas-festival.jpg',
         location: loc,
         badge: 'Festival',
         description: desc
@@ -1233,7 +1144,6 @@
 
       closePortalModal('addEventModal');
       document.getElementById('portalAddEventForm').reset();
-      clearEventPhotoUpload();
       if (window.showPortalToast) {
         showPortalToast(`Event "${title}" published and synchronized!`);
       }

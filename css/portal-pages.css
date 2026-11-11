@@ -1488,22 +1488,189 @@
 }
 
 /* ==========================================================================
-   Page 4: QR Scanner (Image 4)
+   Page 4: QR Scanner (Wide 2-Column on PC, Portrait Kiosk on Mobile)
    ========================================================================== */
-.scanner-viewport-card {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 2rem;
+.scanner-page-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  max-width: 100%;
+  margin: 0 0 1.5rem 0;
+  gap: 1rem;
 }
 
+.scanner-page-header-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.14);
+}
+
+.scanner-eyebrow-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #0284c7;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  margin-bottom: 0.3rem;
+}
+
+.scanner-page-title {
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin: 0 0 0.25rem 0;
+}
+
+.scanner-page-subtitle {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.scanner-viewport-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 1.75rem;
+  box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.03);
+  margin: 0 0 2.5rem 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.scanner-kiosk-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.scanner-viewport-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.scanner-viewport-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 1.5rem;
+}
+
+.scanner-controls-intro {
+  margin-bottom: 1.25rem;
+}
+
+.scanner-controls-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.35rem 0;
+}
+
+.scanner-controls-desc {
+  font-size: 0.83rem;
+  color: #64748b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Top Kiosk Status Bar */
+.scanner-kiosk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.scanner-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  transition: var(--transition);
+}
+
+.scanner-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #94a3b8;
+  transition: var(--transition);
+}
+
+.scanner-status-indicator.is-live {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #047857;
+}
+
+.scanner-status-indicator.is-live .scanner-status-dot {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  animation: pulseLiveDot 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseLiveDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.75; }
+}
+
+.scanner-switch-cam-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.scanner-switch-cam-pill:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Camera Viewfinder Frame (Landscape on PC, Portrait on Mobile) */
 .scanner-camera-frame {
   position: relative;
   width: 100%;
-  height: 380px;
-  border-radius: var(--radius-md);
+  height: 360px;
+  flex: 1;
+  border-radius: 18px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1511,35 +1678,25 @@
   justify-content: center;
   background-size: cover;
   background-position: center;
+  background-color: #0f172a;
+  border: 2px solid rgba(15, 23, 42, 0.08);
+  box-shadow: inset 0 4px 24px rgba(0, 0, 0, 0.45);
 }
 
 .scanner-camera-frame::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(2px);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.7) 100%);
+  backdrop-filter: blur(3px);
 }
 
-.scanner-top-switch-btn {
+.scanner-live-reader {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(8px);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
-  transition: var(--transition);
-}
-
-.scanner-top-switch-btn:hover {
-  background: rgba(255, 255, 255, 0.4);
+  inset: 0;
+  z-index: 2;
+  display: none;
+  background: #000000;
 }
 
 .scanner-reticle-box {
@@ -1552,58 +1709,258 @@
   justify-content: center;
 }
 
-/* Corner Reticle Brackets matching Image 4 */
+/* Corner Reticle Brackets */
 .scanner-reticle-box::before {
   content: '';
   position: absolute;
   inset: 0;
   border: 4px solid #ffffff;
-  border-radius: 20px;
+  border-radius: 22px;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
   clip-path: polygon(
-    0% 0%, 25% 0%, 25% 4px, 0% 4px, 0% 25%, 4px 25%, 4px 0%,
-    75% 0%, 100% 0%, 100% 25%, calc(100% - 4px) 25%, calc(100% - 4px) 4px, 75% 4px,
-    100% 75%, 100% 100%, 75% 100%, 75% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 75%,
-    0% 75%, 0% 100%, 25% 100%, 25% calc(100% - 4px), 4px calc(100% - 4px), 4px 75%
+    0% 0%, 26% 0%, 26% 4px, 0% 4px, 0% 26%, 4px 26%, 4px 0%,
+    74% 0%, 100% 0%, 100% 26%, calc(100% - 4px) 26%, calc(100% - 4px) 4px, 74% 4px,
+    100% 74%, 100% 100%, 74% 100%, 74% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 74%,
+    0% 74%, 0% 100%, 26% 100%, 26% calc(100% - 4px), 4px calc(100% - 4px), 4px 74%
   );
 }
 
 .scanner-reticle-box svg {
-  width: 80px;
-  height: 80px;
+  width: 76px;
+  height: 76px;
   color: #ffffff;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .scanner-instruction-text {
   position: relative;
   z-index: 4;
-  color: #ffffff;
+  color: #f8fafc;
   font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 600;
   margin-top: 1.25rem;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(6px);
+  text-align: center;
+  max-width: 88%;
 }
 
-.scanner-flash-btn {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(8px);
-  color: #ffffff;
-  display: flex;
+/* Tier 1: Primary Camera & Upload Actions */
+.scanner-primary-actions {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 0.7rem;
+}
+
+.scanner-btn-camera {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  z-index: 5;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
   transition: var(--transition);
 }
 
-.scanner-flash-btn:hover {
-  background: rgba(255, 255, 255, 0.4);
+.scanner-btn-camera:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.38);
+}
+
+.scanner-btn-camera.is-live {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+}
+
+.scanner-btn-camera.is-live:hover {
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.38);
+}
+
+.scanner-btn-upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  margin: 0;
+}
+
+.scanner-btn-upload:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+/* Labeled Divider */
+.scanner-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.35rem 0 1.1rem 0;
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.scanner-section-divider::before,
+.scanner-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #cbd5e1;
+}
+
+/* Tier 2: Manual Reference Code Verification */
+.scanner-manual-group {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+}
+
+.scanner-manual-label {
+  display: block;
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+  margin-bottom: 0.55rem;
+}
+
+.scanner-manual-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.scanner-manual-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  font-family: monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #0f172a;
+  outline: none;
+  transition: var(--transition);
+}
+
+.scanner-manual-input::placeholder {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  letter-spacing: normal;
+  color: #94a3b8;
+}
+
+.scanner-manual-input:focus {
+  background: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+}
+
+.scanner-btn-verify {
+  padding: 0.7rem 1.25rem;
+  border-radius: 10px;
+  border: none;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.scanner-btn-verify:hover {
+  background: #0369a1;
+}
+
+.scanner-helper-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.15rem;
+  font-size: 0.76rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* Mobile View Only: Portrait Scanner Layout */
+@media (max-width: 768px) {
+  .scanner-page-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 440px;
+    margin: 0 auto 1.25rem auto;
+    gap: 0.65rem;
+  }
+
+  .scanner-viewport-card {
+    max-width: 440px;
+    margin: 0 auto 2rem auto;
+    padding: 1.25rem;
+  }
+
+  .scanner-kiosk-grid {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+
+  .scanner-camera-frame {
+    height: 410px;
+    flex: none;
+  }
+
+  .scanner-viewport-right {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .scanner-controls-intro {
+    display: none;
+  }
+
+  .scanner-manual-group {
+    background: #f8fafc;
+  }
+
+  .scanner-manual-input {
+    background: #ffffff;
+  }
+}
+
+@media (max-width: 480px) {
+  .scanner-primary-actions {
+    grid-template-columns: 1fr;
+  }
 }
 
 .valid-dot-pill {
@@ -1798,280 +2155,28 @@
   background: #ffffff;
 }
 
-/* ==========================================================================
-   Calendar & Sort Dropdown Component for Capacity & Schedule Management
-   ========================================================================== */
-.calendar-dropdown-container {
-  position: relative;
-  display: inline-block;
-}
-
-.calendar-dropdown-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 0.55rem 0.95rem;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #334155;
-  cursor: pointer;
-  transition: var(--transition);
-  user-select: none;
-}
-
-.calendar-dropdown-btn:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-}
-
-.calendar-dropdown-btn.active,
-.calendar-dropdown-btn[aria-expanded="true"] {
-  border-color: #0284c7;
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-}
-
-.calendar-caret-icon {
-  transition: transform 0.2s ease;
-}
-
-.calendar-dropdown-btn[aria-expanded="true"] .calendar-caret-icon {
-  transform: rotate(180deg);
-}
-
-.calendar-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  width: 320px;
-  background: #ffffff;
-  border: 1px solid var(--border);
+/* Live QR Reader Video & Reticle Fixes */
+#liveQrReader video,
+#adminLiveQrReader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
   border-radius: var(--radius-md);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
-  padding: 0.75rem;
-  z-index: 100;
-  display: none;
-  animation: calendarFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.calendar-dropdown-menu.show {
-  display: block;
+#liveQrReader > div,
+#adminLiveQrReader > div {
+  border: none !important;
 }
 
-@keyframes calendarFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.scanner-camera-frame.camera-live .scanner-reticle-box,
+.scanner-camera-frame.camera-live .scanner-instruction-text,
+.scanner-camera-frame.camera-live::before {
+  display: none !important;
 }
 
-/* Mini Interactive Calendar Grid inside Dropdown */
-.calendar-view-card {
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 0.65rem;
-  margin-bottom: 0.65rem;
+.scanner-viewfinder-box.camera-live .viewfinder-target,
+.scanner-viewfinder-box.camera-live .scanner-laser-line {
+  display: none !important;
 }
-
-.calendar-view-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.calendar-month-title {
-  font-family: var(--font-heading);
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.calendar-nav-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  width: 26px;
-  height: 26px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #64748b;
-  transition: var(--transition);
-}
-
-.calendar-nav-btn:hover {
-  background: #f1f5f9;
-  color: #0284c7;
-}
-
-.calendar-weekdays-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #94a3b8;
-  margin-bottom: 0.35rem;
-}
-
-.calendar-days-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
-}
-
-.calendar-day-cell {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #334155;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  position: relative;
-}
-
-.calendar-day-cell:hover:not(.empty) {
-  background: #e0f2fe;
-  color: #0284c7;
-}
-
-.calendar-day-cell.empty {
-  cursor: default;
-  pointer-events: none;
-}
-
-.calendar-day-cell.today {
-  border: 1px solid #0284c7;
-  font-weight: 700;
-  color: #0284c7;
-}
-
-.calendar-day-cell.selected {
-  background: #0284c7 !important;
-  color: #ffffff !important;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
-}
-
-.calendar-day-cell.has-event::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  width: 4px;
-  height: 4px;
-  background: #10b981;
-  border-radius: 50%;
-}
-
-.calendar-menu-header {
-  padding: 0.35rem 0.4rem 0.4rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #64748b;
-  border-top: 1px solid var(--border);
-  margin-top: 0.4rem;
-  margin-bottom: 0.25rem;
-}
-
-.calendar-menu-presets {
-  display: flex;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-}
-
-.calendar-preset-chip {
-  padding: 0.3rem 0.65rem;
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: #475569;
-  background: #f1f5f9;
-  border: 1px solid transparent;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.calendar-preset-chip:hover {
-  background: #e2e8f0;
-  color: #0f172a;
-}
-
-.calendar-preset-chip.selected {
-  background: #0284c7;
-  color: #ffffff;
-}
-
-/* Dark mode overrides for interactive calendar */
-[data-theme="dark"] .calendar-dropdown-menu {
-  background-color: #0f172a !important;
-  border-color: #334155 !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
-}
-
-[data-theme="dark"] .calendar-view-card {
-  background-color: #1e293b !important;
-  border-color: #334155 !important;
-}
-
-[data-theme="dark"] .calendar-month-title {
-  color: #f8fafc !important;
-}
-
-[data-theme="dark"] .calendar-nav-btn {
-  border-color: #334155 !important;
-  color: #94a3b8 !important;
-}
-
-[data-theme="dark"] .calendar-nav-btn:hover {
-  background: #334155 !important;
-  color: #38bdf8 !important;
-}
-
-[data-theme="dark"] .calendar-day-cell {
-  color: #cbd5e1 !important;
-}
-
-[data-theme="dark"] .calendar-day-cell:hover:not(.empty) {
-  background: rgba(2, 132, 199, 0.3) !important;
-  color: #38bdf8 !important;
-}
-
-[data-theme="dark"] .calendar-day-cell.selected {
-  background: #0284c7 !important;
-  color: #ffffff !important;
-}
-
-[data-theme="dark"] .calendar-preset-chip {
-  background: #1e293b !important;
-  color: #94a3b8 !important;
-}
-
-[data-theme="dark"] .calendar-preset-chip:hover {
-  background: #334155 !important;
-  color: #f8fafc !important;
-}
-
-[data-theme="dark"] .calendar-preset-chip.selected {
-  background: #0284c7 !important;
-  color: #ffffff !important;
-}
-
 

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rating: '4.8',
         reviews: '1.2k',
         price: 15,
-        priceLabel: 'Free / Guided ₱150',
+        priceLabel: 'Free / Guided $15',
         image: 'assets/rizal-monument.jpg',
         badge: 'Iconic Landmark',
         description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines.'
@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'beach',
         rating: '4.7',
         reviews: '980',
-        price: 250,
-        priceLabel: 'Day Pass ₱250',
+        price: 25,
+        priceLabel: 'Day Pass $25',
         image: 'assets/white-beach.jpg',
         badge: 'Tropical Haven',
         description: 'Pristine powdery white sand, azure waters, and vibrant island activities with legendary sunsets.'
@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'festival',
         rating: '4.9',
         reviews: '850',
-        price: 350,
-        priceLabel: 'Event Access ₱350',
+        price: 35,
+        priceLabel: 'Event Access $35',
         image: 'assets/pahiyas-festival.jpg',
         badge: 'Annual Celebration',
         description: 'A colorful harvest festival in Lucban featuring houses decorated with vibrant kiping rice wafers and fruits.'
@@ -79,27 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- 3. Render Attractions Grid & Dynamic Filter Sync ---
+  // --- 3. Render Attractions Grid ---
   let showAll = false;
   let currentFilter = 'all';
-
-  // Sync category dropdown with unique categories from Supabase catalog
-  function syncCategoryDropdownOptions(items) {
-    if (!searchFilter) return;
-    const currentVal = searchFilter.value;
-    const categories = new Set();
-    items.forEach(it => {
-      if (it.category) categories.add(it.category.trim());
-    });
-
-    // Rebuild options preserving 'all'
-    const optionsHtml = ['<option value="all">All Categories</option>'];
-    categories.forEach(cat => {
-      const selected = currentVal.toLowerCase() === cat.toLowerCase() ? 'selected' : '';
-      optionsHtml.push(`<option value="${cat.replace(/"/g, '&quot;')}" ${selected}>${cat}</option>`);
-    });
-    searchFilter.innerHTML = optionsHtml.join('');
-  }
 
   function renderAttractions() {
     if (!attractionsGrid) return;
@@ -108,31 +90,24 @@ document.addEventListener('DOMContentLoaded', () => {
       attractionsData = TourismHubStore.getCatalog();
     }
 
-    // Keep dropdown options synced with live Supabase catalog data
-    syncCategoryDropdownOptions(attractionsData);
-
     const searchTerm = (searchInput ? searchInput.value : '').toLowerCase().trim();
-    const dropdownCat = (searchFilter ? searchFilter.value : 'all').toLowerCase().trim();
+    const dropdownCat = searchFilter ? searchFilter.value : 'all';
 
     let filtered = attractionsData.filter(item => {
-      const itemType = (item.type || '').toLowerCase();
-      const itemCat = (item.category || '').toLowerCase();
-
       // Tab filter
-      if (currentFilter !== 'all' && itemType !== currentFilter.toLowerCase() && itemCat !== currentFilter.toLowerCase()) {
+      if (currentFilter !== 'all' && item.type !== currentFilter && item.category?.toLowerCase() !== currentFilter.toLowerCase()) {
         return false;
       }
       // Dropdown category filter
-      if (dropdownCat !== 'all' && itemCat !== dropdownCat && itemType !== dropdownCat) {
+      if (dropdownCat !== 'all' && item.type !== dropdownCat) {
         return false;
       }
       // Text search
       if (searchTerm) {
-        const matchesName = (item.title || '').toLowerCase().includes(searchTerm);
-        const matchesCat = itemCat.includes(searchTerm);
-        const matchesDesc = (item.description || '').toLowerCase().includes(searchTerm);
-        const matchesLoc = (item.location || '').toLowerCase().includes(searchTerm);
-        return matchesName || matchesCat || matchesDesc || matchesLoc;
+        const matchesName = item.title?.toLowerCase().includes(searchTerm);
+        const matchesCat = item.category?.toLowerCase().includes(searchTerm);
+        const matchesDesc = item.description?.toLowerCase().includes(searchTerm);
+        return matchesName || matchesCat || matchesDesc;
       }
       return true;
     });
@@ -366,7 +341,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // --- 8. Dynamic "My Digital Passes" Renderer ---
+  // --- 8. Dynamic "My Digital Passes" Renderer & QR Zoom/Download ---
+  window.downloadPassQr = async function (code) {
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=16&data=${encodeURIComponent(code)}`;
+    try {
+      const response = await fetch(qrUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `TourismHub-QR-${code}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      if (typeof showToast === 'function') showToast(`Downloaded QR Pass: ${code}`);
+    } catch (e) {
+      window.open(qrUrl, '_blank');
+    }
+  };
+
+  window.zoomPassQr = function (code, attraction, visitorName) {
+    let modal = document.getElementById('globalQrZoomModal');
+    if (modal) modal.remove();
+    const html = `
+      <div class="modal-overlay active" id="globalQrZoomModal" role="dialog" aria-modal="true" style="display: flex; z-index: 9999;" onclick="if(event.target===this) this.remove()">
+        <div class="modal-dialog" style="max-width: 390px; text-align: center; padding: 1.75rem; background: var(--bg-card, #ffffff); border: 1px solid var(--border); border-radius: 16px; margin: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin: 0;">${attraction || 'Digital Tourist Pass'}</h3>
+            <button onclick="document.getElementById('globalQrZoomModal')?.remove()" class="modal-close" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-muted);">&times;</button>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.15rem;">Scan at any attraction turnstile or save image</p>
+          <div style="background: #ffffff; padding: 16px; border-radius: 14px; border: 2px solid #e2e8f0; display: inline-block; margin-bottom: 1rem;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=340x340&margin=12&data=${encodeURIComponent(code)}" alt="QR ${code}" width="230" height="230" style="display: block;" />
+          </div>
+          <div style="font-family: monospace; font-size: 1.05rem; font-weight: 800; color: #0284c7; margin-bottom: 0.2rem;">${code}</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">Pass Holder: ${visitorName || 'Tourist'}</div>
+          <div style="display: flex; gap: 0.6rem;">
+            <button type="button" onclick="downloadPassQr('${code}')" style="flex: 1; padding: 0.7rem; background: #0284c7; color: #ffffff; font-weight: 700; border: none; border-radius: 8px; cursor: pointer;">Download QR PNG</button>
+            <button type="button" onclick="document.getElementById('globalQrZoomModal')?.remove()" style="padding: 0.7rem 1rem; background: var(--bg-subtle); color: var(--text-main); border: 1px solid var(--border); font-weight: 700; border-radius: 8px; cursor: pointer;">Close</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
+  };
+
   function renderMyTickets() {
     const ticketsBody = document.getElementById('myTicketsModalBody');
     if (!ticketsBody || !window.TourismHubStore) return;
@@ -381,7 +401,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    ticketsBody.innerHTML = passes.map(pass => `
+    ticketsBody.innerHTML = passes.map(pass => {
+      const safeAttr = (pass.attraction || 'Attraction Pass').replace(/'/g, "\\'");
+      const safeVisitor = (pass.visitorName || 'Tourist').replace(/'/g, "\\'");
+      return `
       <div class="digital-ticket-preview" style="margin-bottom: 1.25rem;">
         <div class="ticket-header-row">
           <div>
@@ -413,17 +436,18 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="ticket-barcode-wrap">
-          <svg width="70" height="70" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v2h-4v-2zm-4 0h2v4h-2v-4zm2 2h2v2h-2v-2zm2 2h2v2h-2v-2zm-6 2h4v2h-4v-2z"/>
-          </svg>
+          <div onclick="zoomPassQr('${pass.code}', '${safeAttr}', '${safeVisitor}')" title="Click to enlarge QR Code" style="background: #ffffff; padding: 8px; border-radius: 8px; display: inline-block; margin-bottom: 0.35rem; cursor: zoom-in;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data=${encodeURIComponent(pass.code)}" alt="QR Code for ${pass.code}" width="96" height="96" style="display: block;" />
+          </div>
           <span style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; color: var(--text-muted);">${pass.code}</span>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" onclick="zoomPassQr('${pass.code}', '${safeAttr}', '${safeVisitor}')" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-subtle); color: var(--text-main); cursor: pointer;">Zoom QR</button>
+            <button type="button" onclick="downloadPassQr('${pass.code}')" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: 6px; border: none; background: #0284c7; color: #fff; cursor: pointer;">Download QR</button>
+          </div>
         </div>
       </div>
-    `).join('') + `
-      <button onclick="showToast('Pass added to Google / Apple Wallet!'); closeModal('ticketsModal')" style="width: 100%; padding: 0.85rem; background: var(--bg-subtle); color: var(--text-main); font-weight: 700; border-radius: var(--radius-full); border: 1px solid var(--border);">
-        Add to Apple Wallet / Google Pay
-      </button>
     `;
+    }).join('');
   }
 
   // --- 9. Modals Logic (Booking, Tickets, Notifications) ---
@@ -462,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (modalTitle) modalTitle.textContent = `Reserve Pass: ${attraction.title}`;
     if (modalImg) modalImg.src = attraction.image || 'assets/hero-banner.jpg';
-    if (modalPrice) modalPrice.textContent = `₱${attraction.price || 150}`;
+    if (modalPrice) modalPrice.textContent = `$${attraction.price || 20}`;
     if (bookingAttractionInput) bookingAttractionInput.value = attraction.id;
 
     recalcTotal();
@@ -492,9 +516,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const attractionId = document.getElementById('bookingAttractionId')?.value;
     const attraction = (window.TourismHubStore ? TourismHubStore.getCatalog() : attractionsData).find(a => a.id === attractionId) || attractionsData[0];
     const count = parseInt(visitorCountInput.value, 10) || 1;
-    const unitPrice = attraction.price || 150;
+    const unitPrice = attraction.price || 20;
     const total = unitPrice * count;
-    totalPriceDisplay.textContent = `₱${total}`;
+    totalPriceDisplay.textContent = `$${total}`;
   }
 
   if (visitorCountInput) {
@@ -516,19 +540,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const randDigits = Math.floor(1000 + Math.random() * 9000);
       const codeSuffix = (attraction.type || 'VIS').substring(0, 3).toUpperCase();
       const passCode = `PASS-${randDigits}-${codeSuffix}`;
+      const activeUser = (window.TourismHubStore && (TourismHubStore.getClientAuth() || TourismHubStore.getAdminAuth())) || null;
 
       if (window.TourismHubStore) {
         TourismHubStore.addPass({
           code: passCode,
           visitorName: guestName,
-          visitorEmail: `${guestName.toLowerCase().replace(/\s+/g, '.')}@traveler.ph`,
+          visitorEmail: activeUser?.email || `${guestName.toLowerCase().replace(/\s+/g, '.')}@traveler.ph`,
+          userId: activeUser?.id || null,
           partySize: count,
           attractionId: attraction.id,
           attraction: attraction.title,
           slot: '09:00 AM - 12:00 PM',
           passType: 'Standard Tourist Pass',
           status: 'valid',
-          amount: `₱${(attraction.price || 150) * count}.00`,
+          amount: `$${(attraction.price || 20) * count}.00`,
           validDate: visitDate
         });
       }
@@ -575,34 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 10. FAQ Accordion Dropdown Logic ---
-  const faqItems = document.querySelectorAll('.faq-item');
-  faqItems.forEach(item => {
-    const questionBtn = item.querySelector('.faq-question-btn');
-    if (questionBtn) {
-      questionBtn.addEventListener('click', () => {
-        const isOpen = item.classList.contains('active');
-        // Close other accordion items for clean accordion UX
-        faqItems.forEach(other => {
-          if (other !== item) {
-            other.classList.remove('active');
-            const otherBtn = other.querySelector('.faq-question-btn');
-            if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
-          }
-        });
-        // Toggle current item
-        if (isOpen) {
-          item.classList.remove('active');
-          questionBtn.setAttribute('aria-expanded', 'false');
-        } else {
-          item.classList.add('active');
-          questionBtn.setAttribute('aria-expanded', 'true');
-        }
-      });
-    }
-  });
-
-  // --- 11. Toast Notification System ---
+  // --- 10. Toast Notification System ---
   let toastTimeout;
   window.showToast = function (message) {
     if (!toast || !toastMessage) return;
@@ -631,25 +630,28 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Settings & preferences opened.');
   };
 
-  // --- 13. Profile Navigation & User Profile Header Synchronization ---
-  window.navigateToProfilePage = function (event) {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    const clientAuth = TourismHubStore && TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
-    const adminAuth = TourismHubStore && TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
-
-    if (clientAuth || adminAuth) {
-      window.location.href = 'profile.html';
-    } else {
-      window.location.href = 'login.html';
-    }
-  };
-
-  // Compatibility alias
+  // --- 13. Profile Dropdown & User Profile Header Synchronization ---
   window.toggleProfileDropdown = function (event) {
-    window.navigateToProfilePage(event);
+    if (event) event.stopPropagation();
+    const dropdown = document.getElementById('userProfileDropdown');
+    if (!dropdown) return;
+
+    const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
+    const adminAuth = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
+
+    // If not signed in at all, clicking profile sends to login
+    if (!clientAuth && !adminAuth) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const isActive = dropdown.classList.contains('active');
+    if (isActive) {
+      dropdown.classList.remove('active');
+    } else {
+      renderProfileDropdownContent();
+      dropdown.classList.add('active');
+    }
   };
 
   window.switchDropdownTab = function (tabName) {
@@ -713,7 +715,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (avatarEl && activeUser.avatar) avatarEl.src = activeUser.avatar;
 
     // Compiled QR Passes list
-    const passes = TourismHubStore.getPasses() || [];
+    const rawPasses = TourismHubStore.getPasses() || {};
+    const passes = Array.isArray(rawPasses) ? rawPasses : Object.values(rawPasses);
     const passesList = document.getElementById('dropdownPassesList');
     const passesCountEl = document.getElementById('dropdownPassesCount');
 
@@ -736,10 +739,8 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="dropdown-pass-badge">${(pass.status || 'valid').toUpperCase()}</span>
             </div>
             <div class="dropdown-pass-body">
-              <div class="dropdown-pass-qr">
-                <svg width="46" height="46" viewBox="0 0 24 24" fill="currentColor" style="color: #0f172a;">
-                  <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v2h-4v-2zm-4 0h2v4h-2v-4zm2 2h2v2h-2v-2zm2 2h2v2h-2v-2zm-6 2h4v2h-4v-2z"/>
-                </svg>
+              <div class="dropdown-pass-qr" style="background: #ffffff; padding: 4px; border-radius: 6px;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=${encodeURIComponent(pass.code)}" alt="QR ${pass.code}" width="46" height="46" style="display: block;" />
               </div>
               <div class="dropdown-pass-meta">
                 <div>Ref: <strong>${pass.code}</strong></div>
@@ -808,28 +809,12 @@ document.addEventListener('DOMContentLoaded', () => {
         authLink.style.display = 'none';
       }
 
-      // 2. Configure Profile Button with Avatar & Name
-      if (navAvatar) {
-        navAvatar.src = (window.TourismHubStore && TourismHubStore.getUserAvatar)
-          ? TourismHubStore.getUserAvatar(activeUser)
-          : (activeUser.avatar || '');
+      // 2. Configure Profile Button with Avatar
+      if (navAvatar && activeUser.avatar) {
+        navAvatar.src = activeUser.avatar;
       }
       if (profileBtn) {
-        profileBtn.style.display = 'flex';
         profileBtn.title = `Profile: ${activeUser.name} (Click for Passes & Options)`;
-        profileBtn.style.cursor = 'pointer';
-        profileBtn.onclick = function(e) { window.navigateToProfilePage(e); };
-
-        const userNameEl = profileBtn.querySelector('.portal-user-name');
-        const userRoleEl = profileBtn.querySelector('.portal-user-role');
-        if (userNameEl) {
-          userNameEl.textContent = activeUser.name || 'Tourist';
-          userNameEl.style.cursor = 'pointer';
-          userNameEl.onclick = function(e) { window.navigateToProfilePage(e); };
-        }
-        if (userRoleEl) {
-          userRoleEl.textContent = activeUser.badge || (adminAuth ? 'Chief Operator' : 'Verified Member');
-        }
       }
     } else {
       // Show Sign In button when not signed in
@@ -838,11 +823,12 @@ document.addEventListener('DOMContentLoaded', () => {
         authLink.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span>Sign In</span>`;
         authLink.href = 'login.html';
       }
-      // Hide tourist name and profile icon completely when exploring as guest
-      if (profileBtn) {
-        profileBtn.style.display = 'none';
+      if (navAvatar) {
+        navAvatar.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
       }
-    }
+      if (profileBtn) {
+        profileBtn.title = 'Sign In to TourismHub';
+      }
     }
   }
 
@@ -871,11 +857,6 @@ document.addEventListener('DOMContentLoaded', () => {
     syncUserProfileHeader();
     renderAttractions();
     renderNotifications();
-  });
-
-  // Listen for avatar updates
-  window.addEventListener('tourismhub:avatarUpdated', () => {
-    syncUserProfileHeader();
   });
 
   // --- 15. Initial Render ---

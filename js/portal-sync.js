@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   function initPortalSync() {
@@ -55,7 +55,7 @@
       grid.innerHTML = catalog.map(item => {
         const badgeClass = item.type === 'festival' || item.type === 'event' ? 'event' : (item.type === 'amenity' ? 'amenity' : 'attraction');
         const badgeLabel = item.badge || (item.type === 'festival' ? 'Event' : 'Attraction');
-        
+
         // Compute capacity from slots if available
         let capText = `${item.capacityPerSlot || 100} slots`;
         if (capacityData[item.id] && capacityData[item.id].length > 0) {
@@ -137,12 +137,7 @@
       const catalog = TourismHubStore.getCatalog();
       const capacityData = TourismHubStore.getCapacityData();
 
-      // Get sort and filter state if present
-      const sortSelect = document.getElementById('capacitySortSelect');
-      const sortCriterion = sortSelect ? sortSelect.value : 'default';
-
-      // Transform into display items with calculated values
-      let items = catalog.map(item => {
+      tbody.innerHTML = catalog.map(item => {
         const slots = capacityData[item.id] || [];
         let cap = item.capacityPerSlot || 100;
         let booked = 0;
@@ -160,39 +155,8 @@
         const typeBadge = isEvent ? 'purple' : 'blue';
         const typeLabel = isEvent ? 'Event' : 'Attraction';
 
-        return {
-          ...item,
-          computedCap: cap,
-          computedBooked: booked,
-          computedAvailable: available,
-          isFull: isFull,
-          statusClass: statusClass,
-          statusLabel: statusLabel,
-          typeBadge: typeBadge,
-          typeLabel: typeLabel
-        };
-      });
-
-      // Apply Sort
-      if (sortCriterion === 'name-asc') {
-        items.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-      } else if (sortCriterion === 'name-desc') {
-        items.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
-      } else if (sortCriterion === 'capacity-desc') {
-        items.sort((a, b) => b.computedCap - a.computedCap);
-      } else if (sortCriterion === 'capacity-asc') {
-        items.sort((a, b) => a.computedCap - b.computedCap);
-      } else if (sortCriterion === 'booked-desc') {
-        items.sort((a, b) => b.computedBooked - a.computedBooked);
-      } else if (sortCriterion === 'available-desc') {
-        items.sort((a, b) => b.computedAvailable - a.computedAvailable);
-      } else if (sortCriterion === 'status-full') {
-        items.sort((a, b) => (b.isFull ? 1 : 0) - (a.isFull ? 1 : 0));
-      }
-
-      tbody.innerHTML = items.map(item => {
         return `
-          <tr data-type="${item.type || 'attraction'}" data-name="${(item.title || '').toLowerCase()}" data-cap="${item.computedCap}" data-booked="${item.computedBooked}" data-avail="${item.computedAvailable}" data-status="${item.statusLabel.toLowerCase()}">
+          <tr data-type="${item.type || 'attraction'}">
             <td>
               <div class="attraction-cell-content">
                 <img src="${item.image || 'assets/hero-banner.jpg'}" alt="${item.title}" class="attraction-cell-thumb" onerror="this.src='assets/hero-banner.jpg'">
@@ -209,20 +173,15 @@
                 </div>
               </div>
             </td>
-            <td><span class="portal-pill-badge ${item.typeBadge}">${item.typeLabel}</span></td>
-            <td><strong>${item.computedCap}</strong></td>
-            <td>${item.computedBooked}</td>
-            <td><span class="${item.computedAvailable > 0 ? 'avail-count-green' : 'avail-count-red'}">${item.computedAvailable}</span></td>
-            <td><span class="portal-pill-badge ${item.statusClass}">${item.statusLabel}</span></td>
-            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${item.computedCap}, ${item.computedBooked}, ${item.computedAvailable}, '${item.statusLabel}')">View</button></td>
+            <td><span class="portal-pill-badge ${typeBadge}">${typeLabel}</span></td>
+            <td><strong>${cap}</strong></td>
+            <td>${booked}</td>
+            <td><span class="${available > 0 ? 'avail-count-green' : 'avail-count-red'}">${available}</span></td>
+            <td><span class="portal-pill-badge ${statusClass}">${statusLabel}</span></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${cap}, ${booked}, ${available}, '${statusLabel}')">View</button></td>
           </tr>
         `;
       }).join('');
-
-      // Run filter after re-rendering table rows
-      if (typeof window.filterCapacityTable === 'function') {
-        window.filterCapacityTable();
-      }
     }
 
     // --- 4. Announcements & Notifications Page (notifications.html) ---
@@ -304,12 +263,13 @@
     }
 
     // --- 6. Universal Public Portal Modals (Analytics, Settings, Pass Bookings) ---
-    window.openAnalyticsModal = function() {
+    window.openAnalyticsModal = function () {
       let modal = document.getElementById('analyticsModal');
       if (!modal) {
         const catalog = TourismHubStore.getCatalog();
         const logs = TourismHubStore.getLogs();
-        const passes = TourismHubStore.getPasses();
+        const rawPasses = TourismHubStore.getPasses();
+        const passes = Array.isArray(rawPasses) ? rawPasses : Object.values(rawPasses || {});
         const totalLogs = logs.length > 0 ? logs.length * 14 : 1240;
 
         const modalHtml = `
@@ -328,7 +288,7 @@
                 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
                   <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Active Passes</span>
                   <div style="font-size: 1.6rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">${passes.length}</div>
-                  <span style="font-size: 0.75rem; color: #64748b;">99.8% Gate Entry Rate</span>
+                  <span style="font-size: 0.75rem; color: #64748b;">99.8% Turnstile Rate</span>
                 </div>
               </div>
               <h4 style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 0.75rem;">Hourly Occupancy Curve</h4>
@@ -350,7 +310,7 @@
       }
     };
 
-    window.openSettingsModal = function() {
+    window.openSettingsModal = function () {
       let modal = document.getElementById('settingsModal');
       if (!modal) {
         const modalHtml = `
@@ -363,16 +323,18 @@
               <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
                 <div>
                   <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 0.4rem;">Display Currency</label>
-                  <div style="width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; font-weight: 700; color: #0f172a; background: #f8fafc; display: flex; align-items: center; justify-content: space-between;">
-                    <span>Philippine Peso (₱ / PHP)</span>
-                    <span style="font-size: 0.75rem; color: #10b981; background: #ecfdf5; padding: 2px 8px; border-radius: 12px; border: 1px solid #a7f3d0;">Fixed Base</span>
-                  </div>
+                  <select id="settingCurrency" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    <option value="PHP">Philippine Peso (₱ / PHP)</option>
+                    <option value="USD" selected>US Dollar ($ / USD)</option>
+                    <option value="SGD">Singapore Dollar (S$ / SGD)</option>
+                    <option value="EUR">Euro (€ / EUR)</option>
+                  </select>
                 </div>
                 <div>
                   <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 0.4rem;">Audio Chimes on Pass Scan</label>
                   <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: #475569; cursor: pointer;">
                     <input type="checkbox" id="settingSound" checked>
-                    <span>Play acoustic confirmation chime on pass scan entry</span>
+                    <span>Play acoustic confirmation chime on turnstile entry</span>
                   </label>
                 </div>
                 <div>
@@ -392,7 +354,7 @@
     };
 
     // --- 7. Announcement Detail Modal ---
-    window.openAnnouncementDetail = function(title, text, type, time, target) {
+    window.openAnnouncementDetail = function (title, text, type, time, target) {
       let modal = document.getElementById('announcementDetailModal');
       const badgeClass = (type || '').toLowerCase() === 'alert' ? 'pink' : ((type || '').toLowerCase() === 'event' ? 'purple' : 'blue');
       const modalContent = `
@@ -424,7 +386,7 @@
     };
 
     // --- 8. Universal Public Portal Toast Helper ---
-    window.showPortalToast = function(message, type = 'success') {
+    window.showPortalToast = function (message, type = 'success') {
       let toast = document.getElementById('portalToastNotification');
       if (!toast) {
         toast = document.createElement('div');
@@ -446,7 +408,7 @@
     };
 
     // --- 9. Role-Based Feature Visibility & User Profile Synchronization ---
-    function updatePortalAuthUI() {
+    function checkAdminFeaturesVisibility() {
       const adminAuth = (window.TourismHubStore && typeof TourismHubStore.getAdminAuth === 'function')
         ? TourismHubStore.getAdminAuth()
         : null;
@@ -477,46 +439,49 @@
         const roleEl = widget.querySelector('.portal-user-role');
         const imgEl = widget.querySelector('.portal-avatar-img');
 
-        // Remove hardcoded inline onclick so our handler controls it
+        // Remove hardcoded inline onclick so our dropdown handles it
         widget.removeAttribute('onclick');
 
         if (isAdminLoggedIn) {
-          widget.style.display = 'flex';
-          widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
           if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
-          const avatarUrl = (window.TourismHubStore && TourismHubStore.getUserAvatar)
-            ? TourismHubStore.getUserAvatar(adminAuth)
-            : (adminAuth.avatar || '');
-          if (imgEl) imgEl.src = avatarUrl;
-          widget.onclick = function(e) { 
-            location.href = 'profile.html';
+          if (imgEl && adminAuth.avatar) imgEl.src = adminAuth.avatar;
+          widget.onclick = function (e) {
+            if (window.toggleProfileDropdown) {
+              window.toggleProfileDropdown(e, widget);
+            } else {
+              location.href = 'admin.html';
+            }
           };
-          widget.title = 'Operator: ' + adminAuth.name + ' (Click for Profile & Passes)';
+          widget.title = 'Operator: ' + adminAuth.name + ' (Click for Menu)';
         } else if (isClientLoggedIn) {
-          widget.style.display = 'flex';
-          widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = clientAuth.name || 'Tourist';
           if (roleEl) roleEl.textContent = clientAuth.badge || 'Verified Tourist';
-          const avatarUrl = (window.TourismHubStore && TourismHubStore.getUserAvatar)
-            ? TourismHubStore.getUserAvatar(clientAuth)
-            : (clientAuth.avatar || '');
-          if (imgEl) imgEl.src = avatarUrl;
-          widget.onclick = function(e) { 
-            location.href = 'profile.html';
+          if (imgEl && clientAuth.avatar) imgEl.src = clientAuth.avatar;
+          widget.onclick = function (e) {
+            if (window.toggleProfileDropdown) {
+              window.toggleProfileDropdown(e, widget);
+            }
           };
-          widget.title = 'Logged in as ' + clientAuth.name + ' (Click for Profile & Passes)';
+          widget.title = 'Logged in as ' + clientAuth.name + ' (Click for Menu)';
         } else {
-          // Hide tourist name and profile icon completely when exploring as guest
-          widget.style.display = 'none';
+          if (nameEl) nameEl.textContent = 'Tourist Portal';
+          if (roleEl) roleEl.textContent = 'Sign In / Register';
+          if (imgEl) imgEl.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80';
+          widget.onclick = function (e) {
+            if (window.toggleProfileDropdown) {
+              window.toggleProfileDropdown(e, widget);
+            } else {
+              location.href = 'login.html';
+            }
+          };
+          widget.title = 'Tourist Account / Sign In';
         }
       });
     }
 
-    const checkAdminFeaturesVisibility = updatePortalAuthUI;
-
     // Interactive favorite toggle for portal cards
-    window.togglePortalFavorite = function(id, title, btn, evt) {
+    window.togglePortalFavorite = function (id, title, btn, evt) {
       if (evt) {
         evt.stopPropagation();
         evt.preventDefault();
@@ -545,7 +510,6 @@
 
     // Master render caller
     function refreshCurrentPage() {
-      updatePortalAuthUI();
       checkAdminFeaturesVisibility();
       updateNotifBadges();
       syncAttractionsPage();
@@ -556,11 +520,6 @@
 
     // Initial sync
     refreshCurrentPage();
-
-    // Listen for live avatar updates and multi-tab synchronization
-    window.addEventListener('tourismhub:avatarUpdated', () => {
-      updatePortalAuthUI();
-    });
 
     // Listen for cross-tab and cross-page real-time sync from admin control
     TourismHubStore.onSync((key) => {
@@ -579,9 +538,4 @@
   } else {
     initPortalSync();
   }
-
-  // Fallback trigger to ensure auth UI is populated once all sibling scripts finish executing
-  window.addEventListener('load', () => {
-    initPortalSync();
-  });
 })();

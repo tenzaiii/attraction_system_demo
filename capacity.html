@@ -21,6 +21,7 @@
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   </script>
+  <link rel="stylesheet" href="css/dark-overrides.css">
 </head>
 
 <body>
@@ -206,21 +207,15 @@
       </a>
 
       <div class="user-profile-wrapper">
-        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options" style="display: none;">
-          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
-            alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
+        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80"
+            alt="Tourist Profile" class="portal-avatar-img">
           <div class="portal-user-meta">
             <span class="portal-user-name">Tourist Portal</span>
             <span class="portal-user-role">Sign In / Register</span>
           </div>
         </div>
       </div>
-
-      <!-- Tourist Login Link (Shown when exploring as guest) -->
-      <a href="login.html" class="auth-signin-link" id="navSignInLink" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.84rem; font-weight: 600; color: #0284c7; text-decoration: none; padding: 0.42rem 0.85rem; border: 1.5px solid #0284c7; border-radius: 9999px; transition: all 0.2s;" title="Tourist Portal Sign In & Registration">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        <span>Sign In</span>
-      </a>
     </div>
   </header>
 
@@ -246,69 +241,20 @@
         </div>
       </div>
 
-      <!-- Right Controls: Calendar Date Range Dropdown + Sort Selector + Add Schedule Button -->
+      <!-- Right Controls: Date Range Dropdown + Add Schedule Button -->
       <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
-        <!-- Calendar Date Range Dropdown -->
-        <div class="calendar-dropdown-container" id="calendarDropdownContainer">
-          <button type="button" class="calendar-dropdown-btn" id="calendarDropdownBtn" aria-haspopup="true" aria-expanded="false" title="Filter by date range">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
-              <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-            </svg>
-            <span id="calendarDateLabel">All Scheduled Dates</span>
-            <svg class="calendar-caret-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
-
-          <div class="calendar-dropdown-menu" id="calendarDropdownMenu" role="menu">
-            <!-- Mini Interactive Calendar -->
-            <div class="calendar-view-card">
-              <div class="calendar-view-header">
-                <button type="button" class="calendar-nav-btn" id="calendarPrevMonthBtn" title="Previous Month">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg>
-                </button>
-                <span class="calendar-month-title" id="calendarMonthYearText">Month Year</span>
-                <button type="button" class="calendar-nav-btn" id="calendarNextMonthBtn" title="Next Month">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </button>
-              </div>
-              <div class="calendar-weekdays-grid">
-                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-              </div>
-              <div class="calendar-days-grid" id="calendarDaysGrid">
-                <!-- Day cells rendered by JS -->
-              </div>
-            </div>
-
-            <!-- Quick Presets -->
-            <div class="calendar-menu-header">Quick Range</div>
-            <div class="calendar-menu-presets">
-              <button type="button" class="calendar-preset-chip selected" data-range="all">All Dates</button>
-              <button type="button" class="calendar-preset-chip" data-range="today">Today</button>
-              <button type="button" class="calendar-preset-chip" data-range="this-week">This Week</button>
-              <button type="button" class="calendar-preset-chip" data-range="this-month">This Month</button>
-              <button type="button" class="calendar-preset-chip" data-range="next-30">Next 30 Days</button>
-            </div>
-          </div>
+        <div
+          style="display: flex; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.55rem 0.95rem; font-size: 0.85rem; font-weight: 600; color: #334155;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+          </svg>
+          <span>Apr 28, 2025 – May 27, 2025</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
         </div>
-
-        <!-- Sort Criteria Dropdown -->
-        <select class="portal-select" id="capacitySortSelect" title="Sort capacity schedule">
-          <option value="default">Default</option>
-          <option value="name-asc">Name (Ascending)</option>
-          <option value="name-desc">Name (Descending)</option>
-          <option value="capacity-desc">Capacity (High to Low)</option>
-          <option value="capacity-asc">Capacity (Low to High)</option>
-          <option value="booked-desc">Most Booked</option>
-          <option value="available-desc">Most Available</option>
-          <option value="status-full">Full Status First</option>
-        </select>
 
         <button class="btn-primary-blue admin-only-feature" id="addScheduleBtn" onclick="openPortalModal('addScheduleModal')" style="display: none;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -675,216 +621,9 @@
   <script src="js/profile-dropdown.js"></script>
   <script src="js/portal-sync.js"></script>
   <script>
-    // Search filter and Calendar Date Range filter for Capacity table
+    // Search filter for Capacity table
     const searchInput = document.getElementById('capacitySearchInput');
     const filterTabs = document.querySelectorAll('.portal-filter-tab');
-    const sortSelect = document.getElementById('capacitySortSelect');
-
-    // Calendar dropdown elements
-    const calendarContainer = document.getElementById('calendarDropdownContainer');
-    const calendarBtn = document.getElementById('calendarDropdownBtn');
-    const calendarMenu = document.getElementById('calendarDropdownMenu');
-    const calendarDateLabel = document.getElementById('calendarDateLabel');
-    const calendarPrevMonthBtn = document.getElementById('calendarPrevMonthBtn');
-    const calendarNextMonthBtn = document.getElementById('calendarNextMonthBtn');
-    const calendarMonthYearText = document.getElementById('calendarMonthYearText');
-    const calendarDaysGrid = document.getElementById('calendarDaysGrid');
-
-    // Calendar State
-    let viewDate = new Date();
-    let selectedDate = null; // null means 'all dates'
-    let currentRangeType = 'all';
-
-    // Toggle Calendar Dropdown
-    if (calendarBtn && calendarMenu) {
-      calendarBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = calendarMenu.classList.contains('show');
-        if (isOpen) {
-          calendarMenu.classList.remove('show');
-          calendarBtn.setAttribute('aria-expanded', 'false');
-        } else {
-          calendarMenu.classList.add('show');
-          calendarBtn.setAttribute('aria-expanded', 'true');
-          renderCalendarDays();
-        }
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!calendarContainer?.contains(e.target)) {
-          calendarMenu.classList.remove('show');
-          calendarBtn?.setAttribute('aria-expanded', 'false');
-        }
-      });
-    }
-
-    // Interactive Calendar Grid Rendering
-    function renderCalendarDays() {
-      if (!calendarDaysGrid || !calendarMonthYearText) return;
-
-      const year = viewDate.getFullYear();
-      const month = viewDate.getMonth();
-
-      const monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-      ];
-      calendarMonthYearText.textContent = `${monthNames[month]} ${year}`;
-
-      calendarDaysGrid.innerHTML = '';
-
-      const firstDayIndex = new Date(year, month, 1).getDay();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const today = new Date();
-
-      // Empty padding cells
-      for (let i = 0; i < firstDayIndex; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.className = 'calendar-day-cell empty';
-        calendarDaysGrid.appendChild(emptyCell);
-      }
-
-      // Date cells
-      for (let d = 1; d <= daysInMonth; d++) {
-        const cell = document.createElement('button');
-        cell.type = 'button';
-        cell.className = 'calendar-day-cell';
-        cell.textContent = d;
-
-        const cellDate = new Date(year, month, d);
-        const isToday = cellDate.toDateString() === today.toDateString();
-        if (isToday) cell.classList.add('today');
-
-        // Check if selected
-        if (selectedDate && cellDate.toDateString() === selectedDate.toDateString()) {
-          cell.classList.add('selected');
-        }
-
-        cell.addEventListener('click', (e) => {
-          e.stopPropagation();
-          selectedDate = new Date(year, month, d);
-          currentRangeType = 'single-date';
-
-          // Update Presets styling
-          document.querySelectorAll('.calendar-preset-chip').forEach(c => c.classList.remove('selected'));
-
-          // Format label
-          const formatted = selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          if (calendarDateLabel) calendarDateLabel.textContent = formatted;
-
-          renderCalendarDays();
-          calendarMenu.classList.remove('show');
-          calendarBtn?.setAttribute('aria-expanded', 'false');
-
-          filterTable();
-          if (window.showPortalToast) {
-            showPortalToast(`Sorted & filtered capacity for: ${formatted}`);
-          }
-        });
-
-        calendarDaysGrid.appendChild(cell);
-      }
-    }
-
-    if (calendarPrevMonthBtn) {
-      calendarPrevMonthBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        viewDate.setMonth(viewDate.getMonth() - 1);
-        renderCalendarDays();
-      });
-    }
-
-    if (calendarNextMonthBtn) {
-      calendarNextMonthBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        viewDate.setMonth(viewDate.getMonth() + 1);
-        renderCalendarDays();
-      });
-    }
-
-    // Quick range preset chips
-    const presetChips = document.querySelectorAll('.calendar-preset-chip');
-    presetChips.forEach(chip => {
-      chip.addEventListener('click', (e) => {
-        e.stopPropagation();
-        presetChips.forEach(c => c.classList.remove('selected'));
-        chip.classList.add('selected');
-
-        const range = chip.getAttribute('data-range') || 'all';
-        currentRangeType = range;
-
-        const now = new Date();
-        if (range === 'all') {
-          selectedDate = null;
-          if (calendarDateLabel) calendarDateLabel.textContent = 'All Scheduled Dates';
-        } else if (range === 'today') {
-          selectedDate = new Date();
-          viewDate = new Date();
-          if (calendarDateLabel) calendarDateLabel.textContent = 'Today (' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ')';
-        } else if (range === 'this-week') {
-          selectedDate = null;
-          if (calendarDateLabel) calendarDateLabel.textContent = 'This Week';
-        } else if (range === 'this-month') {
-          selectedDate = null;
-          viewDate = new Date();
-          if (calendarDateLabel) calendarDateLabel.textContent = 'This Month (' + now.toLocaleDateString('en-US', { month: 'short' }) + ')';
-        } else if (range === 'next-30') {
-          selectedDate = null;
-          if (calendarDateLabel) calendarDateLabel.textContent = 'Next 30 Days';
-        }
-
-        renderCalendarDays();
-        calendarMenu.classList.remove('show');
-        calendarBtn?.setAttribute('aria-expanded', 'false');
-
-        filterTable();
-        if (window.showPortalToast) {
-          showPortalToast(`Displaying schedule for: ${calendarDateLabel?.textContent || 'Selected Range'}`);
-        }
-      });
-    });
-
-    // Initialize calendar view
-    renderCalendarDays();
-
-    // Sort select change handling
-    if (sortSelect) {
-      sortSelect.addEventListener('change', () => {
-        // Trigger sort by re-rendering table via portal-sync or local reorder
-        sortCapacityTableRows();
-      });
-    }
-
-    function sortCapacityTableRows() {
-      const tbody = document.getElementById('capacityTableBody');
-      if (!tbody) return;
-      const criterion = sortSelect?.value || 'default';
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-
-      rows.sort((a, b) => {
-        const titleA = a.querySelector('.attraction-cell-title')?.textContent?.trim() || '';
-        const titleB = b.querySelector('.attraction-cell-title')?.textContent?.trim() || '';
-        const capA = parseInt(a.getAttribute('data-cap') || a.cells[2]?.textContent || 0, 10);
-        const capB = parseInt(b.getAttribute('data-cap') || b.cells[2]?.textContent || 0, 10);
-        const bookedA = parseInt(a.getAttribute('data-booked') || a.cells[3]?.textContent || 0, 10);
-        const bookedB = parseInt(b.getAttribute('data-booked') || b.cells[3]?.textContent || 0, 10);
-        const availA = parseInt(a.getAttribute('data-avail') || a.cells[4]?.textContent || 0, 10);
-        const availB = parseInt(b.getAttribute('data-avail') || b.cells[4]?.textContent || 0, 10);
-        const isFullA = (a.getAttribute('data-status') === 'full') || (availA <= 0);
-        const isFullB = (b.getAttribute('data-status') === 'full') || (availB <= 0);
-
-        if (criterion === 'name-asc') return titleA.localeCompare(titleB);
-        if (criterion === 'name-desc') return titleB.localeCompare(titleA);
-        if (criterion === 'capacity-desc') return capB - capA;
-        if (criterion === 'capacity-asc') return capA - capB;
-        if (criterion === 'booked-desc') return bookedB - bookedA;
-        if (criterion === 'available-desc') return availB - availA;
-        if (criterion === 'status-full') return (isFullB ? 1 : 0) - (isFullA ? 1 : 0);
-        return 0;
-      });
-
-      rows.forEach(r => tbody.appendChild(r));
-    }
 
     function filterTable() {
       const q = (searchInput?.value || '').toLowerCase().trim();
@@ -898,22 +637,13 @@
         const matchesQuery = !q || text.includes(q);
         const matchesTab = (activeFilter === 'all') || typeAttr.includes(activeFilter);
 
-        // Date range simulation: festivals/events or daily spots
-        let matchesDate = true;
-        if (currentRangeType === 'today') {
-          // All attractions open daily match today; one-off festivals can be active today
-          matchesDate = true;
-        }
-
-        if (matchesQuery && matchesTab && matchesDate) {
+        if (matchesQuery && matchesTab) {
           row.style.display = '';
         } else {
           row.style.display = 'none';
         }
       });
     }
-
-    window.filterCapacityTable = filterTable;
 
     searchInput?.addEventListener('input', filterTable);
 

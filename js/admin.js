@@ -30,26 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Sync admin theme button icons
   updateAdminThemeUI(document.documentElement.getAttribute('data-theme') === 'dark');
 
-  // Sync admin sidebar profile avatar & name
-  function syncAdminSidebarUser() {
-    if (!window.TourismHubStore) return;
-    const admin = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
-    if (!admin) return;
-    const avatarEl = document.getElementById('adminSidebarAvatar');
-    const nameEl = document.getElementById('adminSidebarName');
-    const roleEl = document.getElementById('adminSidebarRole');
-    if (nameEl) nameEl.textContent = admin.name || 'Operator';
-    if (roleEl) roleEl.textContent = admin.role || admin.badge || 'Head of Tourism Ops';
-    if (avatarEl) {
-      avatarEl.src = TourismHubStore.getUserAvatar
-        ? TourismHubStore.getUserAvatar(admin)
-        : (admin.avatar || '');
-    }
-  }
-  syncAdminSidebarUser();
-  window.addEventListener('tourismhub:avatarUpdated', syncAdminSidebarUser);
-  window.addEventListener('tourismhub:sync', syncAdminSidebarUser);
-
   // ==========================================================================
   //  1. Central Data Store
   // ==========================================================================
@@ -65,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'historical',
       status: 'active',
       operatingHours: '06:00 AM - 09:00 PM',
-      admission: 'Free Entry / Guided ₱150',
-      price: 150,
+      admission: 'Free Entry / Guided $15',
+      price: 15,
       capacityPerSlot: 150,
       image: 'assets/rizal-monument.jpg',
       location: 'Manila, Metro Manila',
@@ -79,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'historical',
       status: 'active',
       operatingHours: '08:00 AM - 06:00 PM',
-      admission: 'Heritage Pass ₱200',
-      price: 200,
+      admission: 'Heritage Pass $20',
+      price: 20,
       capacityPerSlot: 120,
       image: 'assets/rizal-monument.jpg',
       location: 'Intramuros, Manila',
@@ -93,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'beach',
       status: 'active',
       operatingHours: '05:30 AM - 10:00 PM',
-      admission: 'Environmental Pass ₱250',
-      price: 250,
+      admission: 'Environmental Pass $25',
+      price: 25,
       capacityPerSlot: 200,
       image: 'assets/white-beach.jpg',
       location: 'Boracay Island, Aklan',
@@ -107,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'beach',
       status: 'maintenance',
       operatingHours: '07:00 AM - 04:00 PM',
-      admission: 'Eco-Tour Pass ₱450',
-      price: 450,
+      admission: 'Eco-Tour Pass $45',
+      price: 45,
       capacityPerSlot: 80,
       image: 'assets/hero-banner.jpg',
       location: 'El Nido, Palawan',
@@ -121,26 +101,40 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'festival',
       status: 'active',
       operatingHours: '07:00 AM - 08:00 PM',
-      admission: 'Fiesta Access ₱350',
-      price: 350,
+      admission: 'Fiesta Access $35',
+      price: 35,
       capacityPerSlot: 300,
       image: 'assets/pahiyas-festival.jpg',
       location: 'Lucban, Quezon',
       description: 'Vibrant annual harvest fiesta featuring house facades decorated with colorful kiping rice wafers, fruits, and crafts.'
     },
     {
-      id: 'sinulog-grand-mardi-gras',
-      title: 'Sinulog Cultural Grandstand',
-      category: 'Festival',
-      type: 'festival',
+      id: 'testing-testing',
+      title: 'TESTING TESTING',
+      category: 'TESTING TESTING',
+      type: 'historical',
+      status: 'maintenance',
+      operatingHours: '23',
+      admission: 'TESTING TESTING',
+      price: 20,
+      capacityPerSlot: 2321,
+      image: 'assets/hero-banner.jpg',
+      location: 'TESTING TESTING',
+      description: 'TESTING TESTING'
+    },
+    {
+      id: 'bayan-glori',
+      title: 'Bayan Glori',
+      category: 'Historical Monument',
+      type: 'historical',
       status: 'active',
-      operatingHours: '08:00 AM - 09:00 PM',
-      admission: 'Grandstand Pass ₱300',
-      price: 300,
-      capacityPerSlot: 250,
-      image: 'assets/pahiyas-festival.jpg',
-      location: 'Cebu City, Central Visayas',
-      description: 'The Philippines grandest cultural and dance celebration with rhythmic drumbeats, vivid costumes, and pageantry.'
+      operatingHours: '24/7',
+      admission: 'Free',
+      price: 20,
+      capacityPerSlot: 102000,
+      image: 'assets/hero-banner.jpg',
+      location: 'Bayan, Q.C.',
+      description: 'Traffic and Traffic'
     }
   ];
 
@@ -168,77 +162,55 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 'wb-4', time: '04:00 PM - 07:00 PM', booked: 200, max: 200, status: 'sold-out' }
     ],
     'el-nido-big-lagoon': [
-      { id: 'en-1', time: '07:30 AM - 10:30 AM', booked: 76, max: 80, status: 'near-full' },
-      { id: 'en-2', time: '11:00 AM - 02:00 PM', booked: 80, max: 80, status: 'sold-out' },
-      { id: 'en-3', time: '02:30 PM - 05:30 PM', booked: 35, max: 80, status: 'open' }
+      { id: 'en-1', time: '07:30 AM - 10:30 AM', booked: 76, max: 90, status: 'near-full' },
+      { id: 'en-2', time: '11:00 AM - 02:00 PM', booked: 88, max: 90, status: 'sold-out' },
+      { id: 'en-3', time: '02:30 PM - 05:30 PM', booked: 25, max: 90, status: 'open' }
     ],
     'pahiyas-festival': [
       { id: 'pf-1', time: '08:00 AM - 12:00 PM', booked: 285, max: 300, status: 'near-full' },
       { id: 'pf-2', time: '01:00 PM - 05:00 PM', booked: 300, max: 300, status: 'sold-out' },
       { id: 'pf-3', time: '05:00 PM - 09:00 PM', booked: 190, max: 300, status: 'open' }
     ],
-    'sinulog-grand-mardi-gras': [
-      { id: 'sg-1', time: '08:00 AM - 12:00 PM', booked: 240, max: 250, status: 'near-full' },
-      { id: 'sg-2', time: '01:00 PM - 05:00 PM', booked: 250, max: 250, status: 'sold-out' },
-      { id: 'sg-3', time: '05:00 PM - 09:00 PM', booked: 180, max: 250, status: 'open' }
+    'testing-testing': [
+      { id: 'tt-1', time: '08:00 AM - 12:00 PM', booked: 120, max: 2321, status: 'open' },
+      { id: 'tt-2', time: '01:00 PM - 05:00 PM', booked: 350, max: 2321, status: 'open' }
+    ],
+    'bayan-glori': [
+      { id: 'bg-1', time: '08:00 AM - 12:00 PM', booked: 1200, max: 102000, status: 'open' },
+      { id: 'bg-2', time: '01:00 PM - 05:00 PM', booked: 2400, max: 102000, status: 'open' }
     ]
   };
 
-  // Mock Tourist Pass Database for QR Verification
+  // Tourist Pass Database for QR Verification (Synchronized with Supabase)
   const touristPassesDB = {
-    'PASS-8842-MNL': {
-      code: 'PASS-8842-MNL',
+    'TEST-PROBE-001': {
+      code: 'TEST-PROBE-001',
+      status: 'valid',
+      touristName: 'Test Visitor',
+      attraction: 'Rizal Monument & Luneta Park',
+      attractionId: 'rizal-monument',
+      slot: '09:00 AM - 12:00 PM',
+      pax: 1,
+      date: 'Today',
+      issued: 'Nov 09, 2026'
+    },
+    'PASS-8448-BEA': {
+      code: 'PASS-8448-BEA',
       status: 'valid',
       touristName: 'Maria Santos',
-      attraction: 'Rizal Monument & Luneta Park',
-      attractionId: 'rizal-monument',
-      slot: '10:00 AM - 12:00 PM',
-      pax: 3,
-      date: 'Today',
-      issued: 'Oct 22, 2026'
-    },
-    'PASS-5120-BCY': {
-      code: 'PASS-5120-BCY',
-      status: 'valid',
-      touristName: 'Alexander Hayes',
-      attraction: 'White Beach Eco-Tourism Reserve',
-      attractionId: 'white-beach-boracay',
+      attraction: 'Big Lagoon Marine Sanctuary',
+      attractionId: 'el-nido-big-lagoon',
       slot: '09:00 AM - 12:00 PM',
-      pax: 2,
-      date: 'Today',
-      issued: 'Oct 22, 2026'
-    },
-    'PASS-9912-EXP': {
-      code: 'PASS-9912-EXP',
-      status: 'expired',
-      touristName: 'Chen Wei',
-      attraction: 'Intramuros Walled City Heritage',
-      attractionId: 'intramuros-walled-city',
-      slot: '08:30 AM - 10:30 AM (Expired)',
       pax: 1,
-      date: 'Expired Yesterday',
-      issued: 'Oct 21, 2026'
-    },
-    'PASS-3310-USD': {
-      code: 'PASS-3310-USD',
-      status: 'already-used',
-      touristName: 'Sofia Delgado',
-      attraction: 'Rizal Monument & Luneta Park',
-      attractionId: 'rizal-monument',
-      slot: '08:00 AM - 10:00 AM',
-      pax: 4,
-      date: 'Scanned at 08:14 AM Today',
-      issued: 'Oct 22, 2026'
+      date: 'Today',
+      issued: 'Nov 10, 2026'
     }
   };
 
-  // Recent Entry Scans Log
+  // Recent Entry Scans Log (Aligned with actual system passes)
   let recentScansList = [
-    { time: '10:14 AM', code: 'PASS-8842-MNL', name: 'Maria Santos', attraction: 'Rizal Monument', pax: 3, gate: 'Express Gate 2', status: 'Approved' },
-    { time: '10:08 AM', code: 'PASS-5120-BCY', name: 'Alexander Hayes', attraction: 'White Beach', pax: 2, gate: 'Station 1 Gate A', status: 'Approved' },
-    { time: '09:55 AM', code: 'PASS-9912-EXP', name: 'Chen Wei', attraction: 'Intramuros', pax: 1, gate: 'Fort Santiago Express', status: 'Rejected' },
-    { time: '09:42 AM', code: 'PASS-4402-PLW', name: 'Liam Henderson', attraction: 'Big Lagoon', pax: 2, gate: 'Dock Gate 3', status: 'Approved' },
-    { time: '09:30 AM', code: 'PASS-3310-USD', name: 'Sofia Delgado', attraction: 'Rizal Monument', pax: 4, gate: 'Main Arch Gate', status: 'Rejected' }
+    { time: '10:14 AM', code: 'TEST-PROBE-001', name: 'Test Visitor', attraction: 'Rizal Monument', pax: 1, gate: 'North Turnstile 2', status: 'Approved' },
+    { time: '10:08 AM', code: 'PASS-8448-BEA', name: 'Maria Santos', attraction: 'Big Lagoon', pax: 1, gate: 'Station 1 Gate A', status: 'Approved' }
   ];
 
   // Announcements & Dispatch Store (Synchronized with TourismHubStore)
@@ -300,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     scanner: {
       title: 'QR Tourist Pass Scanner',
-      sub: 'Validate digital passes and record attendance logs at attraction express gates.'
+      sub: 'Validate digital passes and record attendance logs at attraction turnstiles.'
     },
     analytics: {
       title: 'Admin Analytics Dashboard',
@@ -488,63 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const status = document.getElementById('attrFormStatus')?.value;
     const desc = document.getElementById('attrFormDesc')?.value;
 
-    // Photo upload handling for admin attraction / event modal
-    let adminUploadedPhoto = null;
-    const adminPhotoInput = document.getElementById('adminAttrPhotoInput');
-    if (adminPhotoInput) {
-      adminPhotoInput.addEventListener('change', (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (!file) return;
-
-        const MAX_SIZE_MB = 5;
-        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-          alert(`Photo exceeds ${MAX_SIZE_MB}MB limit! Please choose a smaller photo.`);
-          adminPhotoInput.value = '';
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const img = new Image();
-          img.onload = function() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 960;
-            canvas.height = 540;
-            const ctx = canvas.getContext('2d');
-            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-            const w = img.width * scale;
-            const h = img.height * scale;
-            const x = (canvas.width - w) / 2;
-            const y = (canvas.height - h) / 2;
-            ctx.drawImage(img, x, y, w, h);
-            adminUploadedPhoto = canvas.toDataURL('image/jpeg', 0.85);
-
-            const previewBox = document.getElementById('adminAttrPhotoPreviewBox');
-            const previewImg = document.getElementById('adminAttrPhotoImg');
-            const status = document.getElementById('adminAttrPhotoStatus');
-            if (previewBox && previewImg) {
-              previewImg.src = adminUploadedPhoto;
-              previewBox.style.display = 'block';
-            }
-            if (status) status.textContent = file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + 'MB)';
-          };
-          img.src = evt.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    window.clearAdminAttrPhoto = function() {
-      adminUploadedPhoto = null;
-      if (adminPhotoInput) adminPhotoInput.value = '';
-      const previewBox = document.getElementById('adminAttrPhotoPreviewBox');
-      const previewImg = document.getElementById('adminAttrPhotoImg');
-      const status = document.getElementById('adminAttrPhotoStatus');
-      if (previewBox) previewBox.style.display = 'none';
-      if (previewImg) previewImg.src = '';
-      if (status) status.textContent = 'Default Banner';
-    };
-
     if (id) {
       // Edit existing
       const updates = {
@@ -558,9 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
         status,
         description: desc
       };
-      if (adminUploadedPhoto) {
-        updates.image = adminUploadedPhoto;
-      }
       if (window.TourismHubStore) {
         TourismHubStore.updateAttraction(id, updates);
         catalogData = TourismHubStore.getCatalog();
@@ -583,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
         price: 20,
         capacityPerSlot: capacity,
         status,
-        image: adminUploadedPhoto || 'assets/hero-banner.jpg',
+        image: 'assets/hero-banner.jpg',
         description: desc
       };
 
@@ -794,11 +706,139 @@ document.addEventListener('DOMContentLoaded', () => {
   const validationResultCard = document.getElementById('validationResultCard');
   const recentScansTable = document.getElementById('recentScansTable');
 
-  window.runQRScanValidation = function(customCode = null) {
-    const code = (customCode || scanInput?.value || '').trim().toUpperCase();
+  let adminHtml5QrScanner = null;
+  let isAdminCameraActive = false;
+  let lastAdminScannedCode = '';
+  let lastAdminScanTime = 0;
+
+  function extractAdminPassCode(rawText) {
+    if (!rawText) return '';
+    const trimmed = String(rawText).trim();
+    try {
+      if (trimmed.startsWith('{')) {
+        const parsed = JSON.parse(trimmed);
+        if (parsed.code || parsed.pass_code) return String(parsed.code || parsed.pass_code).toUpperCase().trim();
+      }
+    } catch (e) {}
+    const match = trimmed.match(/(PASS-[A-Z0-9-]+|TEST-[A-Z0-9-]+)/i);
+    if (match) return match[1].toUpperCase();
+    return trimmed.toUpperCase();
+  }
+
+  window.toggleAdminLiveCamera = async function () {
+    const boxEl = document.getElementById('adminCameraBox');
+    const readerEl = document.getElementById('adminLiveQrReader');
+    const btnLabel = document.getElementById('adminCameraBtnLabel');
+    const toggleBtn = document.getElementById('adminToggleCameraBtn');
+    const targetSvg = document.getElementById('adminViewfinderTarget');
+
+    if (isAdminCameraActive && adminHtml5QrScanner) {
+      try {
+        await adminHtml5QrScanner.stop();
+        adminHtml5QrScanner.clear();
+      } catch (e) {
+        console.warn('Error stopping admin camera:', e);
+      }
+      isAdminCameraActive = false;
+      if (boxEl) boxEl.classList.remove('camera-live');
+      if (readerEl) readerEl.style.display = 'none';
+      if (btnLabel) btnLabel.textContent = 'Start Live Camera';
+      if (toggleBtn) {
+        toggleBtn.style.background = '#10b981';
+        toggleBtn.style.borderColor = '#10b981';
+      }
+      if (targetSvg) targetSvg.style.display = 'flex';
+      return;
+    }
+
+    if (typeof Html5Qrcode === 'undefined') {
+      showToast('QR Camera library is still loading. Please try again in a moment.');
+      return;
+    }
+
+    try {
+      if (boxEl) boxEl.classList.add('camera-live');
+      if (readerEl) readerEl.style.display = 'block';
+      if (targetSvg) targetSvg.style.display = 'none';
+      adminHtml5QrScanner = new Html5Qrcode('adminLiveQrReader');
+      await adminHtml5QrScanner.start(
+        { facingMode: 'environment' },
+        { fps: 12, qrbox: { width: 200, height: 200 } },
+        async (decodedText) => {
+          const now = Date.now();
+          const code = extractAdminPassCode(decodedText);
+          if (!code) return;
+          if (code === lastAdminScannedCode && now - lastAdminScanTime < 3500) return;
+          lastAdminScannedCode = code;
+          lastAdminScanTime = now;
+          if (scanInput) scanInput.value = code;
+          await window.runQRScanValidation(code);
+        },
+        () => {}
+      );
+      isAdminCameraActive = true;
+      if (btnLabel) btnLabel.textContent = 'Stop Live Camera';
+      if (toggleBtn) {
+        toggleBtn.style.background = '#ef4444';
+        toggleBtn.style.borderColor = '#ef4444';
+      }
+      showToast('Live QR camera started! Point at a tourist pass QR code.');
+    } catch (err) {
+      console.warn('Admin camera failed:', err);
+      if (boxEl) boxEl.classList.remove('camera-live');
+      if (readerEl) readerEl.style.display = 'none';
+      if (targetSvg) targetSvg.style.display = 'flex';
+      showToast('Camera unavailable or permission denied. Use "Upload QR Image" or manual input.');
+    }
+  };
+
+  window.scanAdminQrImage = async function (event) {
+    const file = event.target?.files?.[0];
+    if (!file) return;
+    if (typeof Html5Qrcode === 'undefined') {
+      showToast('QR decoder not available.');
+      return;
+    }
+    try {
+      if (isAdminCameraActive && adminHtml5QrScanner) {
+        await window.toggleAdminLiveCamera();
+      }
+      const fileScanner = new Html5Qrcode('adminLiveQrReader');
+      const decodedText = await fileScanner.scanFile(file, false);
+      fileScanner.clear();
+      const code = extractAdminPassCode(decodedText);
+      if (code) {
+        if (scanInput) scanInput.value = code;
+        await window.runQRScanValidation(code);
+      }
+    } catch (err) {
+      console.warn('Admin QR image scan error:', err);
+      showToast('Could not detect a valid QR code in the uploaded image.');
+    } finally {
+      event.target.value = '';
+    }
+  };
+
+  window.runQRScanValidation = async function(customCode = null) {
+    const rawCode = (customCode || scanInput?.value || '').trim();
+    const code = extractAdminPassCode(rawCode);
     if (!code) {
       alert('Please enter or scan a valid QR Tourist Pass code.');
       return;
+    }
+
+    // Fetch live pass from Supabase first if online so any pass in DB is recognized
+    if (window.TourismHubSupabase && typeof TourismHubSupabase.getPassByCode === 'function' && TourismHubSupabase.isReady()) {
+      try {
+        const remotePass = await TourismHubSupabase.getPassByCode(code);
+        if (remotePass && window.TourismHubStore) {
+          const currentPasses = TourismHubStore.getPasses();
+          currentPasses[code] = remotePass;
+          TourismHubStore.savePasses(currentPasses);
+        }
+      } catch (e) {
+        console.warn('[Admin Scanner] Supabase lookup warning:', e);
+      }
     }
 
     const allPasses = window.TourismHubStore ? TourismHubStore.getPasses() : touristPassesDB;
@@ -814,7 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
         code,
         name: 'Unknown Tourist',
         attraction: 'N/A',
-        slot: 'Not found in system registry',
+        slot: 'Not found in Supabase registry',
         pax: 0,
         statusLabel: 'Pass Not Registered'
       });
@@ -825,7 +865,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: 'Unregistered Pass',
         attraction: 'N/A',
         pax: 0,
-        gate: 'Express Gate A1',
+        gate: 'Turnstile A1',
         status: 'Rejected'
       });
       renderRecentScans();
@@ -834,7 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const displayName = record.touristName || record.visitorName || 'Tourist Guest';
     const displayPax = record.pax || record.partySize || 1;
-    const isAlreadyUsed = record.status === 'already-used' || record.status === 'already_used';
+    const isAlreadyUsed = record.status === 'already-used' || record.status === 'already_used' || record.status === 'used';
 
     if (record.status === 'valid') {
       if (window.TourismHubStore) {
@@ -851,7 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
         attraction: record.attraction,
         slot: record.slot || 'Current Slot',
         pax: displayPax,
-        statusLabel: 'Verified & Admitted'
+        statusLabel: 'Verified & Synced to Supabase'
       });
 
       // Update capacity slot for that attraction
@@ -866,11 +906,11 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Express Gate A1',
+        gate: 'Turnstile A1 Express',
         status: 'Approved'
       });
 
-      showToast(`Pass verified! Admitted ${displayPax} pax for ${displayName}.`);
+      showToast(`Pass verified & synced to Supabase! Admitted ${displayPax} pax for ${displayName}.`);
 
     } else if (record.status === 'expired') {
       displayValidationUI({
@@ -890,7 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Express Gate A1',
+        gate: 'Turnstile A1 Express',
         status: 'Rejected'
       });
 
@@ -912,7 +952,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: displayName,
         attraction: record.attraction,
         pax: displayPax,
-        gate: 'Express Gate A1',
+        gate: 'Turnstile A1 Express',
         status: 'Rejected'
       });
     }
@@ -962,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="validation-field">
           <label>Gate Verification</label>
-          <span>Express Gate A1 • Fast Track</span>
+          <span>Turnstile A1 • Fast Track</span>
         </div>
       </div>
     `;
@@ -1205,7 +1245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `"${(item.title || '').replace(/"/g, '""')}"`,
         `"${(item.category || '').replace(/"/g, '""')}"`,
         `"${item.operatingHours || '08:00 AM - 06:00 PM'}"`,
-        `"${item.priceLabel || `₱${item.price || 0}`}"`,
+        `"${item.priceLabel || `$${item.price || 0}`}"`,
         bookedSum,
         maxCapSum,
         `"${utilRate}%"`,
