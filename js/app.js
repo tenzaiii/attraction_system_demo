@@ -279,9 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const recentAnnouncements = announcements.slice(0, 4);
+
     notifBody.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 0.85rem;">
-        ${announcements.map(a => {
+        ${recentAnnouncements.map(a => {
       const isUrgent = a.priority === 'urgent';
       const isWeather = a.type === 'weather';
       const iconBg = isUrgent ? '#ef4444' : isWeather ? '#0284c7' : '#10b981';
@@ -303,6 +305,12 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `;
     }).join('')}
+      </div>
+      <div style="margin-top: 1.15rem; padding-top: 0.9rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+        <a href="notifications.html" class="btn-primary-blue" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.25rem; font-weight: 700; font-size: 0.88rem; border-radius: var(--radius-sm);">
+          <span>See More Notifications</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
       </div>
     `;
   }

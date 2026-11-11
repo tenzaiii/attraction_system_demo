@@ -857,10 +857,29 @@
         </button>
       </div>
       <div class="modal-body" id="notificationsModalBody">
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
 
           <div
-            style="display: flex; gap: 0.85rem; padding: 0.85rem; background: var(--primary-light); border-radius: var(--radius-sm);">
+            style="display: flex; gap: 0.85rem; padding: 0.85rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius-sm);">
+            <div
+              style="width: 36px; height: 36px; border-radius: 99px; background: #ef4444; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+              </svg>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-weight: 700; font-size: 0.92rem; color: #b91c1c;">Severe Weather Advisory: Signal No. 1</span>
+                <span style="font-size: 0.72rem; color: var(--text-light);">Today</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Typhoon approaching coastal Luzon. Outdoor activities in Boracay may be suspended if warning elevates.</div>
+              <div style="font-size: 0.72rem; color: #dc2626; font-weight: 600; margin-top: 4px;">Destination: White Beach Eco-Tourism Reserve</div>
+            </div>
+          </div>
+
+          <div
+            style="display: flex; gap: 0.85rem; padding: 0.85rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: var(--radius-sm);">
             <div
               style="width: 36px; height: 36px; border-radius: 99px; background: #0284c7; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -868,11 +887,32 @@
                   d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
               </svg>
             </div>
-            <div>
-              <div style="font-weight: 700; font-size: 0.92rem; color: #0284c7;">Pahiyas Festival Passes Released</div>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Early-bird tickets for Lucban
-                Pahiyas Festival 2026 are now open for reservations.</div>
-              <div style="font-size: 0.72rem; color: var(--text-light); margin-top: 4px;">2 hours ago</div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-weight: 700; font-size: 0.92rem; color: #0f172a;">Extended Operating Hours for Rizal Park</span>
+                <span style="font-size: 0.72rem; color: var(--text-light);">Today</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Luneta heritage grounds will remain open until 10:00 PM on Friday for the cultural laser light showcase.</div>
+              <div style="font-size: 0.72rem; color: #0284c7; font-weight: 600; margin-top: 4px;">Destination: Rizal Monument & Luneta Park</div>
+            </div>
+          </div>
+
+          <div
+            style="display: flex; gap: 0.85rem; padding: 0.85rem; background: var(--bg-page); border: 1px solid var(--border); border-radius: var(--radius-sm);">
+            <div
+              style="width: 36px; height: 36px; border-radius: 99px; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+              </svg>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-weight: 700; font-size: 0.92rem; color: #0f172a;">Pahiyas Festival Float Parade Registration</span>
+                <span style="font-size: 0.72rem; color: var(--text-light);">Today</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Registration for the grand street float procession is now officially open for accredited cultural delegations.</div>
+              <div style="font-size: 0.72rem; color: #0284c7; font-weight: 600; margin-top: 4px;">Destination: Pahiyas Harvest Festival</div>
             </div>
           </div>
 
@@ -885,14 +925,23 @@
                   d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2 2 2 0 0 1-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 1-2-2 2 2 0 0 1 2-2z" />
               </svg>
             </div>
-            <div>
-              <div style="font-weight: 700; font-size: 0.92rem; color: var(--text-main);">Welcome to TourismHub!</div>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Use promo code EXPLORE15 to
-                save 15% on your first attraction pass.</div>
-              <div style="font-size: 0.72rem; color: var(--text-light); margin-top: 4px;">Yesterday</div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-weight: 700; font-size: 0.92rem; color: var(--text-main);">Welcome to TourismHub!</span>
+                <span style="font-size: 0.72rem; color: var(--text-light);">Recent</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Use promo code EXPLORE15 to save 15% on your first attraction pass.</div>
+              <div style="font-size: 0.72rem; color: #0284c7; font-weight: 600; margin-top: 4px;">Destination: All Attractions</div>
             </div>
           </div>
 
+        </div>
+
+        <div style="margin-top: 1.15rem; padding-top: 0.9rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+          <a href="notifications.html" class="btn-primary-blue" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.25rem; font-weight: 700; font-size: 0.88rem; border-radius: var(--radius-sm);">
+            <span>See More Notifications</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
         </div>
       </div>
     </div>
