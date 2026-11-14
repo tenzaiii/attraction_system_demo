@@ -143,19 +143,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     attractionsGrid.innerHTML = displayList.map(item => `
       <article class="attraction-card" data-id="${item.id}">
-        <div class="card-media-wrapper">
-          <img src="${item.image || 'assets/hero-banner.jpg'}" alt="${item.title}" class="card-image" loading="lazy">
+        <div class="card-media-wrapper" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
+          <img src="${(item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg'}" alt="${item.title}" class="card-image" loading="lazy" onerror="this.src='assets/no-image.svg'">
           <span class="card-badge-floating">${item.badge || 'Featured'}</span>
           <button class="card-wishlist-btn ${savedAttractions.has(item.id) ? 'saved' : ''}" 
                   aria-label="Save ${item.title}" 
-                  onclick="toggleWishlist('${item.id}', '${item.title}')">
+                  onclick="event.stopPropagation(); toggleWishlist('${item.id}', '${item.title}')">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="${savedAttractions.has(item.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </button>
         </div>
         <div class="card-body">
-          <h3 class="card-title">${item.title}</h3>
+          <h3 class="card-title" style="cursor: pointer;" onclick="window.location.href='attraction-details.html?id=${item.id}'" title="View details">${item.title}</h3>
           <p class="card-subtitle">${item.category}</p>
           <div class="card-meta-row">
             <div class="card-rating">
@@ -165,7 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
               <span>${item.rating || '4.8'}</span>
               <span class="rating-count">(${item.reviews || 'New'})</span>
             </div>
-            <div class="card-price-cta">
+            <div class="card-price-cta" style="display: flex; gap: 0.4rem; align-items: center;">
+              <a href="attraction-details.html?id=${item.id}" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none; padding: 0.35rem 0.6rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card);">Details</a>
               <button class="btn-book-card" onclick="openBookingModal('${item.id}')">Book Pass</button>
             </div>
           </div>
@@ -522,7 +523,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (modalTitle) modalTitle.textContent = `Reserve Pass: ${attraction.title}`;
-    if (modalImg) modalImg.src = attraction.image || 'assets/hero-banner.jpg';
+    if (modalImg) {
+      modalImg.src = (attraction.image && !String(attraction.image).includes('images.unsplash.com/photo-')) ? attraction.image : 'assets/no-image.svg';
+      modalImg.onerror = function() { this.src = 'assets/no-image.svg'; };
+    }
     if (modalPrice) modalPrice.textContent = `₱${attraction.price || 20}`;
     if (bookingAttractionInput) bookingAttractionInput.value = attraction.id;
 

@@ -296,6 +296,26 @@
      */
     mapCatalogFromDb(row) {
       if (!row) return null;
+
+      // Extract and sanitize images array (filter out any legacy mock Unsplash links)
+      let parsedImages = [];
+      if (Array.isArray(row.images)) {
+        parsedImages = row.images;
+      } else if (typeof row.images === 'string' && row.images.trim().startsWith('[')) {
+        try { parsedImages = JSON.parse(row.images); } catch (_) { parsedImages = []; }
+      }
+      parsedImages = parsedImages
+        .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
+        .slice(0, 5);
+
+      const rawImage = row.image && !String(row.image).includes('images.unsplash.com/photo-')
+        ? row.image
+        : (parsedImages[0] || 'assets/no-image.svg');
+
+      if (parsedImages.length === 0) {
+        parsedImages = [rawImage];
+      }
+
       return {
         id: row.id,
         title: row.title || '',
@@ -309,7 +329,8 @@
         admission: (row.admission ? String(row.admission).replace(/\$(\d+)/g, '₱$1') : 'Standard Admission'),
         operatingHours: row.operating_hours || '08:00 AM - 06:00 PM',
         capacityPerSlot: row.capacity_per_slot || 100,
-        image: row.image || 'assets/hero-banner.jpg',
+        image: rawImage,
+        images: parsedImages,
         location: row.location || 'Metro Manila',
         badge: row.badge || 'Featured',
         description: row.description || '',
@@ -324,6 +345,18 @@
     mapCatalogToDb(item) {
       if (!item) return null;
       const priceVal = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+
+      // Ensure max 5 pictures and purge any mock unsplash links
+      let cleanImages = (Array.isArray(item.images) ? item.images : (item.image ? [item.image] : []))
+        .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
+        .slice(0, 5);
+
+      if (cleanImages.length === 0) {
+        cleanImages = ['assets/no-image.svg'];
+      }
+
+      const primaryImg = cleanImages[0];
+
       return {
         id: String(item.id || 'attraction-' + Date.now()),
         title: item.title || '',
@@ -337,7 +370,8 @@
         admission: item.admission || 'Standard Admission',
         operating_hours: item.operatingHours || item.operating_hours || '08:00 AM - 06:00 PM',
         capacity_per_slot: Number(item.capacityPerSlot || item.capacity_per_slot || 100),
-        image: item.image || 'assets/hero-banner.jpg',
+        image: primaryImg,
+        images: cleanImages,
         location: item.location || 'Metro Manila',
         badge: item.badge || 'Featured',
         description: item.description || ''
@@ -371,10 +405,23 @@
       if (!supabaseClient) return null;
       try {
         const dbPayload = this.mapCatalogToDb(item);
-        const { data, error } = await supabaseClient
+        let { data, error } = await supabaseClient
           .from('catalog')
           .upsert([dbPayload], { onConflict: 'id' })
           .select();
+
+        // Graceful fallback if `images` column is not yet present in live Supabase table
+        if (error && error.message && error.message.toLowerCase().includes('images')) {
+          console.warn('⚠️ [Supabase] Retrying catalog upsert without `images` column...');
+          const fallbackPayload = { ...dbPayload };
+          delete fallbackPayload.images;
+          const retryRes = await supabaseClient
+            .from('catalog')
+            .upsert([fallbackPayload], { onConflict: 'id' })
+            .select();
+          data = retryRes.data;
+          error = retryRes.error;
+        }
 
         if (error) throw error;
         const saved = (data && data[0]) ? this.mapCatalogFromDb(data[0]) : item;
@@ -403,6 +450,141 @@
       } catch (err) {
         console.warn('⚠️ [Supabase] Failed to delete catalog item:', err.message);
         return { success: false, message: err.message };
+      }
+    },
+
+    /**
+     * Fetch a single attraction item from Supabase `catalog`
+     */
+    async fetchCatalogItem(id) {
+      if (!supabaseClient || !id) return null;
+      try {
+        const { data, error } = await supabaseClient
+          .from('catalog')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) throw error;
+        return data ? this.mapCatalogFromDb(data) : null;
+      } catch (err) {
+        console.warn(`⚠️ [Supabase] Failed to fetch catalog item ${id}:`, err.message);
+        return null;
+      }
+    },
+
+    // =========================================================================
+    // STORAGE BUCKET: ATTRACTION PHOTOS (Organized by Attraction Folder)
+    // =========================================================================
+
+    /**
+     * Upload an attraction image to Supabase Storage bucket 'attractions'
+     * Separated into a folder for each attraction: `attractions/{attractionId}/photo_{timestamp}_{index}.jpg`
+     */
+    async uploadAttractionImage(attractionId, fileOrBlob, index = 1) {
+      if (!supabaseClient) {
+        return { success: false, message: 'Supabase client is offline.' };
+      }
+
+      try {
+        const cleanFolder = String(attractionId || 'general')
+          .toLowerCase()
+          .replace(/[^a-z0-9_-]/g, '-')
+          .replace(/-+/g, '-');
+
+        let blobToUpload = fileOrBlob;
+        let ext = 'jpg';
+
+        // If a data URL string is passed, convert to Blob
+        if (typeof fileOrBlob === 'string' && fileOrBlob.startsWith('data:')) {
+          const parts = fileOrBlob.split(',');
+          const mimeMatch = parts[0].match(/:(.*?);/);
+          const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+          ext = mime.split('/')[1] || 'jpg';
+          const binary = atob(parts[1]);
+          const array = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            array[i] = binary.charCodeAt(i);
+          }
+          blobToUpload = new Blob([array], { type: mime });
+        } else if (fileOrBlob && fileOrBlob.name) {
+          const nameParts = fileOrBlob.name.split('.');
+          if (nameParts.length > 1) ext = nameParts.pop().toLowerCase();
+        }
+
+        const fileName = `photo_${Date.now()}_${index}.${ext}`;
+        const filePath = `${cleanFolder}/${fileName}`;
+
+        console.log(`⚡ [Supabase Storage] Uploading photo to folder "${cleanFolder}": ${fileName}`);
+
+        const { data, error } = await supabaseClient.storage
+          .from('attractions')
+          .upload(filePath, blobToUpload, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: blobToUpload.type || 'image/jpeg'
+          });
+
+        if (error) throw error;
+
+        // Obtain public URL for the uploaded photo in bucket
+        const { data: urlData } = supabaseClient.storage
+          .from('attractions')
+          .getPublicUrl(filePath);
+
+        const publicUrl = urlData ? urlData.publicUrl : '';
+        console.log(`⚡ [Supabase Storage] Uploaded to bucket successfully:`, publicUrl);
+
+        return {
+          success: true,
+          publicUrl,
+          filePath,
+          folder: cleanFolder
+        };
+      } catch (err) {
+        console.warn('⚠️ [Supabase Storage] Failed to upload attraction image:', err.message);
+        return { success: false, message: err.message };
+      }
+    },
+
+    /**
+     * Fetch list of pictures stored in the Supabase Storage bucket under the attraction's folder:
+     * `attractions/{attractionId}/*`
+     */
+    async fetchAttractionImagesFromBucket(attractionId) {
+      if (!supabaseClient || !attractionId) return [];
+
+      try {
+        const cleanFolder = String(attractionId)
+          .toLowerCase()
+          .replace(/[^a-z0-9_-]/g, '-')
+          .replace(/-+/g, '-');
+
+        const { data, error } = await supabaseClient.storage
+          .from('attractions')
+          .list(cleanFolder, {
+            limit: 10,
+            sortBy: { column: 'name', order: 'asc' }
+          });
+
+        if (error) throw error;
+        if (!Array.isArray(data) || data.length === 0) return [];
+
+        const publicUrls = data
+          .filter(file => file.name && !file.name.startsWith('.'))
+          .map(file => {
+            const { data: urlData } = supabaseClient.storage
+              .from('attractions')
+              .getPublicUrl(`${cleanFolder}/${file.name}`);
+            return urlData ? urlData.publicUrl : '';
+          })
+          .filter(Boolean)
+          .slice(0, 5);
+
+        return publicUrls;
+      } catch (err) {
+        console.warn(`⚠️ [Supabase Storage] Could not list bucket folder "${attractionId}":`, err.message);
+        return [];
       }
     },
 

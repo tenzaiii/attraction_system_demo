@@ -384,10 +384,10 @@
         <div class="portal-cards-grid" id="portalCardsGrid">
 
           <!-- Card 1: Infinity Pool -->
-          <article class="portal-item-card" data-type="attraction" data-area="main-wing">
+          <article class="portal-item-card" data-type="attraction" data-area="main-wing" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=intramuros-walled-city'">
             <div class="portal-item-media">
-              <img src="https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=600&q=80"
-                alt="Infinity Pool">
+              <img src="assets/white-beach.jpg"
+                alt="Infinity Pool" onerror="this.src='assets/no-image.svg'">
               <span class="portal-badge-tag attraction">Attraction</span>
             </div>
             <div class="portal-item-body">
@@ -420,7 +420,7 @@
             </div>
             <div class="portal-item-footer">
               <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Infinity Pool', 'Main Wing', '6:00 AM – 10:00 PM', '50 / 80', 'https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=600&q=80')">View
+                onclick="window.location.href='attraction-details.html?id=intramuros-walled-city'">View
                 Details &gt;</button>
             </div>
           </article>
@@ -428,7 +428,7 @@
           <!-- Card 2: Wellness & Spa -->
           <article class="portal-item-card" data-type="amenity" data-area="beachfront">
             <div class="portal-item-media">
-              <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80"
+              <img src="assets/qc-memorial-circle.jpg"
                 alt="Wellness & Spa">
               <span class="portal-badge-tag amenity">Amenity</span>
             </div>
@@ -462,7 +462,7 @@
             </div>
             <div class="portal-item-footer">
               <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Wellness & Spa', 'Beachfront Villa', '9:00 AM – 9:00 PM', '10 / 20', 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80')">View
+                onclick="openDetailsModal('Wellness & Spa', 'Beachfront Villa', '9:00 AM – 9:00 PM', '10 / 20', 'assets/qc-memorial-circle.jpg')">View
                 Details &gt;</button>
             </div>
           </article>
@@ -470,7 +470,7 @@
           <!-- Card 3: Fitness Center -->
           <article class="portal-item-card" data-type="amenity" data-area="main-wing">
             <div class="portal-item-media">
-              <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80"
+              <img src="assets/rizal-monument.jpg"
                 alt="Fitness Center">
               <span class="portal-badge-tag amenity">Amenity</span>
             </div>
@@ -503,7 +503,7 @@
             </div>
             <div class="portal-item-footer">
               <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Fitness Center', 'Main Wing', '5:00 AM – 11:00 PM', '15 / 30', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80')">View
+                onclick="openDetailsModal('Fitness Center', 'Main Wing', '5:00 AM – 11:00 PM', '15 / 30', 'assets/rizal-monument.jpg')">View
                 Details &gt;</button>
             </div>
           </article>
@@ -552,7 +552,7 @@
           <!-- Card 5: Sunset Beach Party -->
           <article class="portal-item-card" data-type="event" data-area="beachfront">
             <div class="portal-item-media">
-              <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80"
+              <img src="assets/hero-banner.jpg"
                 alt="Sunset Beach Party">
               <span class="portal-badge-tag event">Event</span>
             </div>
@@ -585,7 +585,7 @@
             </div>
             <div class="portal-item-footer">
               <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Sunset Beach Party', 'Beachfront', '5:00 PM – 10:00 PM', '120 / 150', 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80')">View
+                onclick="openDetailsModal('Sunset Beach Party', 'Beachfront', '5:00 PM – 10:00 PM', '120 / 150', 'assets/hero-banner.jpg')">View
                 Details &gt;</button>
             </div>
           </article>
@@ -593,7 +593,7 @@
           <!-- Card 6: Seaside Restaurant -->
           <article class="portal-item-card" data-type="attraction" data-area="main-wing">
             <div class="portal-item-media">
-              <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80"
+              <img src="assets/pahiyas-festival.jpg"
                 alt="Seaside Restaurant">
               <span class="portal-badge-tag attraction">Attraction</span>
             </div>
@@ -626,7 +626,7 @@
             </div>
             <div class="portal-item-footer">
               <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Seaside Restaurant', 'Main Wing', '6:00 AM – 11:00 PM', '80 / 120', 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80')">View
+                onclick="openDetailsModal('Seaside Restaurant', 'Main Wing', '6:00 AM – 11:00 PM', '80 / 120', 'assets/pahiyas-festival.jpg')">View
                 Details &gt;</button>
             </div>
           </article>
@@ -675,7 +675,7 @@
           <!-- Card 8: Yoga Pavilion -->
           <article class="portal-item-card" data-type="amenity" data-area="garden">
             <div class="portal-item-media">
-              <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80"
+              <img src="assets/qc-memorial-circle.jpg"
                 alt="Yoga Pavilion">
               <span class="portal-badge-tag amenity">Amenity</span>
             </div>
@@ -708,7 +708,7 @@
             </div>
             <div class="portal-item-footer">
               <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Yoga Pavilion', 'Garden Area', '6:00 AM – 8:00 AM', '20 / 30', 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80')">View
+                onclick="openDetailsModal('Yoga Pavilion', 'Garden Area', '6:00 AM – 8:00 AM', '20 / 30', 'assets/qc-memorial-circle.jpg')">View
                 Details &gt;</button>
             </div>
           </article>
@@ -731,7 +731,7 @@
           <div class="upcoming-events-list">
             <!-- Event 1 -->
             <div class="upcoming-event-item">
-              <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=150&q=80"
+              <img src="assets/hero-banner.jpg"
                 alt="Sunset Beach Party" class="upcoming-event-img">
               <div class="upcoming-event-details">
                 <span class="upcoming-event-name">Sunset Beach Party</span>
@@ -766,7 +766,7 @@
 
             <!-- Event 3 -->
             <div class="upcoming-event-item">
-              <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=150&q=80"
+              <img src="assets/qc-memorial-circle.jpg"
                 alt="Wellness & Yoga Retreat" class="upcoming-event-img">
               <div class="upcoming-event-details">
                 <span class="upcoming-event-name">Wellness & Yoga Retreat</span>
@@ -784,7 +784,7 @@
 
             <!-- Event 4 -->
             <div class="upcoming-event-item">
-              <img src="https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=150&q=80"
+              <img src="assets/white-beach.jpg"
                 alt="Poolside Movie Night" class="upcoming-event-img">
               <div class="upcoming-event-details">
                 <span class="upcoming-event-name">Poolside Movie Night</span>
@@ -802,7 +802,7 @@
 
             <!-- Event 5 -->
             <div class="upcoming-event-item">
-              <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=150&q=80"
+              <img src="assets/rizal-monument.jpg"
                 alt="Chef's Special Dinner" class="upcoming-event-img">
               <div class="upcoming-event-details">
                 <span class="upcoming-event-name">Chef's Special Dinner</span>
@@ -1075,7 +1075,19 @@
       });
     });
 
-    window.openDetailsModal = function (title, location, hours, cap, imgUrl) {
+    window.openDetailsModal = function (title, location, hours, cap, imgUrl, attrId) {
+      if (attrId) {
+        window.location.href = `attraction-details.html?id=${encodeURIComponent(attrId)}`;
+        return;
+      }
+      if (window.TourismHubStore && typeof TourismHubStore.getCatalog === 'function') {
+        const catalog = TourismHubStore.getCatalog();
+        const found = catalog.find(a => (a.title || '').toLowerCase().trim() === (title || '').toLowerCase().trim());
+        if (found) {
+          window.location.href = `attraction-details.html?id=${encodeURIComponent(found.id)}`;
+          return;
+        }
+      }
       document.getElementById('modalItemTitle').textContent = title;
       document.getElementById('modalItemLocation').textContent = location;
       document.getElementById('modalItemHours').textContent = hours;

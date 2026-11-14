@@ -389,10 +389,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    catalogGrid.innerHTML = filtered.map(item => `
+    catalogGrid.innerHTML = filtered.map(item => {
+      const itemImg = (item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg';
+      return `
       <article class="catalog-item-card" data-id="${item.id}">
         <div class="catalog-media-header">
-          <img src="${item.image}" alt="${item.title}" class="catalog-img" onerror="this.src='assets/hero-banner.jpg'">
+          <img src="${itemImg}" alt="${item.title}" class="catalog-img" onerror="this.src='assets/no-image.svg'">
           <span class="catalog-status-badge ${item.status}">${item.status}</span>
           <span class="catalog-category-tag">${item.category}</span>
         </div>
@@ -426,7 +428,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       </article>
-    `).join('');
+      `;
+    }).join('');
 
     // Update attraction options in other modules
     updateAttractionDropdowns();
@@ -437,9 +440,111 @@ document.addEventListener('DOMContentLoaded', () => {
   catalogCategoryFilter?.addEventListener('change', renderCatalog);
   catalogStatusFilter?.addEventListener('change', renderCatalog);
 
+  // Active photos being added or edited for the attraction modal (limit 5 pictures)
+  let adminSelectedPhotos = [];
+
+  function renderAdminPhotosPreview() {
+    const grid = document.getElementById('attrPhotosPreviewGrid');
+    const badge = document.getElementById('attrPhotoCountBadge');
+    if (badge) {
+      badge.textContent = `${adminSelectedPhotos.length} / 5 pictures`;
+    }
+    if (!grid) return;
+
+    if (adminSelectedPhotos.length === 0) {
+      grid.innerHTML = '<div style="grid-column: 1 / -1; font-size: 0.78rem; color: var(--text-muted); text-align: center; padding: 0.5rem 0;">No photos added yet. Default placeholder will be used if left empty.</div>';
+      return;
+    }
+
+    grid.innerHTML = adminSelectedPhotos.map((url, idx) => `
+      <div style="position: relative; border-radius: 8px; overflow: hidden; height: 75px; border: 1.5px solid ${idx === 0 ? '#0284c7' : 'var(--border)'}; background: #0f172a;" title="${idx === 0 ? 'Primary Cover Photo' : `Photo ${idx + 1}`}">
+        <img src="${url}" alt="Preview ${idx + 1}" style="width: 100%; height: 100%; object-fit: cover;">
+        ${idx === 0 ? '<span style="position: absolute; bottom: 2px; left: 2px; right: 2px; background: rgba(2, 132, 199, 0.95); color: #fff; font-size: 0.62rem; font-weight: 700; text-align: center; border-radius: 4px; padding: 1px;">Cover</span>' : ''}
+        <button type="button" onclick="removeAdminPhoto(${idx})" title="Remove photo" style="position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.7); color: #fff; border: none; font-size: 14px; font-weight: 700; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s ease;">&times;</button>
+      </div>
+    `).join('');
+  }
+
+  window.removeAdminPhoto = function(idx) {
+    if (idx >= 0 && idx < adminSelectedPhotos.length) {
+      adminSelectedPhotos.splice(idx, 1);
+      renderAdminPhotosPreview();
+    }
+  };
+
+  // Helper to downscale and compress images client-side before bucket upload
+  function downscaleAdminPhoto(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1200;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  window.handleAdminPhotoSelection = async function(e) {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const remainingSlots = 5 - adminSelectedPhotos.length;
+    if (remainingSlots <= 0) {
+      showToast('Maximum of 5 pictures reached. Remove one first to replace.');
+      e.target.value = '';
+      return;
+    }
+
+    if (files.length > remainingSlots) {
+      showToast(`Only ${remainingSlots} more picture(s) allowed (limit is 5).`);
+    }
+
+    const filesToRead = files.slice(0, remainingSlots);
+    let loaded = 0;
+
+    for (const file of filesToRead) {
+      const compressedDataUrl = await downscaleAdminPhoto(file);
+      if (compressedDataUrl && adminSelectedPhotos.length < 5) {
+        adminSelectedPhotos.push(compressedDataUrl);
+        loaded++;
+      }
+    }
+
+    renderAdminPhotosPreview();
+    if (loaded > 0) {
+      showToast(`Prepared ${loaded} picture(s) for Supabase bucket storage.`);
+    }
+
+    e.target.value = '';
+  };
+
   // Open modal to add new attraction
   window.openAddAttractionModal = function() {
     attractionForm?.reset();
+    adminSelectedPhotos = [];
+    renderAdminPhotosPreview();
     document.getElementById('attractionModalId').value = '';
     document.getElementById('attractionModalTitle').textContent = 'Catalog New Attraction / Event';
     attractionModal?.classList.add('active');
@@ -461,12 +566,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('attrFormStatus').value = item.status;
     document.getElementById('attrFormDesc').value = item.description;
 
+    // Load existing pictures (max 5)
+    adminSelectedPhotos = (Array.isArray(item.images) ? [...item.images] : (item.image ? [item.image] : []))
+      .filter(url => url && !String(url).includes('images.unsplash.com/photo-'))
+      .slice(0, 5);
+    renderAdminPhotosPreview();
+
     document.getElementById('attractionModalTitle').textContent = 'Edit Attraction Profile';
     attractionModal?.classList.add('active');
   };
 
-  // Save / Update attraction
-  attractionForm?.addEventListener('submit', (e) => {
+  // Save / Update attraction (Uploads photos to Supabase Storage bucket 'attractions' organized by folder)
+  attractionForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('attractionModalId')?.value;
     const title = document.getElementById('attrFormTitle')?.value;
@@ -479,6 +590,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const status = document.getElementById('attrFormStatus')?.value;
     const desc = document.getElementById('attrFormDesc')?.value;
 
+    const targetFolderId = id || title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+
+    showToast('Uploading pictures to Supabase Storage bucket...');
+
+    // Upload any newly selected photos to Supabase Storage bucket 'attractions' (folder: targetFolderId)
+    const finalImages = [];
+    for (let i = 0; i < adminSelectedPhotos.length && i < 5; i++) {
+      const photo = adminSelectedPhotos[i];
+      if (typeof photo === 'string' && photo.startsWith('data:') && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        try {
+          const uploadRes = await TourismHubSupabase.uploadAttractionImage(targetFolderId, photo, i + 1);
+          if (uploadRes && uploadRes.success && uploadRes.publicUrl) {
+            finalImages.push(uploadRes.publicUrl);
+            continue;
+          }
+        } catch (uploadErr) {
+          console.warn('[Admin] Bucket upload error for photo ' + (i + 1), uploadErr);
+        }
+      }
+      finalImages.push(photo);
+    }
+
+    if (finalImages.length === 0) {
+      finalImages.push('assets/no-image.svg');
+    }
+    const primaryImg = finalImages[0];
+
     if (id) {
       // Edit existing
       const updates = {
@@ -490,7 +628,9 @@ document.addEventListener('DOMContentLoaded', () => {
         admission: priceStr,
         capacityPerSlot: capacity,
         status,
-        description: desc
+        description: desc,
+        image: primaryImg,
+        images: finalImages
       };
       if (window.TourismHubStore) {
         TourismHubStore.updateAttraction(id, updates);
@@ -499,10 +639,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const item = catalogData.find(a => a.id === id);
         if (item) Object.assign(item, updates);
       }
-      showToast(`Updated profile for "${title}"`);
+      showToast(`Updated "${title}" with Supabase bucket pictures!`);
     } else {
       // Create new
-      const newId = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+      const newId = targetFolderId;
       const newAttr = {
         id: newId,
         title,
@@ -514,7 +654,8 @@ document.addEventListener('DOMContentLoaded', () => {
         price: 20,
         capacityPerSlot: capacity,
         status,
-        image: 'assets/hero-banner.jpg',
+        image: primaryImg,
+        images: finalImages,
         description: desc
       };
 
@@ -531,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
       }
 
-      showToast(`Successfully cataloged "${title}"`);
+      showToast(`Successfully cataloged "${title}" in Supabase!`);
     }
 
     closeModal('attractionModal');

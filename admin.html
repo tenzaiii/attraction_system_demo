@@ -800,6 +800,26 @@
               placeholder="Describe the historical importance, natural beauty, or tourist guidelines..."
               required></textarea>
           </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <label style="font-weight: 700; margin-bottom: 0;">Location Photos (Max 5 Pictures)</label>
+              <span id="attrPhotoCountBadge" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">0 / 5 pictures</span>
+            </div>
+            <div style="border: 1.5px dashed var(--border); border-radius: var(--radius-md); padding: 1.25rem 1rem; text-align: center; background: var(--bg-subtle);">
+              <input type="file" id="attrFormPhotosInput" accept="image/*" multiple style="display: none;" onchange="handleAdminPhotoSelection(event)">
+              <button type="button" class="btn-secondary" onclick="document.getElementById('attrFormPhotosInput').click()" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.15rem; font-size: 0.88rem; cursor: pointer;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>Upload Pictures (Max 5)</span>
+              </button>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.45rem; margin-bottom: 0;">Upload up to 5 photos stored at Supabase. First photo serves as cover.</p>
+            </div>
+            <div id="attrPhotosPreviewGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 0.65rem; margin-top: 0.85rem;"></div>
+          </div>
         </div>
 
         <div class="admin-modal-footer">

@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Destination Details & Pass Reservation — Explore operating hours, real-time visitor capacity, photo galleries, and priority entry passes on TourismHub.">
+  <title id="pageBrowserTitle">Attraction Details — TourismHub</title>
+
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'%3E%3Cpolygon points='12,2 24,28 0,28' fill='%2310b981'/%3E%3Cpolygon points='26,8 38,28 14,28' fill='%230284c7'/%3E%3C/svg%3E">
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/portal-pages.css">
+
+  <script>
+    if (localStorage.getItem('tourismhub_theme') === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+  <link rel="stylesheet" href="css/dark-overrides.css">
+</head>
+
+<body>
+
+  <!-- ==========================================================================
+       Collapsible Side Navigation Bar
+       ========================================================================== -->
+  <aside class="side-navigation" id="sideNav" aria-label="Portal Navigation">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg class="sidebar-logo-icon" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
+          <polygon points="12,4 23,32 1,32" fill="#10B981" />
+          <polygon points="28,10 41,32 15,32" fill="#0284C7" />
+          <polygon points="12,4 16,13 8,13" fill="#ffffff" />
+          <polygon points="28,10 32,18 24,18" fill="#ffffff" />
+        </svg>
+        <span class="sidebar-logo-text">TourismHub</span>
+      </a>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Collapse Sidebar"
+        title="Collapse / Expand Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-menu-wrapper" aria-label="Sidebar Menu">
+      <ul class="sidebar-menu">
+        <!-- 1. Dashboard -->
+        <li class="sidebar-menu-item">
+          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Dashboard">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- 2. Attractions & Events (Active Context) -->
+        <li class="sidebar-menu-item">
+          <a href="attractions.html" class="sidebar-menu-link active" data-nav="attractions"
+            title="Attractions & Events">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z" />
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Attractions & Events</span>
+          </a>
+        </li>
+
+        <!-- 3. Capacity & Schedule -->
+        <li class="sidebar-menu-item">
+          <a href="capacity.html" class="sidebar-menu-link" data-nav="capacity" title="Capacity & Schedule">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Capacity & Schedule</span>
+          </a>
+        </li>
+
+        <!-- 4. QR Scanner -->
+        <li class="sidebar-menu-item">
+          <a href="scanner.html" class="sidebar-menu-link" data-nav="scanner" title="QR Scanner">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M4 8V5a1 1 0 0 1 1-1h3"></path>
+                <path d="M16 4h3a1 1 0 0 1 1 1v3"></path>
+                <path d="M20 16v3a1 1 0 0 1-1 1h-3"></path>
+                <path d="M8 20H5a1 1 0 0 1-1-1v-3"></path>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">QR Scanner</span>
+          </a>
+        </li>
+
+        <!-- 5. Notifications -->
+        <li class="sidebar-menu-item">
+          <a href="notifications.html" class="sidebar-menu-link" data-nav="notifications" title="Notifications">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Notifications</span>
+            <span class="sidebar-item-badge-dot"></span>
+          </a>
+        </li>
+
+        <!-- 6. Profile -->
+        <li class="sidebar-menu-item">
+          <a href="profile.html" class="sidebar-menu-link" data-nav="profile" title="My Profile & Passes">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Profile</span>
+          </a>
+        </li>
+
+        <!-- 7. Admin Dashboard (Admin Only) -->
+        <li class="sidebar-menu-item admin-only-feature" style="display: none;">
+          <a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">Admin Dashboard</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Sidebar Backdrop for Mobile -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Top Sticky Header -->
+  <header class="portal-topbar">
+    <div class="portal-topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Open Sidebar Navigation"
+        title="Open Navigation Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="portal-search-bar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="headerSearchInput" class="portal-search-input"
+          placeholder="Search attractions, events, or keywords...">
+      </div>
+    </div>
+
+    <div class="portal-topbar-right">
+      <!-- Admin Dashboard Quick Button (Admin Only) -->
+      <a href="admin.html" class="nav-admin-dashboard-btn admin-only-feature" style="display: none;" title="Admin Operator Dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="3" y="3" width="7" height="9"></rect>
+          <rect x="14" y="3" width="7" height="5"></rect>
+          <rect x="14" y="12" width="7" height="9"></rect>
+          <rect x="3" y="16" width="7" height="5"></rect>
+        </svg>
+      </a>
+
+      <!-- Dark / Light Mode Toggle Button -->
+      <button class="portal-notif-btn topbar-theme-toggle-btn" id="globalDarkModeBtn" onclick="toggleGlobalTheme()" aria-label="Toggle Theme" title="Toggle Theme">
+        <svg class="theme-btn-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="theme-btn-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
+      <a href="notifications.html" class="portal-notif-btn" aria-label="Notifications" title="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="sidebar-item-badge-dot" style="position: absolute; top: 8px; right: 8px;"></span>
+      </a>
+
+      <div class="user-profile-wrapper">
+        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options" style="display: none;">
+          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
+            alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
+          <div class="portal-user-meta">
+            <span class="portal-user-name">Tourist Portal</span>
+            <span class="portal-user-role">Sign In / Register</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tourist Login Link (Shown when exploring as guest) -->
+      <a href="login.html" class="auth-signin-link" id="navSignInLink" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.84rem; font-weight: 600; color: #0284c7; text-decoration: none; padding: 0.42rem 0.85rem; border: 1.5px solid #0284c7; border-radius: 9999px; transition: all 0.2s;" title="Tourist Portal Sign In & Registration">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>Sign In</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       Main Portal Content Area
+       ========================================================================== -->
+  <main class="portal-main-wrapper">
+    <div class="details-page-content">
+
+      <!-- Breadcrumbs Navigation -->
+      <nav class="details-breadcrumb" aria-label="Breadcrumb" style="margin-bottom: 1.25rem;">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <a href="attractions.html">Attractions</a>
+        <span>/</span>
+        <span id="breadcrumbCurrentTitle" style="color: var(--text-main); font-weight: 700;">Loading...</span>
+      </nav>
+
+      <!-- 2-Column Hero Grid: Left = Picture Carousel, Right = Destination Details -->
+      <section class="details-hero-grid">
+
+        <!-- Left Column: Interactive Picture Carousel -->
+        <div class="carousel-wrapper" aria-label="Destination Gallery Carousel">
+          <div class="carousel-viewport" id="carouselViewport">
+            <span class="carousel-caption-pill" id="carouselCaptionPill">Photo Gallery</span>
+            <img id="carouselMainImg" src="assets/hero-banner.jpg" alt="Attraction Showcase"
+              class="carousel-slide-img" loading="eager">
+
+            <!-- Prev / Next Navigation Arrows -->
+            <button type="button" class="carousel-nav-btn prev" id="carouselPrevBtn" aria-label="Previous Photo"
+              title="Previous Photo">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button type="button" class="carousel-nav-btn next" id="carouselNextBtn" aria-label="Next Photo"
+              title="Next Photo">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+
+            <!-- Slide Counter Badge -->
+            <span class="carousel-badge" id="carouselCounter">1 / 4 Photos</span>
+          </div>
+
+          <!-- Clickable Thumbnails Strip -->
+          <div class="carousel-thumbnails-strip" id="carouselThumbnails">
+            <!-- Populated via script -->
+          </div>
+        </div>
+
+        <!-- Right Column: Description, Location, Time, Capacity & Actions -->
+        <div class="details-info-panel">
+          <!-- Badges -->
+          <div class="details-badge-row">
+            <span class="details-category-pill" id="detailsCategory">Attraction</span>
+            <span class="details-status-pill" id="detailsBadge">Featured</span>
+          </div>
+
+          <!-- Destination Title & Inline Favorites Button -->
+          <div class="details-title-row">
+            <h1 class="details-title" id="detailsTitle">Loading Destination...</h1>
+            <button type="button" class="btn-favorite-inline" id="detailsFavoriteBtn"
+              onclick="toggleDetailsFavorite()" aria-label="Save to Favorites" title="Save to Favorites">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                </path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Rating & Reviews -->
+          <div class="details-rating-row">
+            <span class="details-star-rating">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              <span id="detailsRating">4.8</span>
+            </span>
+            <span id="detailsReviews">(1.2k verified tourist reviews)</span>
+          </div>
+
+          <!-- Brief Summary / Description -->
+          <p class="details-summary-text" id="detailsDescription">
+            Explore rich Philippine heritage, pristine coastal sights, and curated cultural experiences with real-time pass issuance and gate verification.
+          </p>
+
+          <!-- Location, Time & Admission Text Metadata (No Grey Boxes) -->
+          <div class="details-meta-list">
+            <!-- Location -->
+            <div class="details-meta-row">
+              <span class="details-meta-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+                </svg>
+              </span>
+              <span class="details-meta-label">Location Area:</span>
+              <span class="details-meta-value" id="detailsLocation">Metro Manila</span>
+            </div>
+
+            <!-- Operating Time -->
+            <div class="details-meta-row">
+              <span class="details-meta-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </span>
+              <span class="details-meta-label">Operating Hours:</span>
+              <span class="details-meta-value" id="detailsHours">08:00 AM – 06:00 PM</span>
+            </div>
+
+            <!-- Admission Fee / Rate -->
+            <div class="details-meta-row">
+              <span class="details-meta-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <path d="M6 12h.01M18 12h.01"></path>
+                </svg>
+              </span>
+              <span class="details-meta-label">Admission Pricing:</span>
+              <span class="details-meta-value" id="detailsPrice" style="color: var(--primary);">Pass from ₱15</span>
+            </div>
+          </div>
+
+          <!-- Real-Time Capacity (Clean progress bar, no grey box) -->
+          <div class="details-capacity-card">
+            <div class="details-capacity-header">
+              <span>Real-Time Visitor Capacity</span>
+              <span id="detailsCapacityPercent">0%</span>
+            </div>
+            <div class="details-capacity-meter-wrap">
+              <div class="details-capacity-meter-fill normal" id="detailsCapacityFill" style="width: 0%;"></div>
+            </div>
+            <div class="details-capacity-stats">
+              <span>Allocated Visitors: <strong id="detailsCapacityBooked">0</strong></span>
+              <span>Allowable Limit: <strong id="detailsCapacityMax">100</strong> Pax</span>
+            </div>
+          </div>
+
+          <!-- Action Button: Book Pass -->
+          <div class="details-action-group">
+            <button type="button" class="btn-book-detail" id="detailsBookPassBtn" onclick="openDetailsBookingModal()" style="width: 100%;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>Book Pass</span>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Bottom Section: Other Locations Available -->
+      <section class="other-locations-section" aria-labelledby="otherLocationsTitle">
+        <div class="other-locations-header-bar">
+          <div>
+            <h2 class="other-locations-title" id="otherLocationsTitle">Other Locations Available</h2>
+            <p class="other-locations-subtitle">
+              Explore other heritage landmarks, pristine beaches, and vibrant cultural celebrations available across the Philippines.
+            </p>
+          </div>
+          <a href="attractions.html" class="btn-see-all-locations" title="See all available attractions & events">
+            <span>See All</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <div class="other-locations-grid" id="otherLocationsGrid">
+          <!-- Populated dynamically via script -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       Integrated Pass Booking Modal
+       ========================================================================== -->
+  <div class="modal-overlay" id="detailsBookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalHeading">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title" id="bookingModalHeading">Reserve Priority Entry Pass</h3>
+        <button class="modal-close-btn" onclick="closeDetailsBookingModal()" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form id="detailsPassBookingForm">
+          <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem;">
+            <img id="bookingItemImg" src="assets/hero-banner.jpg" alt="Attraction preview"
+              style="width: 80px; height: 80px; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid var(--border);">
+            <div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                Destination Rate
+              </div>
+              <div id="bookingItemPrice" style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">₱15</div>
+              <div style="font-size: 0.82rem; color: #10b981; font-weight: 600;">✓ Free cancellation up to 24h</div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.25rem;">
+            <div>
+              <label for="bookingPassDate"
+                style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Visit Date</label>
+              <input type="date" id="bookingPassDate" required
+                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+            </div>
+
+            <div>
+              <label for="bookingVisitorCount"
+                style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Number of Visitors</label>
+              <input type="number" id="bookingVisitorCount" min="1" max="15" value="1" required
+                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+            </div>
+
+            <div>
+              <label for="bookingPrimaryGuestName"
+                style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Primary Guest Name</label>
+              <input type="text" id="bookingPrimaryGuestName" required placeholder="e.g. Maria Santos"
+                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+            </div>
+          </div>
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-top: 1px solid var(--border); margin-bottom: 1.25rem;">
+            <span style="font-weight: 700;">Total Price:</span>
+            <span id="bookingCalculatedTotal"
+              style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">₱15</span>
+          </div>
+
+          <button type="submit"
+            style="width: 100%; padding: 0.95rem; background: var(--primary); color: #fff; font-weight: 800; border-radius: var(--radius-full); font-size: 1rem; box-shadow: var(--shadow-md); border: none; cursor: pointer;">
+            Confirm & Generate Pass
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications Modal (For Top-Bar Bell Icon) -->
+  <div class="modal-overlay" id="notificationsModal" role="dialog" aria-modal="true" aria-labelledby="notifModalTitle">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title" id="notifModalTitle">Recent Notifications</h3>
+        <button class="modal-close-btn" onclick="closeNotificationsModal()" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="notificationsModalBody">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase CDN Client & Config -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase-client.js"></script>
+
+  <!-- Shared State Store & Universal Modules -->
+  <script src="js/store.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/profile-dropdown.js"></script>
+  <script src="js/portal-sync.js"></script>
+
+  <!-- Attraction Details Controller Script -->
+  <script>
+    (function () {
+      'use strict';
+
+      let currentAttraction = null;
+      let currentGallery = [];
+      let currentSlideIndex = 0;
+
+      // Extract requested attraction ID from URL query
+      function getRequestedAttractionId() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id') || '';
+      }
+
+      // Initialize destination data and page UI
+      function initDetailsPage() {
+        if (!window.TourismHubStore) return;
+
+        const catalog = TourismHubStore.getCatalog();
+        if (!catalog || catalog.length === 0) return;
+
+        const reqId = getRequestedAttractionId();
+        currentAttraction = catalog.find(a => a.id === reqId) || catalog[0];
+
+        // 1. Update Title and Browser Tab
+        document.title = `${currentAttraction.title} — TourismHub`;
+        const titleEl = document.getElementById('detailsTitle');
+        const breadcrumbTitle = document.getElementById('breadcrumbCurrentTitle');
+        const topHeading = document.getElementById('topPageHeading');
+        if (titleEl) titleEl.textContent = currentAttraction.title;
+        if (breadcrumbTitle) breadcrumbTitle.textContent = currentAttraction.title;
+        if (topHeading) topHeading.textContent = currentAttraction.title;
+
+        // Search Input Navigation
+        const searchInput = document.getElementById('headerSearchInput');
+        if (searchInput && !searchInput.dataset.initialized) {
+          searchInput.dataset.initialized = 'true';
+          searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+              const q = encodeURIComponent(this.value.trim());
+              if (q) window.location.href = `attractions.html?search=${q}`;
+            }
+          });
+        }
+
+        // 2. Badges & Categories
+        const catEl = document.getElementById('detailsCategory');
+        const badgeEl = document.getElementById('detailsBadge');
+        if (catEl) catEl.textContent = currentAttraction.category || 'Tourist Spot';
+        if (badgeEl) badgeEl.textContent = currentAttraction.badge || 'Featured Destination';
+
+        // 3. Rating & Reviews
+        const ratingEl = document.getElementById('detailsRating');
+        const reviewsEl = document.getElementById('detailsReviews');
+        if (ratingEl) ratingEl.textContent = currentAttraction.rating || '4.8';
+        if (reviewsEl) reviewsEl.textContent = `(${currentAttraction.reviews || '1.2k'} verified tourist reviews)`;
+
+        // 4. Description & Summary
+        const descEl = document.getElementById('detailsDescription');
+        if (descEl) descEl.textContent = currentAttraction.description || 'Experience world-class resort amenities and sights with real-time pass issuance and gate verification.';
+
+        // 5. Location & Operating Hours
+        const locEl = document.getElementById('detailsLocation');
+        const hoursEl = document.getElementById('detailsHours');
+        const priceEl = document.getElementById('detailsPrice');
+        if (locEl) locEl.textContent = currentAttraction.location || 'Metro Manila';
+        if (hoursEl) hoursEl.textContent = currentAttraction.operatingHours || '08:00 AM – 06:00 PM';
+        if (priceEl) priceEl.textContent = currentAttraction.priceLabel || currentAttraction.admission || `₱${currentAttraction.price || 15}`;
+
+        // 6. Capacity Meter from Real-Time Store
+        updateCapacityUI();
+
+        // 7. Initialize Gallery & Carousel
+        initCarousel();
+
+        // 8. Update Favorite Button UI
+        updateFavoriteButtonUI();
+
+        // 9. Render Other Locations Grid
+        renderOtherLocations(catalog);
+
+        // 10. Fetch latest pictures & details directly from Supabase Storage bucket & catalog
+        syncAttractionFromSupabase();
+
+        // Set default visit date in booking modal to today
+        const dateInput = document.getElementById('bookingPassDate');
+        if (dateInput && !dateInput.value) {
+          const today = new Date().toISOString().split('T')[0];
+          dateInput.value = today;
+          dateInput.min = today;
+        }
+
+        // Auto-fill visitor name if signed in
+        const nameInput = document.getElementById('bookingPrimaryGuestName');
+        const activeUser = TourismHubStore.getClientAuth() || TourismHubStore.getAdminAuth();
+        if (nameInput && activeUser && activeUser.name) {
+          nameInput.value = activeUser.name;
+        }
+      }
+
+      // Compute and update live capacity
+      function updateCapacityUI() {
+        if (!currentAttraction || !window.TourismHubStore) return;
+        const capacityData = TourismHubStore.getCapacityData();
+        const slots = capacityData[currentAttraction.id] || [];
+
+        let booked = 0;
+        let max = currentAttraction.capacityPerSlot || 100;
+
+        if (slots.length > 0) {
+          booked = slots.reduce((acc, s) => acc + (s.booked || 0), 0);
+          max = slots.reduce((acc, s) => acc + (s.max || 0), 0) || max;
+        }
+
+        const percentage = max > 0 ? Math.min(100, Math.round((booked / max) * 100)) : 0;
+        const bookedEl = document.getElementById('detailsCapacityBooked');
+        const maxEl = document.getElementById('detailsCapacityMax');
+        const pctEl = document.getElementById('detailsCapacityPercent');
+        const fillEl = document.getElementById('detailsCapacityFill');
+
+        if (bookedEl) bookedEl.textContent = booked.toLocaleString();
+        if (maxEl) maxEl.textContent = max.toLocaleString();
+        if (pctEl) pctEl.textContent = `${percentage}% Capacity`;
+        if (fillEl) {
+          fillEl.style.width = `${percentage}%`;
+          fillEl.className = 'details-capacity-meter-fill ' + (percentage >= 100 ? 'full' : (percentage >= 80 ? 'moderate' : 'normal'));
+        }
+      }
+
+      // Fetch fresh attraction data & pictures directly from Supabase (Database & Bucket Folder)
+      async function syncAttractionFromSupabase() {
+        const reqId = getRequestedAttractionId();
+        if (!reqId || !window.TourismHubSupabase || !TourismHubSupabase.isReady()) return;
+
+        try {
+          // 1. Fetch live row from Supabase catalog table
+          const liveItem = await TourismHubSupabase.fetchCatalogItem(reqId);
+          let bucketPhotos = [];
+
+          // 2. Fetch any files stored directly in the attraction's bucket folder: attractions/{attractionId}/*
+          try {
+            bucketPhotos = await TourismHubSupabase.fetchAttractionImagesFromBucket(reqId);
+          } catch (_) {}
+
+          if (liveItem) {
+            // Prioritize bucket photos, followed by catalog images
+            const combinedImages = [
+              ...bucketPhotos,
+              ...(Array.isArray(liveItem.images) ? liveItem.images : (liveItem.image ? [liveItem.image] : []))
+            ]
+              .filter((url, idx, self) => url && typeof url === 'string' && self.indexOf(url) === idx && !url.includes('images.unsplash.com/photo-'))
+              .slice(0, 5);
+
+            if (combinedImages.length > 0) {
+              liveItem.images = combinedImages;
+              liveItem.image = combinedImages[0];
+            }
+
+            currentAttraction = liveItem;
+            initCarousel();
+            updateCapacityUI();
+            updateFavoriteButtonUI();
+          }
+        } catch (err) {
+          console.warn('[Details] Supabase sync error:', err);
+        }
+      }
+
+      // Build gallery pictures for current destination (strictly genuine uploaded images or fallback)
+      function initCarousel() {
+        if (!currentAttraction) return;
+
+        let rawImages = [];
+        if (Array.isArray(currentAttraction.images) && currentAttraction.images.length > 0) {
+          rawImages = currentAttraction.images;
+        } else if (currentAttraction.image) {
+          rawImages = [currentAttraction.image];
+        }
+
+        // Purge any mock Unsplash URLs
+        rawImages = rawImages
+          .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
+          .slice(0, 5);
+
+        // If no images left, use default "No Image Available" picture
+        if (rawImages.length === 0) {
+          rawImages = ['assets/no-image.svg'];
+        }
+
+        currentGallery = rawImages.map((url, idx) => ({
+          url,
+          caption: `${currentAttraction.title}${rawImages.length > 1 ? ` — Photo ${idx + 1}` : ''}`
+        }));
+
+        currentSlideIndex = 0;
+        renderSlide();
+        renderThumbnails();
+        updateCarouselControlsVisibility();
+      }
+
+      function updateCarouselControlsVisibility() {
+        const prevBtn = document.getElementById('carouselPrevBtn');
+        const nextBtn = document.getElementById('carouselNextBtn');
+        const hasMultiple = currentGallery && currentGallery.length > 1;
+
+        if (prevBtn) prevBtn.style.display = hasMultiple ? 'flex' : 'none';
+        if (nextBtn) nextBtn.style.display = hasMultiple ? 'flex' : 'none';
+      }
+
+      function renderSlide() {
+        if (!currentGallery || currentGallery.length === 0) return;
+        const slide = currentGallery[currentSlideIndex];
+        const mainImg = document.getElementById('carouselMainImg');
+        const captionPill = document.getElementById('carouselCaptionPill');
+        const counterEl = document.getElementById('carouselCounter');
+
+        if (mainImg) {
+          mainImg.style.opacity = '0.75';
+          mainImg.src = slide.url;
+          mainImg.alt = slide.caption;
+          mainImg.onerror = function () {
+            this.src = 'assets/no-image.svg';
+          };
+          mainImg.onload = function () {
+            mainImg.style.opacity = '1';
+          };
+        }
+
+        if (captionPill) {
+          captionPill.textContent = currentGallery.length > 1
+            ? `${currentAttraction.title} (${currentSlideIndex + 1} of ${currentGallery.length})`
+            : `${currentAttraction.title}`;
+        }
+        if (counterEl) {
+          counterEl.textContent = currentGallery.length > 1
+            ? `${currentSlideIndex + 1} / ${currentGallery.length} Photos`
+            : '1 Photo';
+        }
+
+        // Update active thumbnail border and auto-scroll into view
+        const thumbs = document.querySelectorAll('.carousel-thumb-btn');
+        thumbs.forEach((th, idx) => {
+          const isActive = idx === currentSlideIndex;
+          th.classList.toggle('active', isActive);
+          if (isActive) {
+            th.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        });
+      }
+
+      function renderThumbnails() {
+        const strip = document.getElementById('carouselThumbnails');
+        if (!strip) return;
+
+        if (currentGallery.length <= 1) {
+          strip.style.display = 'none';
+          return;
+        }
+        strip.style.display = 'flex';
+
+        strip.innerHTML = currentGallery.map((slide, idx) => `
+          <button type="button" class="carousel-thumb-btn ${idx === currentSlideIndex ? 'active' : ''}" 
+                  data-index="${idx}"
+                  onclick="jumpToSlide(${idx})" aria-label="Go to slide ${idx + 1}: ${slide.caption}">
+            <img src="${slide.url}" alt="${slide.caption}" loading="lazy" onerror="this.src='assets/no-image.svg'">
+          </button>
+        `).join('');
+      }
+
+      window.jumpToSlide = function (index) {
+        if (index >= 0 && index < currentGallery.length) {
+          currentSlideIndex = index;
+          renderSlide();
+        }
+      };
+
+      // Prev / Next button handlers
+      document.getElementById('carouselPrevBtn')?.addEventListener('click', () => {
+        if (currentGallery.length <= 1) return;
+        currentSlideIndex = (currentSlideIndex - 1 + currentGallery.length) % currentGallery.length;
+        renderSlide();
+      });
+
+      document.getElementById('carouselNextBtn')?.addEventListener('click', () => {
+        if (currentGallery.length <= 1) return;
+        currentSlideIndex = (currentSlideIndex + 1) % currentGallery.length;
+        renderSlide();
+      });
+
+      // Keyboard navigation support
+      document.addEventListener('keydown', (e) => {
+        if (currentGallery.length <= 1) return;
+        if (e.key === 'ArrowLeft') {
+          currentSlideIndex = (currentSlideIndex - 1 + currentGallery.length) % currentGallery.length;
+          renderSlide();
+        } else if (e.key === 'ArrowRight') {
+          currentSlideIndex = (currentSlideIndex + 1) % currentGallery.length;
+          renderSlide();
+        }
+      });
+
+      // Mobile Touch Swipe Navigation
+      (function setupTouchSwipe() {
+        const viewport = document.getElementById('carouselViewport');
+        if (!viewport) return;
+
+        let startX = 0;
+        let endX = 0;
+
+        viewport.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX;
+        }, { passive: true });
+
+        viewport.addEventListener('touchend', (e) => {
+          if (currentGallery.length <= 1) return;
+          endX = e.changedTouches[0].clientX;
+          const diff = startX - endX;
+          if (Math.abs(diff) > 40) {
+            if (diff > 0) {
+              // Swiped left -> Next
+              currentSlideIndex = (currentSlideIndex + 1) % currentGallery.length;
+            } else {
+              // Swiped right -> Prev
+              currentSlideIndex = (currentSlideIndex - 1 + currentGallery.length) % currentGallery.length;
+            }
+            renderSlide();
+          }
+        }, { passive: true });
+      })();
+
+      // Update Favorites Button state
+      function updateFavoriteButtonUI() {
+        if (!currentAttraction || !window.TourismHubStore) return;
+        const isFav = TourismHubStore.isFavorite(currentAttraction.id);
+        const btn = document.getElementById('detailsFavoriteBtn');
+
+        if (btn) {
+          btn.classList.toggle('active', isFav);
+          btn.classList.toggle('saved', isFav);
+          btn.setAttribute('title', isFav ? 'Remove from Favorites' : 'Save to Favorites');
+          btn.setAttribute('aria-label', isFav ? 'Remove from Favorites' : 'Save to Favorites');
+          const svg = btn.querySelector('svg');
+          if (svg) svg.setAttribute('fill', isFav ? '#ef4444' : 'none');
+        }
+      }
+
+      window.toggleDetailsFavorite = function () {
+        if (!currentAttraction || !window.TourismHubStore) return;
+        const res = TourismHubStore.toggleFavorite(currentAttraction.id);
+        updateFavoriteButtonUI();
+
+        if (window.showPortalToast) {
+          showPortalToast(res.isFavorite
+            ? `Saved "${currentAttraction.title}" to your favorites!`
+            : `Removed "${currentAttraction.title}" from favorites.`
+          );
+        }
+      };
+
+      // Render Bottom Section: Other Locations Available (Strictly 4 destinations)
+      function renderOtherLocations(catalog) {
+        const grid = document.getElementById('otherLocationsGrid');
+        if (!grid || !catalog) return;
+
+        // Exclude current attraction and display strictly 4 locations
+        const others = catalog.filter(a => a.id !== currentAttraction.id).slice(0, 4);
+        if (others.length === 0) {
+          grid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1;">No additional locations available at this moment.</p>';
+          return;
+        }
+
+        const capacityData = TourismHubStore.getCapacityData();
+
+        grid.innerHTML = others.map(item => {
+          const isFav = TourismHubStore.isFavorite(item.id);
+          const slots = capacityData[item.id] || [];
+          let capText = `${item.capacityPerSlot || 100} slots`;
+          if (slots.length > 0) {
+            const firstSlot = slots[0];
+            capText = `${firstSlot.booked} / ${firstSlot.max} Pax`;
+          }
+
+          const priceStr = item.priceLabel || item.admission || `₱${item.price || 15}`;
+          const safeImg = (item.image && !String(item.image).includes('images.unsplash.com/photo-'))
+            ? item.image
+            : 'assets/no-image.svg';
+
+          return `
+            <article class="other-loc-card" data-id="${item.id}" style="cursor: pointer;" onclick="if (!event.target.closest('button')) window.location.href='attraction-details.html?id=${item.id}'">
+              <div class="other-loc-media">
+                <img src="${safeImg}" alt="${item.title}" class="other-loc-img" loading="lazy" onerror="this.src='assets/no-image.svg'">
+                <span class="other-loc-badge">${item.badge || item.category || 'Featured'}</span>
+                <button type="button" class="other-loc-fav-btn ${isFav ? 'saved' : ''}" 
+                        title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
+                        onclick="event.stopPropagation(); togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="other-loc-body">
+                <h3 class="other-loc-title">${item.title}</h3>
+                <div class="other-loc-meta">
+                  <div class="other-loc-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+                    </svg>
+                    <span>${item.location || 'Metro Manila'}</span>
+                  </div>
+                  <div class="other-loc-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>${item.operatingHours || '08:00 AM - 06:00 PM'}</span>
+                  </div>
+                </div>
+
+                <div class="other-loc-footer">
+                  <span class="other-loc-price">${priceStr}</span>
+                  <a href="attraction-details.html?id=${item.id}" class="other-loc-view-btn">
+                    <span>View Details</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      // Booking Modal Logic
+      window.openDetailsBookingModal = function () {
+        const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
+        const adminAuth = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
+
+        // Unauthenticated visitor check
+        if (!clientAuth && !adminAuth) {
+          const returnUrl = encodeURIComponent(`attraction-details.html?id=${currentAttraction ? currentAttraction.id : ''}`);
+          window.location.href = `login.html?redirect=${returnUrl}`;
+          return;
+        }
+
+        const modal = document.getElementById('detailsBookingModal');
+        const imgEl = document.getElementById('bookingItemImg');
+        const priceEl = document.getElementById('bookingItemPrice');
+        const unitPrice = currentAttraction.price || 15;
+
+        if (imgEl) imgEl.src = currentAttraction.image || 'assets/hero-banner.jpg';
+        if (priceEl) priceEl.textContent = `₱${unitPrice}`;
+
+        recalculateBookingTotal();
+        if (modal) {
+          modal.classList.add('active');
+          modal.style.display = 'flex';
+        }
+      };
+
+      window.closeDetailsBookingModal = function () {
+        const modal = document.getElementById('detailsBookingModal');
+        if (modal) {
+          modal.classList.remove('active');
+          modal.style.display = 'none';
+        }
+      };
+
+      // Recalculate price in PHP (₱)
+      const visitorCountInput = document.getElementById('bookingVisitorCount');
+      function recalculateBookingTotal() {
+        if (!currentAttraction || !visitorCountInput) return;
+        const count = Math.max(1, parseInt(visitorCountInput.value, 10) || 1);
+        const unitPrice = currentAttraction.price || 15;
+        const total = unitPrice * count;
+        const totalEl = document.getElementById('bookingCalculatedTotal');
+        if (totalEl) totalEl.textContent = `₱${total}`;
+      }
+
+      if (visitorCountInput) {
+        visitorCountInput.addEventListener('input', recalculateBookingTotal);
+      }
+
+      // Handle Pass Reservation Submission
+      const bookingForm = document.getElementById('detailsPassBookingForm');
+      if (bookingForm) {
+        bookingForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (!currentAttraction || !window.TourismHubStore) return;
+
+          const activeUser = TourismHubStore.getClientAuth() || TourismHubStore.getAdminAuth();
+          const count = parseInt(document.getElementById('bookingVisitorCount')?.value, 10) || 1;
+          const guestName = document.getElementById('bookingPrimaryGuestName')?.value || activeUser?.name || 'Tourist Guest';
+          const visitDate = document.getElementById('bookingPassDate')?.value || new Date().toISOString().split('T')[0];
+          const unitPrice = currentAttraction.price || 15;
+          const totalAmount = unitPrice * count;
+
+          // Generate verified pass reference code
+          const randDigits = Math.floor(1000 + Math.random() * 9000);
+          const codeSuffix = (currentAttraction.type || 'VIS').substring(0, 3).toUpperCase();
+          const passCode = `PASS-${randDigits}-${codeSuffix}`;
+
+          const newPass = {
+            code: passCode,
+            visitorName: guestName,
+            visitorEmail: activeUser?.email || `${guestName.toLowerCase().replace(/\s+/g, '.')}@traveler.ph`,
+            bookedByEmail: activeUser?.email || '',
+            userId: activeUser?.id || null,
+            bookedByUserId: activeUser?.id || null,
+            partySize: count,
+            attractionId: currentAttraction.id,
+            attraction: currentAttraction.title,
+            slot: '09:00 AM - 12:00 PM',
+            passType: 'Standard Tourist Pass',
+            status: 'valid',
+            amount: `₱${totalAmount}.00`,
+            validDate: visitDate
+          };
+
+          TourismHubStore.addPass(newPass);
+          closeDetailsBookingModal();
+          updateCapacityUI();
+
+          if (window.showPortalToast) {
+            showPortalToast(`Pass ${passCode} confirmed! Saved under your account.`);
+          }
+        });
+      }
+
+      // Notifications Modal Trigger (Bell icon)
+      window.openNotificationsModal = function () {
+        const modal = document.getElementById('notificationsModal');
+        const notifBody = document.getElementById('notificationsModalBody');
+        if (!modal || !window.TourismHubStore) return;
+
+        const announcements = TourismHubStore.getAnnouncements();
+        if (notifBody) {
+          if (announcements.length === 0) {
+            notifBody.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No active broadcasts at this time.</p>';
+          } else {
+            const recent = announcements.slice(0, 4);
+            notifBody.innerHTML = `
+              <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                ${recent.map(a => `
+                  <div style="display: flex; gap: 0.85rem; padding: 0.85rem; background: ${a.priority === 'urgent' ? '#fef2f2' : 'var(--bg-page)'}; border: 1px solid ${a.priority === 'urgent' ? '#fecaca' : 'var(--border)'}; border-radius: var(--radius-sm);">
+                    <div style="width: 36px; height: 36px; border-radius: 99px; background: ${a.priority === 'urgent' ? '#ef4444' : '#0284c7'}; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+                      </svg>
+                    </div>
+                    <div style="flex: 1;">
+                      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                        <span style="font-weight: 700; font-size: 0.92rem; color: ${a.priority === 'urgent' ? '#b91c1c' : 'var(--text-main)'};">${a.title}</span>
+                        <span style="font-size: 0.72rem; color: var(--text-light);">${a.timestamp || 'Recent'}</span>
+                      </div>
+                      <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">${a.text}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              <div style="margin-top: 1.15rem; padding-top: 0.9rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+                <a href="notifications.html" class="btn-primary-blue" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.25rem; font-weight: 700; font-size: 0.88rem; border-radius: var(--radius-sm);">
+                  <span>See More Notifications</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </a>
+              </div>
+            `;
+          }
+        }
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+      };
+
+      window.closeNotificationsModal = function () {
+        const modal = document.getElementById('notificationsModal');
+        if (modal) {
+          modal.classList.remove('active');
+          modal.style.display = 'none';
+        }
+      };
+
+      // Close modals when clicking overlay background
+      document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            overlay.classList.remove('active');
+            overlay.style.display = 'none';
+          }
+        });
+      });
+
+      // Multi-tab real-time sync listener (Live catalog & bucket image updates)
+      if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
+        TourismHubStore.onSync(() => {
+          const catalog = TourismHubStore.getCatalog();
+          const reqId = getRequestedAttractionId();
+          const updated = catalog.find(a => a.id === reqId);
+          if (updated) {
+            currentAttraction = updated;
+            initCarousel();
+          }
+          updateCapacityUI();
+          updateFavoriteButtonUI();
+        });
+      }
+
+      // Initialize on DOM Ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDetailsPage);
+      } else {
+        initDetailsPage();
+      }
+    })();
+  </script>
+</body>
+
+</html>
+

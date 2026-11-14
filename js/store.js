@@ -109,6 +109,7 @@
       operatingHours: '06:00 AM - 09:00 PM',
       capacityPerSlot: 150,
       image: 'assets/rizal-monument.jpg',
+      images: ['assets/rizal-monument.jpg', 'assets/qc-memorial-circle.jpg', 'assets/hero-banner.jpg'],
       badge: 'Iconic Landmark',
       location: 'Manila, Metro Manila',
       status: 'active',
@@ -127,6 +128,7 @@
       operatingHours: '08:00 AM - 06:00 PM',
       capacityPerSlot: 120,
       image: 'assets/rizal-monument.jpg',
+      images: ['assets/rizal-monument.jpg', 'assets/hero-banner.jpg', 'assets/qc-memorial-circle.jpg', 'assets/white-beach.jpg'],
       badge: 'UNESCO Heritage',
       location: 'Intramuros, Manila',
       status: 'active',
@@ -145,6 +147,7 @@
       operatingHours: '05:30 AM - 10:00 PM',
       capacityPerSlot: 200,
       image: 'assets/white-beach.jpg',
+      images: ['assets/white-beach.jpg', 'assets/hero-banner.jpg', 'assets/pahiyas-festival.jpg'],
       badge: 'Tropical Haven',
       location: 'Boracay Island, Aklan',
       status: 'active',
@@ -163,6 +166,7 @@
       operatingHours: '07:00 AM - 11:00 PM',
       capacityPerSlot: 300,
       image: 'assets/pahiyas-festival.jpg',
+      images: ['assets/pahiyas-festival.jpg', 'assets/hero-banner.jpg', 'assets/qc-memorial-circle.jpg'],
       badge: 'Annual Celebration',
       location: 'Lucban, Quezon',
       status: 'active',
@@ -181,6 +185,7 @@
       operatingHours: '06:00 AM - 05:00 PM',
       capacityPerSlot: 90,
       image: 'assets/hero-banner.jpg',
+      images: ['assets/hero-banner.jpg', 'assets/white-beach.jpg', 'assets/rizal-monument.jpg'],
       badge: 'World Wonder',
       location: 'El Nido, Palawan',
       status: 'active',
@@ -199,6 +204,7 @@
       operatingHours: '23',
       capacityPerSlot: 2321,
       image: 'assets/hero-banner.jpg',
+      images: ['assets/hero-banner.jpg', 'assets/qc-memorial-circle.jpg'],
       badge: 'Featured',
       location: 'TESTING TESTING',
       status: 'maintenance',
@@ -217,6 +223,7 @@
       operatingHours: '24/7',
       capacityPerSlot: 102000,
       image: 'assets/hero-banner.jpg',
+      images: ['assets/hero-banner.jpg', 'assets/qc-memorial-circle.jpg'],
       badge: 'Featured',
       location: 'Bayan, Q.C.',
       status: 'active',
@@ -451,11 +458,32 @@
 
       const rawCatalog = getItem(KEYS.CATALOG, null);
       if (Array.isArray(rawCatalog)) {
-        const pesoCatalog = rawCatalog.map(item => ({
-          ...item,
-          priceLabel: typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : item.priceLabel,
-          admission: typeof item.admission === 'string' ? item.admission.replace(/\$(\d+)/g, '₱$1') : item.admission
-        }));
+        const pesoCatalog = rawCatalog.map(item => {
+          let imgs = (Array.isArray(item.images) ? item.images : (item.image ? [item.image] : []))
+            .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
+            .slice(0, 5);
+
+          const rawImg = item.image && !String(item.image).includes('images.unsplash.com/photo-')
+            ? item.image
+            : (imgs[0] || 'assets/no-image.svg');
+
+          if (imgs.length <= 1) {
+            const defItem = DEFAULT_CATALOG.find(d => d.id === item.id);
+            if (defItem && Array.isArray(defItem.images) && defItem.images.length > imgs.length) {
+              imgs = [...defItem.images];
+            }
+          }
+
+          if (imgs.length === 0) imgs = [rawImg];
+
+          return {
+            ...item,
+            image: rawImg,
+            images: imgs,
+            priceLabel: typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : item.priceLabel,
+            admission: typeof item.admission === 'string' ? item.admission.replace(/\$(\d+)/g, '₱$1') : item.admission
+          };
+        });
         localStorage.setItem(KEYS.CATALOG, JSON.stringify(pesoCatalog));
       }
 
@@ -488,6 +516,13 @@
       setItem(KEYS.CATALOG, catalog);
     },
     addAttraction(item) {
+      if (!Array.isArray(item.images) || item.images.length === 0) {
+        item.images = item.image ? [item.image] : ['assets/no-image.svg'];
+      }
+      item.images = item.images.filter(u => u && !String(u).includes('images.unsplash.com/photo-')).slice(0, 5);
+      if (item.images.length === 0) item.images = ['assets/no-image.svg'];
+      item.image = item.images[0];
+
       const catalog = this.getCatalog();
       catalog.unshift(item);
       this.saveCatalog(catalog);
@@ -515,7 +550,13 @@
       const catalog = this.getCatalog();
       const idx = catalog.findIndex(a => a.id === id);
       if (idx !== -1) {
-        catalog[idx] = { ...catalog[idx], ...updates };
+        const merged = { ...catalog[idx], ...updates };
+        if (Array.isArray(merged.images)) {
+          merged.images = merged.images.filter(u => u && !String(u).includes('images.unsplash.com/photo-')).slice(0, 5);
+          if (merged.images.length === 0) merged.images = ['assets/no-image.svg'];
+          if (!updates.image) merged.image = merged.images[0];
+        }
+        catalog[idx] = merged;
         this.saveCatalog(catalog);
 
         // Online Supabase Sync

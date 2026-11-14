@@ -63,26 +63,28 @@
           capText = `${firstSlot.booked} / ${firstSlot.max}`;
         }
 
-        const fallbackImg = item.image || 'assets/hero-banner.jpg';
+        const fallbackImg = (item.image && !String(item.image).includes('images.unsplash.com/photo-'))
+          ? item.image
+          : 'assets/no-image.svg';
         const locationStr = item.location || 'Resort Grounds';
         const hoursStr = item.operatingHours || '08:00 AM – 08:00 PM';
         const isFav = (typeof TourismHubStore.isFavorite === 'function') ? TourismHubStore.isFavorite(item.id) : false;
 
         return `
-          <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'attraction'}" data-area="${item.location ? item.location.toLowerCase() : 'all'}">
-            <div class="portal-item-media">
-              <img src="${fallbackImg}" alt="${item.title}" loading="lazy" onerror="this.src='assets/hero-banner.jpg'">
+          <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'attraction'}" data-area="${item.location ? item.location.toLowerCase() : 'all'}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
+            <div class="portal-item-media" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
+              <img src="${fallbackImg}" alt="${item.title}" loading="lazy" onerror="this.src='assets/no-image.svg'">
               <span class="portal-badge-tag ${badgeClass}">${badgeLabel}</span>
               <button class="portal-card-wishlist-btn ${isFav ? 'saved' : ''}" 
                       title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
-                      onclick="togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
+                      onclick="event.stopPropagation(); togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
               </button>
             </div>
             <div class="portal-item-body">
-              <h3 class="portal-item-title">${item.title}</h3>
+              <h3 class="portal-item-title" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View details">${item.title}</h3>
               <p class="portal-item-desc">${item.description || 'Experience world-class resort amenities and sights.'}</p>
               <div class="portal-item-meta-list">
                 <div class="portal-item-meta-row">
@@ -100,7 +102,7 @@
               </div>
             </div>
             <div class="portal-item-footer">
-              <button class="portal-view-details-btn" onclick="openDetailsModal('${item.title.replace(/'/g, "\\'")}', '${locationStr.replace(/'/g, "\\'")}', '${hoursStr}', '${capText}', '${fallbackImg}')">View Details &gt;</button>
+              <a href="attraction-details.html?id=${item.id}" class="portal-view-details-btn" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">View Details &gt;</a>
             </div>
           </article>
         `;
@@ -112,8 +114,8 @@
         const eventItems = catalog.filter(a => a.type === 'festival' || a.type === 'event' || a.category === 'Festival');
         if (eventItems.length > 0) {
           eventsListContainer.innerHTML = eventItems.slice(0, 5).map(ev => `
-            <div class="upcoming-event-item">
-              <img src="${ev.image || 'assets/pahiyas-festival.jpg'}" alt="${ev.title}" class="upcoming-event-img">
+            <div class="upcoming-event-item" style="cursor: pointer;" onclick="window.location.href='attraction-details.html?id=${ev.id}'" title="View ${ev.title}">
+              <img src="${(ev.image && !String(ev.image).includes('images.unsplash.com/photo-')) ? ev.image : 'assets/no-image.svg'}" alt="${ev.title}" class="upcoming-event-img" onerror="this.src='assets/no-image.svg'">
               <div class="upcoming-event-details">
                 <span class="upcoming-event-name">${ev.title}</span>
                 <span class="upcoming-event-time">
@@ -152,11 +154,15 @@
         const typeBadge = isEvent ? 'purple' : 'blue';
         const typeLabel = isEvent ? 'Event' : 'Attraction';
 
+        const safeThumb = (item.image && !String(item.image).includes('images.unsplash.com/photo-'))
+          ? item.image
+          : 'assets/no-image.svg';
+
         return `
           <tr data-type="${item.type || 'attraction'}">
             <td>
               <div class="attraction-cell-content">
-                <img src="${item.image || 'assets/hero-banner.jpg'}" alt="${item.title}" class="attraction-cell-thumb" onerror="this.src='assets/hero-banner.jpg'">
+                <img src="${safeThumb}" alt="${item.title}" class="attraction-cell-thumb" onerror="this.src='assets/no-image.svg'">
                 <div class="attraction-cell-info">
                   <span class="attraction-cell-title">${item.title}</span>
                   <div class="attraction-cell-meta">

@@ -39,6 +39,7 @@ attraction_system_demo/
 ├── login.html                # Primary Landing & Authentication Portal (Tourist & Operator login/registration)
 ├── admin-login.html          # Legacy operator login page (auto-redirects to login.html)
 ├── admin.html                # Operator Admin Dashboard (Catalog CRUD, capacity sliders, gate scanner, analytics)
+├── attraction-details.html   # Dedicated Attraction Details Page (Gallery carousel, capacity, booking, favorites, related)
 ├── attractions.html          # Public Sub-Page: Attractions & Events Catalog Browser + Modal
 ├── capacity.html             # Public Sub-Page: Real-Time Capacity & Schedule Availability Monitor
 ├── notifications.html        # Public Sub-Page: Tourist Advisories & Notification Center
@@ -130,6 +131,12 @@ Connected to the universal sidebar navigation drawer:
      - **Audio Chimes**: Acoustic tone toggle on gate pass verification.
      - **Sync Status**: Live cloud realtime sync indicator.
    - **Sign Out**: Clean 1-click session sign-out action.
+6. **Attraction Details Page ([`attraction-details.html`](file:///c:/Users/jacob/Documents/My%20Web%20Sites/attraction_system_demo/attraction-details.html))**:
+   - Dedicated deep-dive view accessed via `?id=<attraction-id>`.
+   - **Left Column**: Interactive picture carousel gallery with previous/next controls, slide counter, and clickable thumbnail strip.
+   - **Right Column**: Comprehensive destination summary, location coordinates/address, operating hours, real-time live capacity progress meter, "Book Pass" modal trigger, and "Save to Favorites" toggle.
+   - **Pass Booking Modal**: Party size selection, date picker, visitor name, dynamic PHP calculation, and pass issuance into `TourismHubStore`.
+   - **Bottom Section**: "Other Locations Available" card grid presenting alternative catalog destinations with direct detail links.
 
 ### 3.4 Operator Admin Dashboard ([`admin.html`](file:///c:/Users/jacob/Documents/My%20Web%20Sites/attraction_system_demo/admin.html))
 Tabbed Single-Page Application (SPA) console for park managers:
