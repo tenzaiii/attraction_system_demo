@@ -190,6 +190,71 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
+  let currentEventSlideIndex = 0;
+  let eventCarouselTimer = null;
+
+  function formatBannerEventDate(ev) {
+    const rawKey = (window.TourismHubStore && typeof TourismHubStore.extractEventDateKey === 'function')
+      ? TourismHubStore.extractEventDateKey(ev)
+      : (ev.eventDate || ev.priceLabel || '');
+    let datePart = '';
+    if (rawKey && /^\d{4}-\d{2}-\d{2}$/.test(rawKey)) {
+      const [y, m, d] = rawKey.split('-').map(Number);
+      datePart = new Date(y, m - 1, d).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+    } else if (ev.eventDate || ev.priceLabel) {
+      datePart = String(ev.eventDate || ev.priceLabel).trim();
+    }
+    const timePart = (ev.operatingHours && ev.operatingHours !== 'TBA') ? ev.operatingHours : '';
+    if (datePart && timePart) return `${datePart} \u2022 ${timePart}`;
+    return datePart || timePart || 'Upcoming Schedule';
+  }
+
+  function applyFeaturedEventSlide(index) {
+    if (!featuredEventsGrid) return;
+    const slides = featuredEventsGrid.querySelectorAll('.event-banner-slide');
+    const dots = featuredEventsGrid.querySelectorAll('.event-banner-dot');
+    if (slides.length === 0) return;
+
+    currentEventSlideIndex = ((index % slides.length) + slides.length) % slides.length;
+    slides.forEach((slide, idx) => {
+      slide.classList.toggle('active', idx === currentEventSlideIndex);
+      slide.setAttribute('aria-hidden', idx === currentEventSlideIndex ? 'false' : 'true');
+    });
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === currentEventSlideIndex);
+      dot.setAttribute('aria-pressed', idx === currentEventSlideIndex ? 'true' : 'false');
+    });
+  }
+
+  function stopEventCarouselAutoPlay() {
+    if (eventCarouselTimer) {
+      clearInterval(eventCarouselTimer);
+      eventCarouselTimer = null;
+    }
+  }
+
+  function startEventCarouselAutoPlay(totalSlides) {
+    stopEventCarouselAutoPlay();
+    if (totalSlides <= 1) return;
+    eventCarouselTimer = setInterval(() => {
+      applyFeaturedEventSlide(currentEventSlideIndex + 1);
+    }, 5500);
+  }
+
+  window.changeFeaturedEventSlide = function (delta) {
+    applyFeaturedEventSlide(currentEventSlideIndex + delta);
+    const total = featuredEventsGrid ? featuredEventsGrid.querySelectorAll('.event-banner-slide').length : 0;
+    startEventCarouselAutoPlay(total);
+  };
+
+  window.goToFeaturedEventSlide = function (index) {
+    applyFeaturedEventSlide(index);
+    const total = featuredEventsGrid ? featuredEventsGrid.querySelectorAll('.event-banner-slide').length : 0;
+    startEventCarouselAutoPlay(total);
+  };
+
   function renderFeaturedEvents() {
     if (!featuredEventsGrid) return;
 
@@ -217,13 +282,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (filteredEvents.length === 0) {
+      stopEventCarouselAutoPlay();
+      featuredEventsGrid.style.minHeight = 'auto';
+      featuredEventsGrid.style.background = 'transparent';
+      featuredEventsGrid.style.boxShadow = 'none';
       featuredEventsGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; background: var(--bg-card); border: 1px dashed var(--border); border-radius: var(--radius-lg, 14px); padding: 2.25rem 1.25rem; text-align: center; color: var(--text-muted);">
-          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.35rem;">No upcoming events scheduled</h3>
+        <div class="events-banner-empty" style="border: 1px dashed var(--border);">
+          <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: var(--text-main); margin-bottom: 0.35rem;">No upcoming events scheduled</h3>
           <p style="font-size: 0.9rem; margin: 0;">Check back soon for special activities and scheduled events across Manila and Quezon City attractions.</p>
         </div>
       `;
       return;
+    }
+
+    featuredEventsGrid.style.minHeight = '';
+    featuredEventsGrid.style.background = '';
+    featuredEventsGrid.style.boxShadow = '';
+
+    if (currentEventSlideIndex >= filteredEvents.length) {
+      currentEventSlideIndex = 0;
     }
 
     const esc = (str) => String(str == null ? '' : str)
@@ -231,35 +308,87 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+    const escAttr = (str) => esc(str).replace(/'/g, '&#39;');
 
-    featuredEventsGrid.innerHTML = filteredEvents.map(ev => {
+    const slidesHtml = filteredEvents.map((ev, idx) => {
       const targetAttractionId = ev.parentAttractionId || ev.id;
       const imgUrl = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'assets/no-image.svg';
       const safeImg = String(imgUrl).includes('images.unsplash.com/photo-') ? 'assets/no-image.svg' : imgUrl;
       const detailsHref = `attraction-details.html?id=${encodeURIComponent(targetAttractionId)}`;
+      const dateText = formatBannerEventDate(ev);
+      const isActive = idx === currentEventSlideIndex;
+
       return `
-        <article class="attraction-card" data-event-id="${esc(ev.id)}">
-          <div class="card-media-wrapper" onclick="window.location.href='${detailsHref}'" style="cursor: pointer;" title="View ${esc(ev.title)}">
-            <img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="card-image" loading="lazy" onerror="this.src='assets/no-image.svg'">
-            <span class="card-badge-floating">Event</span>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title" style="cursor: pointer;" onclick="window.location.href='${detailsHref}'" title="View event at ${esc(ev.attractionTitle || 'Attraction')}">${esc(ev.title)}</h3>
-            <p class="card-subtitle">${esc(ev.attractionTitle || 'Attraction Event')} &bull; ${esc(ev.location || 'Manila')}</p>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.45;">${esc(ev.description || 'Special scheduled attraction event.')}</p>
-            <div class="card-meta-row">
-              <div style="font-size: 0.8rem; color: var(--text-muted);">
-                <div><strong>Schedule:</strong> ${esc(ev.operatingHours || 'TBA')}</div>
-                <div><strong>Admission:</strong> ${esc(ev.admission || 'Free')} &bull; <strong>Slots:</strong> ${esc(ev.capacityPerSlot || 50)}</div>
-              </div>
-              <div class="card-price-cta" style="display: flex; gap: 0.4rem; align-items: center;">
-                <a href="${detailsHref}" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none; padding: 0.45rem 0.85rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card);">View Event</a>
-              </div>
+        <article class="event-banner-slide ${isActive ? 'active' : ''}" data-slide-index="${idx}" data-event-id="${esc(ev.id)}" aria-hidden="${isActive ? 'false' : 'true'}">
+          <img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="event-banner-bg" onerror="this.src='assets/no-image.svg'">
+          <div class="event-banner-overlay"></div>
+          <div class="event-banner-content">
+            <div class="event-banner-meta-row">
+              <span class="event-banner-venue-pill">${esc(ev.attractionTitle || 'Featured Event')}${ev.location ? ' &bull; ' + esc(ev.location) : ''}</span>
+              <span class="event-banner-date-pill">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>${esc(dateText)}</span>
+              </span>
+            </div>
+            <h3 class="event-banner-title">${esc(ev.title)}</h3>
+            <p class="event-banner-desc">${esc(ev.description || 'Experience this special upcoming cultural and tourism event.')}</p>
+            <div class="event-banner-actions">
+              <button type="button" class="btn-event-banner-book" onclick="openBookingModal('${escAttr(ev.id)}')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Book Pass</span>
+              </button>
+              <a href="${detailsHref}" class="btn-event-banner-details">View Details</a>
             </div>
           </div>
         </article>
       `;
     }).join('');
+
+    const navControlsHtml = filteredEvents.length > 1 ? `
+      <button type="button" class="event-banner-nav-btn prev" onclick="changeFeaturedEventSlide(-1)" aria-label="Previous Featured Event">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button type="button" class="event-banner-nav-btn next" onclick="changeFeaturedEventSlide(1)" aria-label="Next Featured Event">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+      <div class="event-banner-dots" role="tablist" aria-label="Featured Event Slides">
+        ${filteredEvents.map((ev, idx) => `
+          <button type="button" class="event-banner-dot ${idx === currentEventSlideIndex ? 'active' : ''}" onclick="goToFeaturedEventSlide(${idx})" aria-label="Slide ${idx + 1}: ${esc(ev.title)}" aria-pressed="${idx === currentEventSlideIndex ? 'true' : 'false'}"></button>
+        `).join('')}
+      </div>
+    ` : '';
+
+    featuredEventsGrid.innerHTML = `
+      <div class="events-banner-track">
+        ${slidesHtml}
+      </div>
+      ${navControlsHtml}
+    `;
+
+    if (featuredEventsGrid.dataset.carouselHoverBound !== 'true') {
+      featuredEventsGrid.dataset.carouselHoverBound = 'true';
+      featuredEventsGrid.addEventListener('mouseenter', stopEventCarouselAutoPlay);
+      featuredEventsGrid.addEventListener('mouseleave', () => {
+        const count = featuredEventsGrid.querySelectorAll('.event-banner-slide').length;
+        startEventCarouselAutoPlay(count);
+      });
+    }
+
+    startEventCarouselAutoPlay(filteredEvents.length);
   }
 
   // Helper to update active filter tab UI
@@ -567,6 +696,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
+  function findBookableItem(itemId) {
+    if (window.TourismHubStore) {
+      attractionsData = TourismHubStore.getCatalog();
+      const catalogMatch = attractionsData.find(a => String(a.id) === String(itemId));
+      if (catalogMatch) return catalogMatch;
+      if (typeof TourismHubStore.getEvents === 'function') {
+        const events = TourismHubStore.getEvents();
+        const eventMatch = events.find(e => String(e.id) === String(itemId));
+        if (eventMatch) return eventMatch;
+      }
+    }
+    return attractionsData.find(a => String(a.id) === String(itemId)) || attractionsData[0];
+  }
+
   // --- 9. Modals Logic (Booking, Tickets, Notifications) ---
   window.openBookingModal = function (attractionId) {
     // Check if user is logged in before booking
@@ -583,14 +726,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (window.TourismHubStore) {
-      attractionsData = TourismHubStore.getCatalog();
-    }
-    const attraction = attractionsData.find(a => a.id === attractionId) || attractionsData[0];
+    const attraction = findBookableItem(attractionId);
     const modalTitle = document.getElementById('bookingModalTitle');
     const modalImg = document.getElementById('bookingModalImg');
     const modalPrice = document.getElementById('bookingModalPrice');
     const bookingAttractionInput = document.getElementById('bookingAttractionId');
+    const bookingDateInput = document.getElementById('bookingDate');
 
     // Auto-fill visitor name with logged-in user name
     const visitorNameInput = document.getElementById('visitorName');
@@ -601,12 +742,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Pre-fill event/visit date if this item carries an event date
+    if (bookingDateInput) {
+      const extractedDate = (window.TourismHubStore && typeof TourismHubStore.extractEventDateKey === 'function')
+        ? TourismHubStore.extractEventDateKey(attraction)
+        : (attraction?.eventDate || '');
+      if (extractedDate && /^\d{4}-\d{2}-\d{2}$/.test(extractedDate)) {
+        bookingDateInput.value = extractedDate;
+      } else {
+        bookingDateInput.value = (window.TourismHubStore && typeof TourismHubStore.formatLocalDateKey === 'function')
+          ? TourismHubStore.formatLocalDateKey(new Date())
+          : new Date().toISOString().slice(0, 10);
+      }
+    }
+
     const numericPrice = (window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function')
       ? TourismHubStore.parseNumericPriceFromLabel(attraction.admission || attraction.priceLabel || '', attraction.price)
       : (typeof attraction.price === 'number' ? attraction.price : 0);
+    const itemImg = (Array.isArray(attraction.images) && attraction.images[0]) || attraction.image || '';
     if (modalTitle) modalTitle.textContent = `Reserve Pass: ${attraction.title}`;
     if (modalImg) {
-      modalImg.src = (attraction.image && !String(attraction.image).includes('images.unsplash.com/photo-')) ? attraction.image : 'assets/no-image.svg';
+      modalImg.src = (itemImg && !String(itemImg).includes('images.unsplash.com/photo-')) ? itemImg : 'assets/no-image.svg';
       modalImg.onerror = function() { this.src = 'assets/no-image.svg'; };
     }
     if (modalPrice) modalPrice.textContent = attraction.admission || attraction.priceLabel || (numericPrice > 0 ? `₱${numericPrice}` : 'Free (₱0)');
@@ -645,7 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function recalcTotal() {
     if (!visitorCountInput || !totalPriceDisplay) return;
     const attractionId = document.getElementById('bookingAttractionId')?.value;
-    const attraction = (window.TourismHubStore ? TourismHubStore.getCatalog() : attractionsData).find(a => a.id === attractionId) || attractionsData[0];
+    const attraction = findBookableItem(attractionId);
     const count = parseInt(visitorCountInput.value, 10) || 1;
     const unitPrice = getResolvedAttractionPrice(attraction);
     const total = unitPrice * count;
@@ -662,7 +818,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bookingForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const attractionId = document.getElementById('bookingAttractionId')?.value;
-      const attraction = (window.TourismHubStore ? TourismHubStore.getCatalog() : attractionsData).find(a => a.id === attractionId) || attractionsData[0];
+      const attraction = findBookableItem(attractionId);
       const count = parseInt(visitorCountInput ? visitorCountInput.value : 1, 10);
       const guestName = document.getElementById('visitorName')?.value || 'Guest Tourist';
       const visitDate = document.getElementById('bookingDate')?.value || 'Today';
@@ -673,6 +829,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const passCode = `PASS-${randDigits}-${codeSuffix}`;
       const activeUser = (window.TourismHubStore && (TourismHubStore.getClientAuth() || TourismHubStore.getAdminAuth())) || null;
       const unitPrice = getResolvedAttractionPrice(attraction);
+      const targetSlotAttractionId = attraction.parentAttractionId || attraction.id;
 
       if (window.TourismHubStore) {
         TourismHubStore.addPass({
@@ -683,10 +840,10 @@ document.addEventListener('DOMContentLoaded', () => {
           userId: activeUser?.id || null,
           bookedByUserId: activeUser?.id || null,
           partySize: count,
-          attractionId: attraction.id,
+          attractionId: targetSlotAttractionId,
           attraction: attraction.title,
-          slot: '09:00 AM - 12:00 PM',
-          passType: 'Standard Tourist Pass',
+          slot: attraction.operatingHours || '09:00 AM - 12:00 PM',
+          passType: attraction.type === 'event' ? 'Event Tourist Pass' : 'Standard Tourist Pass',
           status: 'valid',
           amount: `₱${unitPrice * count}.00`,
           validDate: visitDate

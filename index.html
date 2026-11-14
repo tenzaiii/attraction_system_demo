@@ -320,9 +320,35 @@
     
 
     <!-- ==========================================================================
+         Featured Events Banner Carousel (At the Top of Featured Attractions)
+         ========================================================================== -->
+    <section class="featured-section featured-events-banner-section" id="featuredEvents" style="padding-bottom: 1.5rem;">
+      <div class="container">
+
+        <!-- Section Header Row with "See All >" -->
+        <div class="section-header-row">
+          <h2 class="section-title">Featured Events</h2>
+          <a href="attractions.html" class="see-all-link" id="seeAllEventsBtn">
+            <span>See All</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Dynamic Events Banner Carousel (populated via js/app.js) -->
+        <div class="events-banner-carousel" id="featuredEventsGrid" aria-roledescription="carousel" aria-label="Featured Events Banner Carousel">
+          <!-- Populated dynamically via js/app.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
          Featured Attractions Section (Exact Match from Screenshot)
          ========================================================================== -->
-    <section class="featured-section" id="featuredAttractions">
+    <section class="featured-section" id="featuredAttractions" style="padding-top: 1.5rem;">
       <div class="container">
 
         <!-- Section Header Row with "See All >" -->
@@ -351,32 +377,6 @@
         <!-- Dynamic Attractions Grid (populated via app.js) -->
         <div class="attractions-grid" id="attractionsGrid">
           <!-- Fallback Static Cards matching screenshot will be initialized dynamically -->
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ==========================================================================
-         Featured Events Section (Live Events from Store / Supabase)
-         ========================================================================== -->
-    <section class="featured-section" id="featuredEvents" style="padding-top: 1rem;">
-      <div class="container">
-
-        <!-- Section Header Row with "See All >" -->
-        <div class="section-header-row">
-          <h2 class="section-title">Featured Events</h2>
-          <a href="attractions.html" class="see-all-link" id="seeAllEventsBtn">
-            <span>See All</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </a>
-        </div>
-
-        <!-- Dynamic Events Grid (populated via app.js) -->
-        <div class="attractions-grid" id="featuredEventsGrid">
-          <!-- Populated dynamically via js/app.js -->
         </div>
 
       </div>
