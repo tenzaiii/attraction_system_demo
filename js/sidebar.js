@@ -86,13 +86,28 @@
 
     // Highlight active link based on current page URL
     const currentPath = window.location.pathname.toLowerCase();
+    const pageNavMap = {
+      'index.html': 'dashboard',
+      'attractions.html': 'attractions',
+      'attraction-details.html': 'attractions',
+      'capacity.html': 'capacity',
+      'scanner.html': 'scanner',
+      'notifications.html': 'notifications',
+      'profile.html': 'profile',
+      'about.html': 'about'
+    };
+    const currentPageFile = currentPath.split('/').pop() || 'index.html';
+    const mappedNav = pageNavMap[currentPageFile];
+
     sidebarLinks.forEach(link => {
       const href = (link.getAttribute('href') || '').toLowerCase();
-      if (href && href !== '#' && href !== 'javascript:void(0)') {
-        if (currentPath.endsWith(href) || (currentPath.endsWith('/') && href === 'index.html')) {
-          sidebarLinks.forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-        }
+      const navKey = link.getAttribute('data-nav');
+      if (
+        (mappedNav && navKey === mappedNav) ||
+        (href && href !== '#' && href !== 'javascript:void(0)' && (currentPath.endsWith(href) || (currentPath.endsWith('/') && href === 'index.html')))
+      ) {
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
       }
     });
 

@@ -9,39 +9,42 @@ document.addEventListener('DOMContentLoaded', () => {
         title: 'Rizal Monument & Luneta Park',
         category: 'Historical Site',
         type: 'historical',
+        location: 'Manila',
         rating: '4.8',
         reviews: '1.2k',
-        price: 15,
-        priceLabel: 'Free / Guided ₱15',
+        price: 0,
+        priceLabel: 'Free Entry',
         image: 'assets/rizal-monument.jpg',
         badge: 'Iconic Landmark',
         description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines.'
       },
       {
-        id: 'white-beach-boracay',
-        title: 'White Beach Eco-Tourism Reserve',
-        category: 'Tourist Spot',
-        type: 'beach',
-        rating: '4.7',
-        reviews: '980',
-        price: 25,
-        priceLabel: 'Day Pass ₱25',
-        image: 'assets/white-beach.jpg',
-        badge: 'Tropical Haven',
-        description: 'Pristine powdery white sand, azure waters, and vibrant island activities with legendary sunsets.'
+        id: 'intramuros-walled-city',
+        title: 'Intramuros & Fort Santiago',
+        category: 'Historical Site',
+        type: 'historical',
+        location: 'Manila',
+        rating: '4.9',
+        reviews: '1.5k',
+        price: 75,
+        priceLabel: 'Entrance ₱75',
+        image: 'assets/hero-banner.jpg',
+        badge: 'Heritage District',
+        description: 'Explore historic stone fortifications, centuries-old churches, and museums inside the Walled City of Manila.'
       },
       {
-        id: 'pahiyas-festival',
-        title: 'Pahiyas Harvest Festival',
-        category: 'Festival',
-        type: 'festival',
-        rating: '4.9',
-        reviews: '850',
-        price: 35,
-        priceLabel: 'Event Access ₱35',
-        image: 'assets/pahiyas-festival.jpg',
-        badge: 'Annual Celebration',
-        description: 'A colorful harvest festival in Lucban featuring houses decorated with vibrant kiping rice wafers and fruits.'
+        id: 'qc-memorial-circle',
+        title: 'Quezon Memorial Circle',
+        category: 'Park & Nature',
+        type: 'park',
+        location: 'Quezon City',
+        rating: '4.7',
+        reviews: '980',
+        price: 0,
+        priceLabel: 'Free Entry',
+        image: 'assets/qc-memorial-circle.jpg',
+        badge: 'National Shrine',
+        description: 'Central civic park, heritage shrine, gardens, and museums located in the heart of Quezon City.'
       }
     ];
 
@@ -55,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 2. DOM Elements ---
   const attractionsGrid = document.getElementById('attractionsGrid');
+  const featuredEventsGrid = document.getElementById('featuredEventsGrid');
   const searchInput = document.getElementById('heroSearchInput');
   const searchFilter = document.getElementById('searchCategoryFilter');
   const searchBtn = document.getElementById('heroSearchBtn');
@@ -93,21 +97,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchTerm = (searchInput ? searchInput.value : '').toLowerCase().trim();
     const dropdownCat = searchFilter ? searchFilter.value : 'all';
 
+    const matchesFilterValue = (item, filterVal) => {
+      if (!filterVal || filterVal === 'all') return true;
+      const val = String(filterVal).toLowerCase();
+      const itemType = String(item.type || '').toLowerCase();
+      const itemCategory = String(item.category || '').toLowerCase();
+      const itemLocation = String(item.location || '').toLowerCase();
+      return itemType === val || itemCategory === val || itemLocation === val;
+    };
+
     let filtered = attractionsData.filter(item => {
       // Tab filter
-      if (currentFilter !== 'all' && item.type !== currentFilter && item.category?.toLowerCase() !== currentFilter.toLowerCase()) {
+      if (!matchesFilterValue(item, currentFilter)) {
         return false;
       }
-      // Dropdown category filter
-      if (dropdownCat !== 'all' && item.type !== dropdownCat) {
+      // Dropdown category / location filter
+      if (!matchesFilterValue(item, dropdownCat)) {
         return false;
       }
       // Text search
       if (searchTerm) {
         const matchesName = item.title?.toLowerCase().includes(searchTerm);
         const matchesCat = item.category?.toLowerCase().includes(searchTerm);
+        const matchesLoc = item.location?.toLowerCase().includes(searchTerm);
         const matchesDesc = item.description?.toLowerCase().includes(searchTerm);
-        return matchesName || matchesCat || matchesDesc;
+        return matchesName || matchesCat || matchesLoc || matchesDesc;
       }
       return true;
     });
@@ -136,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
           currentFilter = 'all';
           updateActiveTab('all');
           renderAttractions();
+          renderFeaturedEvents();
         });
       }
       return;
@@ -175,6 +190,78 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
+  function renderFeaturedEvents() {
+    if (!featuredEventsGrid) return;
+
+    const events = (window.TourismHubStore && typeof TourismHubStore.getEvents === 'function')
+      ? TourismHubStore.getEvents()
+      : [];
+
+    const searchTerm = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    const dropdownCat = searchFilter ? searchFilter.value : 'all';
+    const isLocationFilter = dropdownCat === 'Manila' || dropdownCat === 'Quezon City';
+
+    const filteredEvents = events.filter(ev => {
+      if (isLocationFilter) {
+        const evLoc = String(ev.location || '').toLowerCase();
+        if (evLoc !== dropdownCat.toLowerCase()) return false;
+      }
+      if (searchTerm) {
+        const matchesTitle = ev.title?.toLowerCase().includes(searchTerm);
+        const matchesAttr = ev.attractionTitle?.toLowerCase().includes(searchTerm);
+        const matchesLoc = ev.location?.toLowerCase().includes(searchTerm);
+        const matchesDesc = ev.description?.toLowerCase().includes(searchTerm);
+        return matchesTitle || matchesAttr || matchesLoc || matchesDesc;
+      }
+      return true;
+    });
+
+    if (filteredEvents.length === 0) {
+      featuredEventsGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; background: var(--bg-card); border: 1px dashed var(--border); border-radius: var(--radius-lg, 14px); padding: 2.25rem 1.25rem; text-align: center; color: var(--text-muted);">
+          <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.35rem;">No upcoming events scheduled</h3>
+          <p style="font-size: 0.9rem; margin: 0;">Check back soon for special activities and scheduled events across Manila and Quezon City attractions.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const esc = (str) => String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+    featuredEventsGrid.innerHTML = filteredEvents.map(ev => {
+      const targetAttractionId = ev.parentAttractionId || ev.id;
+      const imgUrl = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'assets/no-image.svg';
+      const safeImg = String(imgUrl).includes('images.unsplash.com/photo-') ? 'assets/no-image.svg' : imgUrl;
+      const detailsHref = `attraction-details.html?id=${encodeURIComponent(targetAttractionId)}`;
+      return `
+        <article class="attraction-card" data-event-id="${esc(ev.id)}">
+          <div class="card-media-wrapper" onclick="window.location.href='${detailsHref}'" style="cursor: pointer;" title="View ${esc(ev.title)}">
+            <img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="card-image" loading="lazy" onerror="this.src='assets/no-image.svg'">
+            <span class="card-badge-floating">Event</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title" style="cursor: pointer;" onclick="window.location.href='${detailsHref}'" title="View event at ${esc(ev.attractionTitle || 'Attraction')}">${esc(ev.title)}</h3>
+            <p class="card-subtitle">${esc(ev.attractionTitle || 'Attraction Event')} &bull; ${esc(ev.location || 'Manila')}</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.45;">${esc(ev.description || 'Special scheduled attraction event.')}</p>
+            <div class="card-meta-row">
+              <div style="font-size: 0.8rem; color: var(--text-muted);">
+                <div><strong>Schedule:</strong> ${esc(ev.operatingHours || 'TBA')}</div>
+                <div><strong>Admission:</strong> ${esc(ev.admission || 'Free')} &bull; <strong>Slots:</strong> ${esc(ev.capacityPerSlot || 50)}</div>
+              </div>
+              <div class="card-price-cta" style="display: flex; gap: 0.4rem; align-items: center;">
+                <a href="${detailsHref}" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none; padding: 0.45rem 0.85rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card);">View Event</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
   // Helper to update active filter tab UI
   function updateActiveTab(type) {
     filterTabs.forEach(tab => {
@@ -190,12 +277,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (searchInput) {
     searchInput.addEventListener('input', () => {
       renderAttractions();
+      renderFeaturedEvents();
     });
   }
 
   if (searchFilter) {
     searchFilter.addEventListener('change', () => {
       renderAttractions();
+      renderFeaturedEvents();
     });
   }
 
@@ -203,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBtn.addEventListener('click', (e) => {
       e.preventDefault();
       renderAttractions();
+      renderFeaturedEvents();
       document.getElementById('featuredAttractions')?.scrollIntoView({ behavior: 'smooth' });
     });
   }
@@ -232,10 +322,8 @@ document.addEventListener('DOMContentLoaded', () => {
       renderAttractions();
       document.getElementById('featuredAttractions')?.scrollIntoView({ behavior: 'smooth' });
     } else if (type === 'events') {
-      currentFilter = 'festival';
-      updateActiveTab('festival');
-      renderAttractions();
-      document.getElementById('featuredAttractions')?.scrollIntoView({ behavior: 'smooth' });
+      renderFeaturedEvents();
+      document.getElementById('featuredEvents')?.scrollIntoView({ behavior: 'smooth' });
     } else if (type === 'tickets') {
       openTicketsModal();
     } else if (type === 'notifications') {
@@ -738,12 +826,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Header info
     const nameEl = document.getElementById('dropdownUserName');
     const emailEl = document.getElementById('dropdownUserEmail');
-    const badgeEl = document.getElementById('dropdownUserBadge');
     const avatarEl = document.getElementById('dropdownAvatar');
 
     if (nameEl) nameEl.textContent = activeUser.name;
     if (emailEl) emailEl.textContent = activeUser.email;
-    if (badgeEl) badgeEl.textContent = activeUser.badge || (adminAuth ? 'Operator Clearance' : 'Verified Tourist');
     if (avatarEl && activeUser.avatar) avatarEl.src = activeUser.avatar;
 
     // Compiled QR Passes list (only passes booked by the active user)
@@ -799,10 +885,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.5rem;">
           <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Session Information</div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-            <span style="color: var(--text-muted);">Account Type:</span>
-            <strong>${adminAuth ? 'Operator Console' : 'Tourist Member'}</strong>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
             <span style="color: var(--text-muted);">Country:</span>
             <span>${activeUser.country || 'Philippines'}</span>
           </div>
@@ -830,7 +912,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileBtn = document.getElementById('userProfileBtn');
     const navAvatar = document.getElementById('userNavAvatar') || profileBtn?.querySelector('.portal-avatar-img');
     const navName = profileBtn?.querySelector('.portal-user-name');
-    const navRole = profileBtn?.querySelector('.portal-user-role');
     const authLink = document.getElementById('navSignInLink');
     if (!window.TourismHubStore) return;
 
@@ -852,9 +933,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (navName) {
         navName.textContent = activeUser.name || (adminAuth ? 'Operator' : 'Tourist');
-      }
-      if (navRole) {
-        navRole.textContent = adminAuth ? (activeUser.role || 'Admin Clearance') : (activeUser.badge || 'Verified Tourist');
       }
       if (profileBtn) {
         profileBtn.style.display = 'flex';
@@ -905,6 +983,7 @@ document.addEventListener('DOMContentLoaded', () => {
     TourismHubStore.onSync((key) => {
       syncUserProfileHeader();
       renderAttractions();
+      renderFeaturedEvents();
       renderNotifications();
       renderCapacityModal();
       renderMyTickets();
@@ -924,12 +1003,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('supabaseSyncComplete', () => {
     syncUserProfileHeader();
     renderAttractions();
+    renderFeaturedEvents();
     renderNotifications();
   });
 
   // --- 15. Initial Render ---
   syncUserProfileHeader();
   renderAttractions();
+  renderFeaturedEvents();
   renderNotifications();
   renderCapacityModal();
   renderMyTickets();

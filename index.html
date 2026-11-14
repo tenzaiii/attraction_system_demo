@@ -61,15 +61,15 @@
     <nav class="sidebar-menu-wrapper" aria-label="Sidebar Menu">
       <ul class="sidebar-menu">
 
-        <!-- 1. Dashboard -->
+        <!-- 1. Home -->
         <li class="sidebar-menu-item">
-          <a href="index.html" class="sidebar-menu-link active" data-nav="dashboard" title="Dashboard">
+          <a href="index.html" class="sidebar-menu-link active" data-nav="dashboard" title="Home">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
               </svg>
             </span>
-            <span class="sidebar-item-text">Dashboard</span>
+            <span class="sidebar-item-text">Home</span>
           </a>
         </li>
 
@@ -149,7 +149,22 @@
           </a>
         </li>
 
-        <!-- 9. Admin Dashboard (Admin Only) -->
+        <!-- 9. About -->
+        <li class="sidebar-menu-item">
+          <a href="about.html" class="sidebar-menu-link" data-nav="about" title="About TourismHub">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">About</span>
+          </a>
+        </li>
+
+        <!-- 10. Admin Dashboard (Admin Only) -->
         <li class="sidebar-menu-item admin-only-feature" style="display: none;">
           <a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard">
             <span class="sidebar-item-icon">
@@ -203,6 +218,7 @@
         <ul class="nav-menu">
           <li><a href="#hero" class="nav-link active">Home</a></li>
           <li><a href="#featuredAttractions" class="nav-link">Attractions</a></li>
+          <li><a href="#featuredEvents" class="nav-link">Events</a></li>
           <li><a href="#features" class="nav-link">Services</a></li>
           <li><a href="#faq" class="nav-link">FAQ</a></li>
         </ul>
@@ -244,7 +260,6 @@
               alt="Tourist Profile" class="portal-avatar-img">
             <div class="portal-user-meta">
               <span class="portal-user-name">Tourist Portal</span>
-              <span class="portal-user-role">Sign In / Register</span>
             </div>
           </div>
         </div>
@@ -281,11 +296,14 @@
               placeholder="Search attractions, events, or locations..."
               aria-label="Search attractions, events, or locations">
 
-            <select class="search-category-filter" id="searchCategoryFilter" aria-label="Category Filter">
-              <option value="all">All Categories</option>
+            <select class="search-category-filter" id="searchCategoryFilter" aria-label="Category and Location Filter">
+              <option value="all">All Categories & Locations</option>
               <option value="historical">Historical Sites</option>
-              <option value="beach">Tourist Spots</option>
-              <option value="festival">Cultural Festivals</option>
+              <option value="spot">Tourist Spots</option>
+              <option value="park">Parks & Nature</option>
+              <option value="museum">Museums & Galleries</option>
+              <option value="Manila">Manila</option>
+              <option value="Quezon City">Quezon City</option>
             </select>
 
             <button type="submit" id="heroSearchBtn" class="hero-search-submit" aria-label="Search attractions">
@@ -326,13 +344,42 @@
         <div class="filter-tabs" role="tablist">
           <button class="filter-tab active" data-filter="all">All Highlights</button>
           <button class="filter-tab" data-filter="historical">Historical Sites</button>
-          <button class="filter-tab" data-filter="beach">Tourist Spots</button>
-          <button class="filter-tab" data-filter="festival">Festivals & Celebrations</button>
+          <button class="filter-tab" data-filter="spot">Tourist Spots</button>
+          <button class="filter-tab" data-filter="park">Parks & Nature</button>
+          <button class="filter-tab" data-filter="museum">Museums & Galleries</button>
+          <button class="filter-tab" data-filter="Manila">Manila</button>
+          <button class="filter-tab" data-filter="Quezon City">Quezon City</button>
         </div>
 
         <!-- Dynamic Attractions Grid (populated via app.js) -->
         <div class="attractions-grid" id="attractionsGrid">
           <!-- Fallback Static Cards matching screenshot will be initialized dynamically -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Featured Events Section (Live Events from Store / Supabase)
+         ========================================================================== -->
+    <section class="featured-section" id="featuredEvents" style="padding-top: 1rem;">
+      <div class="container">
+
+        <!-- Section Header Row with "See All >" -->
+        <div class="section-header-row">
+          <h2 class="section-title">Featured Events</h2>
+          <a href="attractions.html" class="see-all-link" id="seeAllEventsBtn">
+            <span>See All</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Dynamic Events Grid (populated via app.js) -->
+        <div class="attractions-grid" id="featuredEventsGrid">
+          <!-- Populated dynamically via js/app.js -->
         </div>
 
       </div>
@@ -568,6 +615,7 @@
         <div class="footer-column">
           <h4 class="footer-column-title">Support & Safety</h4>
           <ul class="footer-links-list">
+            <li class="footer-link-item"><a href="about.html">About TourismHub</a></li>
             <li class="footer-link-item"><a href="#faq">Help Center & FAQ</a></li>
             <li class="footer-link-item"><a href="javascript:void(0)" onclick="openTicketsModal()">Manage My Tickets</a>
             </li>

@@ -4,6 +4,7 @@
   // Temporary local cache keys
   const KEYS = {
     CATALOG: 'tourismhub_temp_catalog_v1',
+    EVENTS: 'tourismhub_temp_events_v1',
     CAPACITY: 'tourismhub_temp_capacity_v1',
     ANNOUNCEMENTS: 'tourismhub_temp_announcements_v1',
     PASSES: 'tourismhub_temp_passes_v1',
@@ -14,6 +15,82 @@
     CLIENT_USERS: 'tourismhub_temp_client_users_v1',
     FAVORITES: 'tourismhub_temp_favorites_v1'
   };
+
+  const LEGACY_REMOVED_IDS = new Set(['pahiyas-festival', 'testing-testing', 'bayan-glori']);
+
+  function normalizeLocation(loc) {
+    const s = String(loc || '').toLowerCase();
+    if (s.includes('quezon city') || s.includes('q.c.') || /\bqc\b/.test(s) || s.includes('diliman') || s.includes('bayan')) {
+      return 'Quezon City';
+    }
+    return 'Manila';
+  }
+
+  function mapCategoryToType(category, fallbackType) {
+    const key = String(category || fallbackType || '').toLowerCase();
+    if (key.includes('historical')) return 'historical';
+    if (key.includes('park') || key.includes('nature') || key.includes('eco')) return 'park';
+    if (key.includes('museum') || key.includes('gallery')) return 'museum';
+    if (key.includes('event') || key.includes('festival')) return 'event';
+    return 'spot';
+  }
+
+  function normalizeCategoryLabel(category, type) {
+    const key = String(category || type || '').toLowerCase();
+    if (key.includes('historical')) return 'Historical Site';
+    if (key.includes('park') || key.includes('nature') || key.includes('eco')) return 'Park & Nature';
+    if (key.includes('museum') || key.includes('gallery')) return 'Museum & Gallery';
+    return 'Tourist Spot';
+  }
+
+  function extractSingleImage(item) {
+    const candidates = Array.isArray(item && item.images)
+      ? item.images
+      : (item && item.image ? [item.image] : []);
+    const clean = candidates
+      .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
+      .slice(0, 1);
+    const primary = item && item.image && !String(item.image).includes('images.unsplash.com/photo-')
+      ? item.image
+      : (clean[0] || 'assets/no-image.svg');
+    const images = clean.length > 0 ? clean : [primary];
+    return { image: images[0], images };
+  }
+
+  function normalizeAttractionItem(item) {
+    const { image, images } = extractSingleImage(item);
+    const normalizedType = mapCategoryToType(item.category, item.type);
+    const normalizedCategory = normalizeCategoryLabel(item.category, normalizedType);
+    return {
+      ...item,
+      category: normalizedCategory,
+      type: normalizedType,
+      location: normalizeLocation(item.location),
+      image,
+      images,
+      priceLabel: typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : item.priceLabel,
+      admission: typeof item.admission === 'string' ? item.admission.replace(/\$(\d+)/g, '₱$1') : item.admission
+    };
+  }
+
+  function normalizeEventItem(item) {
+    const { image, images } = extractSingleImage(item);
+    return {
+      ...item,
+      type: 'event',
+      parentAttractionId: item.parentAttractionId || item.badge || '',
+      attractionTitle: item.attractionTitle || item.category || 'Attraction Event',
+      category: item.attractionTitle || item.category || 'Attraction Event',
+      badge: item.parentAttractionId || item.badge || '',
+      location: normalizeLocation(item.location),
+      operatingHours: item.operatingHours || item.schedule || 'TBA',
+      capacityPerSlot: Number(item.capacityPerSlot || item.capacity || 100),
+      image,
+      images,
+      priceLabel: typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : item.priceLabel,
+      admission: typeof item.admission === 'string' ? item.admission.replace(/\$(\d+)/g, '₱$1') : item.admission
+    };
+  }
 
   function isMockAvatarUrl(url) {
     if (!url || typeof url !== 'string') return true;
@@ -94,7 +171,7 @@
     }
   ];
 
-  // Default Seed Data: Attractions & Events Catalog
+  // Default Seed Data: Attractions Catalog (Strictly Attractions)
   const DEFAULT_CATALOG = [
     {
       id: 'rizal-monument',
@@ -109,9 +186,9 @@
       operatingHours: '06:00 AM - 09:00 PM',
       capacityPerSlot: 150,
       image: 'assets/rizal-monument.jpg',
-      images: ['assets/rizal-monument.jpg', 'assets/qc-memorial-circle.jpg', 'assets/hero-banner.jpg'],
+      images: ['assets/rizal-monument.jpg'],
       badge: 'Iconic Landmark',
-      location: 'Manila, Metro Manila',
+      location: 'Manila',
       status: 'active',
       description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines with ceremonial guards.'
     },
@@ -128,108 +205,73 @@
       operatingHours: '08:00 AM - 06:00 PM',
       capacityPerSlot: 120,
       image: 'assets/rizal-monument.jpg',
-      images: ['assets/rizal-monument.jpg', 'assets/hero-banner.jpg', 'assets/qc-memorial-circle.jpg', 'assets/white-beach.jpg'],
+      images: ['assets/rizal-monument.jpg'],
       badge: 'UNESCO Heritage',
-      location: 'Intramuros, Manila',
+      location: 'Manila',
       status: 'active',
       description: 'Centuries of Spanish colonial history featuring stone ramparts, Fort Santiago, cobblestone roadways, and museum plazas.'
     },
     {
-      id: 'white-beach-boracay',
-      title: 'White Beach Eco-Tourism Reserve',
-      category: 'Tourist Spot',
-      type: 'beach',
-      rating: '4.7',
-      reviews: '980',
-      price: 25,
-      priceLabel: 'Day Pass ₱25',
-      admission: 'Environmental Pass ₱25',
-      operatingHours: '05:30 AM - 10:00 PM',
+      id: 'qc-memorial-circle',
+      title: 'Quezon Memorial Circle & Park',
+      category: 'Park & Nature',
+      type: 'park',
+      rating: '4.8',
+      reviews: '1.6k',
+      price: 0,
+      priceLabel: 'Free Entry',
+      admission: 'Free Admission',
+      operatingHours: '05:00 AM - 09:00 PM',
       capacityPerSlot: 200,
-      image: 'assets/white-beach.jpg',
-      images: ['assets/white-beach.jpg', 'assets/hero-banner.jpg', 'assets/pahiyas-festival.jpg'],
-      badge: 'Tropical Haven',
-      location: 'Boracay Island, Aklan',
+      image: 'assets/qc-memorial-circle.jpg',
+      images: ['assets/qc-memorial-circle.jpg'],
+      badge: 'QC Landmark',
+      location: 'Quezon City',
       status: 'active',
-      description: 'Powdery sugar-white sand, turquoise lagoon waters, and curated marine activities with regulated daily eco-caps.'
+      description: 'Iconic elliptical park and national shrine in Quezon City featuring museums, landscaped gardens, and recreational trails.'
     },
     {
-      id: 'pahiyas-festival',
-      title: 'Pahiyas Harvest Festival',
-      category: 'Festival',
-      type: 'festival',
+      id: 'la-mesa-ecopark',
+      title: 'La Mesa Eco Park & Nature Reserve',
+      category: 'Park & Nature',
+      type: 'park',
+      rating: '4.7',
+      reviews: '940',
+      price: 50,
+      priceLabel: 'Eco Pass ₱50',
+      admission: 'Eco Pass ₱50',
+      operatingHours: '07:00 AM - 04:00 PM',
+      capacityPerSlot: 150,
+      image: 'assets/hero-banner.jpg',
+      images: ['assets/hero-banner.jpg'],
+      badge: 'Eco Sanctuary',
+      location: 'Quezon City',
+      status: 'active',
+      description: 'Lush urban watershed reserve in Quezon City offering shaded canopy trails, picnic groves, and guided nature walks.'
+    },
+    {
+      id: 'national-museum-manila',
+      title: 'National Museum Complex Manila',
+      category: 'Museum & Gallery',
+      type: 'museum',
       rating: '4.9',
-      reviews: '850',
-      price: 35,
-      priceLabel: 'Event Access ₱35',
-      admission: 'Special Event Access ₱35',
-      operatingHours: '07:00 AM - 11:00 PM',
-      capacityPerSlot: 300,
-      image: 'assets/pahiyas-festival.jpg',
-      images: ['assets/pahiyas-festival.jpg', 'assets/hero-banner.jpg', 'assets/qc-memorial-circle.jpg'],
-      badge: 'Annual Celebration',
-      location: 'Lucban, Quezon',
-      status: 'active',
-      description: 'A vibrant harvest thanksgiving celebration where traditional homes are decorated with colorful kiping rice wafers and farm yields.'
-    },
-    {
-      id: 'el-nido-big-lagoon',
-      title: 'Big Lagoon Marine Sanctuary',
-      category: 'Tourist Spot',
-      type: 'beach',
-      rating: '4.9',
-      reviews: '3.4k',
-      price: 45,
-      priceLabel: 'Tour Pass ₱45',
-      admission: 'Eco-Tour Permit ₱45',
-      operatingHours: '06:00 AM - 05:00 PM',
-      capacityPerSlot: 90,
+      reviews: '2.4k',
+      price: 0,
+      priceLabel: 'Free Entry',
+      admission: 'Free Admission (Timed Pass)',
+      operatingHours: '09:00 AM - 06:00 PM',
+      capacityPerSlot: 180,
       image: 'assets/hero-banner.jpg',
-      images: ['assets/hero-banner.jpg', 'assets/white-beach.jpg', 'assets/rizal-monument.jpg'],
-      badge: 'World Wonder',
-      location: 'El Nido, Palawan',
+      images: ['assets/hero-banner.jpg'],
+      badge: 'Cultural Gem',
+      location: 'Manila',
       status: 'active',
-      description: 'Emerald lagoon surrounded by towering karst limestone cliffs with strictly monitored eco-kayak time limits.'
-    },
-    {
-      id: 'testing-testing',
-      title: 'TESTING TESTING',
-      category: 'TESTING TESTING',
-      type: 'historical',
-      rating: '4.8',
-      reviews: '100',
-      price: 20,
-      priceLabel: '₱20',
-      admission: 'TESTING TESTING',
-      operatingHours: '23',
-      capacityPerSlot: 2321,
-      image: 'assets/hero-banner.jpg',
-      images: ['assets/hero-banner.jpg', 'assets/qc-memorial-circle.jpg'],
-      badge: 'Featured',
-      location: 'TESTING TESTING',
-      status: 'maintenance',
-      description: 'TESTING TESTING'
-    },
-    {
-      id: 'bayan-glori',
-      title: 'Bayan Glori',
-      category: 'Historical Monument',
-      type: 'historical',
-      rating: '4.8',
-      reviews: '100',
-      price: 20,
-      priceLabel: '₱20',
-      admission: 'Free',
-      operatingHours: '24/7',
-      capacityPerSlot: 102000,
-      image: 'assets/hero-banner.jpg',
-      images: ['assets/hero-banner.jpg', 'assets/qc-memorial-circle.jpg'],
-      badge: 'Featured',
-      location: 'Bayan, Q.C.',
-      status: 'active',
-      description: 'Traffic and Traffic'
+      description: 'Premier museum cluster in Manila showcasing fine arts, anthropology, and natural history collections.'
     }
   ];
+
+  // Default Seed Data: Events (Strictly separate from Attractions; zero mock events)
+  const DEFAULT_EVENTS = [];
 
   // Default Seed Data: Capacity Schedules
   const DEFAULT_CAPACITY = {
@@ -244,28 +286,20 @@
       { id: 'im-2', time: '11:30 AM - 02:30 PM', booked: 116, max: 120, status: 'near-full' },
       { id: 'im-3', time: '02:30 PM - 05:30 PM', booked: 75, max: 120, status: 'open' }
     ],
-    'white-beach-boracay': [
-      { id: 'wb-1', time: '06:00 AM - 10:00 AM', booked: 120, max: 200, status: 'open' },
-      { id: 'wb-2', time: '10:00 AM - 02:00 PM', booked: 194, max: 200, status: 'near-full' },
-      { id: 'wb-3', time: '02:00 PM - 06:00 PM', booked: 188, max: 200, status: 'near-full' }
+    'qc-memorial-circle': [
+      { id: 'qc-1', time: '06:00 AM - 10:00 AM', booked: 110, max: 200, status: 'open' },
+      { id: 'qc-2', time: '10:00 AM - 02:00 PM', booked: 155, max: 200, status: 'open' },
+      { id: 'qc-3', time: '02:00 PM - 06:00 PM', booked: 185, max: 200, status: 'near-full' }
     ],
-    'pahiyas-festival': [
-      { id: 'pf-1', time: '07:00 AM - 12:00 PM', booked: 295, max: 300, status: 'at-capacity' },
-      { id: 'pf-2', time: '12:00 PM - 05:00 PM', booked: 280, max: 300, status: 'near-full' },
-      { id: 'pf-3', time: '05:00 PM - 10:00 PM', booked: 200, max: 300, status: 'open' }
+    'la-mesa-ecopark': [
+      { id: 'lm-1', time: '07:00 AM - 10:00 AM', booked: 95, max: 150, status: 'open' },
+      { id: 'lm-2', time: '10:00 AM - 01:00 PM', booked: 132, max: 150, status: 'near-full' },
+      { id: 'lm-3', time: '01:00 PM - 04:00 PM', booked: 60, max: 150, status: 'open' }
     ],
-    'el-nido-big-lagoon': [
-      { id: 'en-1', time: '07:00 AM - 10:00 AM', booked: 78, max: 90, status: 'near-full' },
-      { id: 'en-2', time: '10:00 AM - 01:00 PM', booked: 88, max: 90, status: 'near-full' },
-      { id: 'en-3', time: '01:00 PM - 04:00 PM', booked: 25, max: 90, status: 'open' }
-    ],
-    'testing-testing': [
-      { id: 'tt-1', time: '08:00 AM - 12:00 PM', booked: 120, max: 2321, status: 'open' },
-      { id: 'tt-2', time: '01:00 PM - 05:00 PM', booked: 350, max: 2321, status: 'open' }
-    ],
-    'bayan-glori': [
-      { id: 'bg-1', time: '08:00 AM - 12:00 PM', booked: 1200, max: 102000, status: 'open' },
-      { id: 'bg-2', time: '01:00 PM - 05:00 PM', booked: 2400, max: 102000, status: 'open' }
+    'national-museum-manila': [
+      { id: 'nm-1', time: '09:00 AM - 12:00 PM', booked: 120, max: 180, status: 'open' },
+      { id: 'nm-2', time: '12:00 PM - 03:00 PM', booked: 168, max: 180, status: 'near-full' },
+      { id: 'nm-3', time: '03:00 PM - 06:00 PM', booked: 90, max: 180, status: 'open' }
     ]
   };
 
@@ -414,6 +448,9 @@
   if (!localStorage.getItem(KEYS.CATALOG)) {
     setItem(KEYS.CATALOG, DEFAULT_CATALOG);
   }
+  if (!localStorage.getItem(KEYS.EVENTS)) {
+    setItem(KEYS.EVENTS, DEFAULT_EVENTS);
+  }
   if (!localStorage.getItem(KEYS.CAPACITY)) {
     setItem(KEYS.CAPACITY, DEFAULT_CAPACITY);
   }
@@ -458,33 +495,18 @@
 
       const rawCatalog = getItem(KEYS.CATALOG, null);
       if (Array.isArray(rawCatalog)) {
-        const pesoCatalog = rawCatalog.map(item => {
-          let imgs = (Array.isArray(item.images) ? item.images : (item.image ? [item.image] : []))
-            .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
-            .slice(0, 5);
+        const cleanedCatalog = rawCatalog
+          .filter(item => item && item.id && item.type !== 'event' && item.type !== 'festival' && !LEGACY_REMOVED_IDS.has(item.id))
+          .map(normalizeAttractionItem);
+        localStorage.setItem(KEYS.CATALOG, JSON.stringify(cleanedCatalog));
+      }
 
-          const rawImg = item.image && !String(item.image).includes('images.unsplash.com/photo-')
-            ? item.image
-            : (imgs[0] || 'assets/no-image.svg');
-
-          if (imgs.length <= 1) {
-            const defItem = DEFAULT_CATALOG.find(d => d.id === item.id);
-            if (defItem && Array.isArray(defItem.images) && defItem.images.length > imgs.length) {
-              imgs = [...defItem.images];
-            }
-          }
-
-          if (imgs.length === 0) imgs = [rawImg];
-
-          return {
-            ...item,
-            image: rawImg,
-            images: imgs,
-            priceLabel: typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : item.priceLabel,
-            admission: typeof item.admission === 'string' ? item.admission.replace(/\$(\d+)/g, '₱$1') : item.admission
-          };
-        });
-        localStorage.setItem(KEYS.CATALOG, JSON.stringify(pesoCatalog));
+      const rawEvents = getItem(KEYS.EVENTS, null);
+      if (Array.isArray(rawEvents)) {
+        const cleanedEvents = rawEvents
+          .filter(item => item && item.id && !LEGACY_REMOVED_IDS.has(item.id) && (item.parentAttractionId || item.badge))
+          .map(normalizeEventItem);
+        localStorage.setItem(KEYS.EVENTS, JSON.stringify(cleanedEvents));
       }
 
       const rawPasses = getItem(KEYS.PASSES, null);
@@ -506,42 +528,58 @@
     } catch (e) {}
   })();
 
+  function syncCatalogAndEventsFromRemote(remoteRows) {
+    if (!Array.isArray(remoteRows)) return;
+    const validRows = remoteRows.filter(item => item && item.id && !LEGACY_REMOVED_IDS.has(item.id) && item.type !== 'festival');
+    const remoteAttractions = validRows.filter(item => item.type !== 'event').map(normalizeAttractionItem);
+    const remoteEvents = validRows.filter(item => item.type === 'event').map(normalizeEventItem);
+
+    if (remoteAttractions.length > 0) {
+      const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG)
+        .filter(item => item && item.id && item.type !== 'event' && item.type !== 'festival' && !LEGACY_REMOVED_IDS.has(item.id));
+      const catalogMap = new Map();
+      localCatalog.forEach(item => catalogMap.set(item.id, normalizeAttractionItem(item)));
+      remoteAttractions.forEach(item => catalogMap.set(item.id, item));
+      const mergedCatalog = Array.from(catalogMap.values());
+      setItem(KEYS.CATALOG, mergedCatalog);
+    }
+
+    setItem(KEYS.EVENTS, remoteEvents);
+  }
+
   // Public Store API
   const TourismHubStore = {
-    // 1. Catalog
+    // 1. Attractions Catalog
     getCatalog() {
-      return getItem(KEYS.CATALOG, DEFAULT_CATALOG);
+      const raw = getItem(KEYS.CATALOG, DEFAULT_CATALOG);
+      return Array.isArray(raw)
+        ? raw.filter(item => item && item.id && item.type !== 'event' && item.type !== 'festival' && !LEGACY_REMOVED_IDS.has(item.id)).map(normalizeAttractionItem)
+        : DEFAULT_CATALOG;
     },
     saveCatalog(catalog) {
       setItem(KEYS.CATALOG, catalog);
     },
     addAttraction(item) {
-      if (!Array.isArray(item.images) || item.images.length === 0) {
-        item.images = item.image ? [item.image] : ['assets/no-image.svg'];
-      }
-      item.images = item.images.filter(u => u && !String(u).includes('images.unsplash.com/photo-')).slice(0, 5);
-      if (item.images.length === 0) item.images = ['assets/no-image.svg'];
-      item.image = item.images[0];
-
+      const normalized = normalizeAttractionItem(item);
       const catalog = this.getCatalog();
-      catalog.unshift(item);
+      catalog.unshift(normalized);
       this.saveCatalog(catalog);
 
       // Also generate default capacity slots for this attraction
       const capacity = this.getCapacityData();
-      if (!capacity[item.id]) {
-        const slotLimit = item.capacityPerSlot || 150;
-        capacity[item.id] = [
-          { id: `${item.id}-1`, time: '08:00 AM - 11:00 AM', booked: 0, max: slotLimit, status: 'open' },
-          { id: `${item.id}-2`, time: '11:00 AM - 02:00 PM', booked: 0, max: slotLimit, status: 'open' },
-          { id: `${item.id}-3`, time: '02:00 PM - 05:00 PM', booked: 0, max: slotLimit, status: 'open' }
+      if (!capacity[normalized.id]) {
+        const slotLimit = normalized.capacityPerSlot || 150;
+        capacity[normalized.id] = [
+          { id: `${normalized.id}-1`, time: '08:00 AM - 11:00 AM', booked: 0, max: slotLimit, status: 'open' },
+          { id: `${normalized.id}-2`, time: '11:00 AM - 02:00 PM', booked: 0, max: slotLimit, status: 'open' },
+          { id: `${normalized.id}-3`, time: '02:00 PM - 05:00 PM', booked: 0, max: slotLimit, status: 'open' }
         ];
         this.saveCapacityData(capacity);
       }
 
       // Online Supabase Sync
       if (window.TourismHubSupabase && typeof TourismHubSupabase.upsertCatalogItem === 'function' && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.upsertCatalogItem(item).catch(err => console.warn('[Store] Supabase addAttraction sync error:', err));
+        TourismHubSupabase.upsertCatalogItem(normalized).catch(err => console.warn('[Store] Supabase addAttraction sync error:', err));
       }
 
       return catalog;
@@ -550,12 +588,7 @@
       const catalog = this.getCatalog();
       const idx = catalog.findIndex(a => a.id === id);
       if (idx !== -1) {
-        const merged = { ...catalog[idx], ...updates };
-        if (Array.isArray(merged.images)) {
-          merged.images = merged.images.filter(u => u && !String(u).includes('images.unsplash.com/photo-')).slice(0, 5);
-          if (merged.images.length === 0) merged.images = ['assets/no-image.svg'];
-          if (!updates.image) merged.image = merged.images[0];
-        }
+        const merged = normalizeAttractionItem({ ...catalog[idx], ...updates });
         catalog[idx] = merged;
         this.saveCatalog(catalog);
 
@@ -571,6 +604,13 @@
       catalog = catalog.filter(a => a.id !== id);
       this.saveCatalog(catalog);
 
+      // Cascade delete any events belonging to this attraction
+      const existingEvents = this.getEvents();
+      const removedEvents = existingEvents.filter(ev => ev.parentAttractionId === id);
+      if (removedEvents.length > 0) {
+        this.saveEvents(existingEvents.filter(ev => ev.parentAttractionId !== id));
+      }
+
       const capacity = this.getCapacityData();
       delete capacity[id];
       this.saveCapacityData(capacity);
@@ -578,10 +618,65 @@
       // Online Supabase Sync
       if (window.TourismHubSupabase && typeof TourismHubSupabase.deleteCatalogItem === 'function' && TourismHubSupabase.isReady()) {
         TourismHubSupabase.deleteCatalogItem(id).catch(err => console.warn('[Store] Supabase deleteAttraction sync error:', err));
+        removedEvents.forEach(ev => {
+          TourismHubSupabase.deleteCatalogItem(ev.id).catch(err => console.warn('[Store] Supabase cascade deleteEvent error:', err));
+        });
       }
 
       return catalog;
     },
+
+    // 1b. Attraction Events (Separated from Attractions)
+    getEvents(attractionId = null) {
+      const raw = getItem(KEYS.EVENTS, DEFAULT_EVENTS);
+      const list = Array.isArray(raw)
+        ? raw.filter(item => item && item.id && !LEGACY_REMOVED_IDS.has(item.id)).map(normalizeEventItem)
+        : [];
+      if (attractionId) {
+        return list.filter(ev => ev.parentAttractionId === attractionId);
+      }
+      return list;
+    },
+    saveEvents(events) {
+      setItem(KEYS.EVENTS, events);
+    },
+    addEvent(eventItem) {
+      const normalized = normalizeEventItem(eventItem);
+      const events = this.getEvents();
+      events.unshift(normalized);
+      this.saveEvents(events);
+
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.upsertCatalogItem === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.upsertCatalogItem(normalized).catch(err => console.warn('[Store] Supabase addEvent sync error:', err));
+      }
+      return events;
+    },
+    updateEvent(id, updates) {
+      const events = this.getEvents();
+      const idx = events.findIndex(e => e.id === id);
+      if (idx !== -1) {
+        const merged = normalizeEventItem({ ...events[idx], ...updates });
+        events[idx] = merged;
+        this.saveEvents(events);
+
+        if (window.TourismHubSupabase && typeof TourismHubSupabase.upsertCatalogItem === 'function' && TourismHubSupabase.isReady()) {
+          TourismHubSupabase.upsertCatalogItem(merged).catch(err => console.warn('[Store] Supabase updateEvent sync error:', err));
+        }
+      }
+      return events;
+    },
+    deleteEvent(id) {
+      let events = this.getEvents();
+      events = events.filter(e => e.id !== id);
+      this.saveEvents(events);
+
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.deleteCatalogItem === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.deleteCatalogItem(id).catch(err => console.warn('[Store] Supabase deleteEvent sync error:', err));
+      }
+      return events;
+    },
+    normalizeLocation,
+    mapCategoryToType,
 
     // 2. Capacity & Schedules
     getCapacityData() {
@@ -1164,16 +1259,11 @@
       try {
         console.log('⚡ [Store] Connecting to Supabase for live catalog and announcements synchronization...');
 
-        // 1. Fetch live catalog from Supabase
+        // 1. Fetch live catalog (attractions & events) from Supabase
         const remoteCatalog = await TourismHubSupabase.fetchCatalog();
-        if (Array.isArray(remoteCatalog) && remoteCatalog.length > 0) {
-          const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG);
-          const catalogMap = new Map();
-          localCatalog.forEach(item => catalogMap.set(item.id, item));
-          remoteCatalog.forEach(item => catalogMap.set(item.id, item));
-          const merged = Array.from(catalogMap.values());
-          setItem(KEYS.CATALOG, merged);
-          console.log(`⚡ [Store] Catalog synchronized (${merged.length} items from Supabase & local cache).`);
+        if (Array.isArray(remoteCatalog)) {
+          syncCatalogAndEventsFromRemote(remoteCatalog);
+          console.log(`⚡ [Store] Attractions & Events synchronized (${remoteCatalog.length} Supabase records).`);
         }
 
         // 2. Fetch live announcements from Supabase
@@ -1196,12 +1286,8 @@
         TourismHubSupabase.subscribeToChanges({
           onCatalogChange: async () => {
             const freshCatalog = await TourismHubSupabase.fetchCatalog();
-            if (Array.isArray(freshCatalog) && freshCatalog.length > 0) {
-              const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG);
-              const map = new Map();
-              localCatalog.forEach(item => map.set(item.id, item));
-              freshCatalog.forEach(item => map.set(item.id, item));
-              setItem(KEYS.CATALOG, Array.from(map.values()));
+            if (Array.isArray(freshCatalog)) {
+              syncCatalogAndEventsFromRemote(freshCatalog);
             }
           },
           onAnnouncementChange: async () => {
@@ -1228,6 +1314,7 @@
     // Reset to initial seed state
     resetAll() {
       setItem(KEYS.CATALOG, DEFAULT_CATALOG);
+      setItem(KEYS.EVENTS, DEFAULT_EVENTS);
       setItem(KEYS.CAPACITY, DEFAULT_CAPACITY);
       setItem(KEYS.ANNOUNCEMENTS, DEFAULT_ANNOUNCEMENTS);
       setItem(KEYS.PASSES, DEFAULT_PASSES);

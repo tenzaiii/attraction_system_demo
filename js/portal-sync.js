@@ -25,6 +25,7 @@
       if (!grid) return;
 
       const catalog = TourismHubStore.getCatalog();
+      const events = typeof TourismHubStore.getEvents === 'function' ? TourismHubStore.getEvents() : [];
       const capacityData = TourismHubStore.getCapacityData();
 
       // Update Top Metrics
@@ -33,7 +34,7 @@
       const totalCapacityEl = document.querySelector('.portal-stat-card:nth-child(3) .portal-stat-value');
       const totalVisitorsEl = document.querySelector('.portal-stat-card:nth-child(4) .portal-stat-value');
 
-      const eventsCount = catalog.filter(a => a.type === 'festival' || a.type === 'event').length;
+      const eventsCount = events.length;
       let totalCapacitySum = 0;
       let totalBookedSum = 0;
 
@@ -48,86 +49,120 @@
 
       if (totalAttrEl) totalAttrEl.textContent = catalog.length;
       if (totalEventsEl) totalEventsEl.textContent = eventsCount;
-      if (totalCapacityEl) totalCapacityEl.textContent = totalCapacitySum > 0 ? totalCapacitySum.toLocaleString() : '1,240';
-      if (totalVisitorsEl) totalVisitorsEl.textContent = totalBookedSum > 0 ? totalBookedSum.toLocaleString() : '840';
+      if (totalCapacityEl) totalCapacityEl.textContent = totalCapacitySum > 0 ? totalCapacitySum.toLocaleString() : '0';
+      if (totalVisitorsEl) totalVisitorsEl.textContent = totalBookedSum > 0 ? totalBookedSum.toLocaleString() : '0';
 
-      // Render Catalog Grid
-      grid.innerHTML = catalog.map(item => {
-        const badgeClass = item.type === 'festival' || item.type === 'event' ? 'event' : (item.type === 'amenity' ? 'amenity' : 'attraction');
-        const badgeLabel = item.badge || (item.type === 'festival' ? 'Event' : 'Attraction');
-
-        // Compute capacity from slots if available
-        let capText = `${item.capacityPerSlot || 100} slots`;
-        if (capacityData[item.id] && capacityData[item.id].length > 0) {
-          const firstSlot = capacityData[item.id][0];
-          capText = `${firstSlot.booked} / ${firstSlot.max}`;
+      // Populate parent attraction selector in Add Event modal if present
+      const portalEventAttrSel = document.getElementById('newEventAttractionId');
+      if (portalEventAttrSel) {
+        const curSel = portalEventAttrSel.value;
+        portalEventAttrSel.innerHTML = catalog.map(a => `<option value="${a.id}">${a.title} (${a.location})</option>`).join('');
+        if (curSel && catalog.some(a => a.id === curSel)) {
+          portalEventAttrSel.value = curSel;
         }
+      }
 
-        const fallbackImg = (item.image && !String(item.image).includes('images.unsplash.com/photo-'))
-          ? item.image
-          : 'assets/no-image.svg';
-        const locationStr = item.location || 'Resort Grounds';
-        const hoursStr = item.operatingHours || '08:00 AM – 08:00 PM';
-        const isFav = (typeof TourismHubStore.isFavorite === 'function') ? TourismHubStore.isFavorite(item.id) : false;
+      // Render Attractions Grid
+      if (catalog.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border);">
+            <h3 style="font-size: 1.05rem; color: var(--text-main); margin-bottom: 0.35rem;">No attractions available</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Check back soon for featured destinations in Manila and Quezon City.</p>
+          </div>
+        `;
+      } else {
+        grid.innerHTML = catalog.map(item => {
+          const badgeLabel = item.category || item.badge || 'Attraction';
+          const linkedEvents = events.filter(ev => ev.parentAttractionId === item.id);
 
-        return `
-          <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'attraction'}" data-area="${item.location ? item.location.toLowerCase() : 'all'}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
-            <div class="portal-item-media" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
-              <img src="${fallbackImg}" alt="${item.title}" loading="lazy" onerror="this.src='assets/no-image.svg'">
-              <span class="portal-badge-tag ${badgeClass}">${badgeLabel}</span>
-              <button class="portal-card-wishlist-btn ${isFav ? 'saved' : ''}" 
-                      title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
-                      onclick="event.stopPropagation(); togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View details">${item.title}</h3>
-              <p class="portal-item-desc">${item.description || 'Experience world-class resort amenities and sights.'}</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
-                  <span>${locationStr}</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  <span>${hoursStr}</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                  <span>Capacity: ${capText}</span>
+          // Compute capacity from slots if available
+          let capText = `${item.capacityPerSlot || 100} slots`;
+          let capSortVal = item.capacityPerSlot || 100;
+          if (capacityData[item.id] && capacityData[item.id].length > 0) {
+            const firstSlot = capacityData[item.id][0];
+            capText = `${firstSlot.booked} / ${firstSlot.max}`;
+            capSortVal = firstSlot.max || capSortVal;
+          }
+
+          const fallbackImg = (item.image && !String(item.image).includes('images.unsplash.com/photo-'))
+            ? item.image
+            : 'assets/no-image.svg';
+          const locationStr = item.location || 'Manila';
+          const hoursStr = item.operatingHours || '08:00 AM – 06:00 PM';
+          const isFav = (typeof TourismHubStore.isFavorite === 'function') ? TourismHubStore.isFavorite(item.id) : false;
+
+          return `
+            <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'spot'}" data-category="${item.category || 'Tourist Spot'}" data-area="${locationStr}" data-title="${item.title}" data-capacity="${capSortVal}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
+              <div class="portal-item-media" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
+                <img src="${fallbackImg}" alt="${item.title}" loading="lazy" onerror="this.src='assets/no-image.svg'">
+                <span class="portal-badge-tag attraction">${badgeLabel}</span>
+                <button class="portal-card-wishlist-btn ${isFav ? 'saved' : ''}" 
+                        title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
+                        onclick="event.stopPropagation(); togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="portal-item-body">
+                <h3 class="portal-item-title" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View details">${item.title}</h3>
+                <p class="portal-item-desc">${item.description || 'Explore verified visitor spots with real-time capacity monitoring.'}</p>
+                <div class="portal-item-meta-list">
+                  <div class="portal-item-meta-row">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    <span>${locationStr}</span>
+                  </div>
+                  <div class="portal-item-meta-row">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>${hoursStr}</span>
+                  </div>
+                  <div class="portal-item-meta-row">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <span>Capacity: ${capText}${linkedEvents.length > 0 ? ` • ${linkedEvents.length} Event${linkedEvents.length > 1 ? 's' : ''}` : ''}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="portal-item-footer">
-              <a href="attraction-details.html?id=${item.id}" class="portal-view-details-btn" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">View Details &gt;</a>
-            </div>
-          </article>
-        `;
-      }).join('');
+              <div class="portal-item-footer">
+                <a href="attraction-details.html?id=${item.id}" class="portal-view-details-btn" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">View Details &gt;</a>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
 
-      // Render Upcoming Events aside list dynamically
+      // Render Upcoming Events aside list strictly from TourismHubStore.getEvents()
       const eventsListContainer = document.querySelector('.upcoming-events-list');
       if (eventsListContainer) {
-        const eventItems = catalog.filter(a => a.type === 'festival' || a.type === 'event' || a.category === 'Festival');
-        if (eventItems.length > 0) {
-          eventsListContainer.innerHTML = eventItems.slice(0, 5).map(ev => `
-            <div class="upcoming-event-item" style="cursor: pointer;" onclick="window.location.href='attraction-details.html?id=${ev.id}'" title="View ${ev.title}">
-              <img src="${(ev.image && !String(ev.image).includes('images.unsplash.com/photo-')) ? ev.image : 'assets/no-image.svg'}" alt="${ev.title}" class="upcoming-event-img" onerror="this.src='assets/no-image.svg'">
-              <div class="upcoming-event-details">
-                <span class="upcoming-event-name">${ev.title}</span>
-                <span class="upcoming-event-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  ${ev.operatingHours || 'Scheduled Event'}
-                </span>
-                <span class="upcoming-event-loc">${ev.location || 'Main Grounds'}</span>
-                <span class="upcoming-event-badge">Event</span>
+        if (events.length > 0) {
+          eventsListContainer.innerHTML = events.slice(0, 6).map(ev => {
+            const targetId = ev.parentAttractionId || ev.id;
+            const parentName = ev.attractionTitle || 'Attraction Event';
+            return `
+              <div class="upcoming-event-item" style="cursor: pointer;" onclick="window.location.href='attraction-details.html?id=${encodeURIComponent(targetId)}'" title="View ${parentName} & event details">
+                <img src="${(ev.image && !String(ev.image).includes('images.unsplash.com/photo-')) ? ev.image : 'assets/no-image.svg'}" alt="${ev.title}" class="upcoming-event-img" onerror="this.src='assets/no-image.svg'">
+                <div class="upcoming-event-details">
+                  <span class="upcoming-event-name">${ev.title}</span>
+                  <span class="upcoming-event-time">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    ${ev.operatingHours || 'Scheduled Event'}
+                  </span>
+                  <span class="upcoming-event-loc">${parentName} (${ev.location || 'Manila'})</span>
+                  <span class="upcoming-event-badge">Event</span>
+                </div>
               </div>
+            `;
+          }).join('');
+        } else {
+          eventsListContainer.innerHTML = `
+            <div style="text-align: center; padding: 1.5rem 0.75rem; color: var(--text-muted); font-size: 0.85rem;">
+              No upcoming events scheduled.
             </div>
-          `).join('');
+          `;
         }
+      }
+
+      if (typeof window.filterCards === 'function') {
+        window.filterCards();
       }
     }
 
@@ -422,7 +457,6 @@
       // Update header profile widget across subpages
       document.querySelectorAll('.portal-user-profile').forEach(widget => {
         const nameEl = widget.querySelector('.portal-user-name');
-        const roleEl = widget.querySelector('.portal-user-role');
         const imgEl = widget.querySelector('.portal-avatar-img');
 
         // Remove hardcoded inline onclick so our dropdown handles it
@@ -432,7 +466,6 @@
           widget.style.display = 'flex';
           widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = adminAuth.name || 'Operator';
-          if (roleEl) roleEl.textContent = adminAuth.role || 'Admin Clearance';
           if (imgEl && window.TourismHubStore && typeof TourismHubStore.getUserAvatar === 'function') {
             imgEl.src = TourismHubStore.getUserAvatar(adminAuth);
           } else if (imgEl && adminAuth.avatar) {
@@ -450,7 +483,6 @@
           widget.style.display = 'flex';
           widget.style.cursor = 'pointer';
           if (nameEl) nameEl.textContent = clientAuth.name || 'Tourist';
-          if (roleEl) roleEl.textContent = clientAuth.badge || 'Verified Tourist';
           if (imgEl && window.TourismHubStore && typeof TourismHubStore.getUserAvatar === 'function') {
             imgEl.src = TourismHubStore.getUserAvatar(clientAuth);
           } else if (imgEl && clientAuth.avatar) {

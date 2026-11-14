@@ -306,7 +306,7 @@
       }
       parsedImages = parsedImages
         .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
-        .slice(0, 5);
+        .slice(0, 1);
 
       const rawImage = row.image && !String(row.image).includes('images.unsplash.com/photo-')
         ? row.image
@@ -316,11 +316,15 @@
         parsedImages = [rawImage];
       }
 
+      const isEvent = row.type === 'event';
+
       return {
         id: row.id,
         title: row.title || '',
         category: row.category || 'Tourist Spot',
         type: row.type || 'attraction',
+        parentAttractionId: isEvent ? (row.badge || '') : undefined,
+        attractionTitle: isEvent ? (row.category || 'Attraction Event') : undefined,
         status: row.status || 'active',
         rating: row.rating ? String(row.rating) : '4.8',
         reviews: row.reviews ? String(row.reviews) : '1.2k',
@@ -331,7 +335,7 @@
         capacityPerSlot: row.capacity_per_slot || 100,
         image: rawImage,
         images: parsedImages,
-        location: row.location || 'Metro Manila',
+        location: row.location || 'Manila',
         badge: row.badge || 'Featured',
         description: row.description || '',
         created_at: row.created_at,
@@ -345,11 +349,12 @@
     mapCatalogToDb(item) {
       if (!item) return null;
       const priceVal = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+      const isEvent = item.type === 'event';
 
-      // Ensure max 5 pictures and purge any mock unsplash links
+      // Ensure max 1 picture and purge any mock unsplash links
       let cleanImages = (Array.isArray(item.images) ? item.images : (item.image ? [item.image] : []))
         .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
-        .slice(0, 5);
+        .slice(0, 1);
 
       if (cleanImages.length === 0) {
         cleanImages = ['assets/no-image.svg'];
@@ -358,9 +363,9 @@
       const primaryImg = cleanImages[0];
 
       return {
-        id: String(item.id || 'attraction-' + Date.now()),
+        id: String(item.id || (isEvent ? 'event-' : 'attraction-') + Date.now()),
         title: item.title || '',
-        category: item.category || 'Tourist Spot',
+        category: isEvent ? (item.attractionTitle || item.category || 'Attraction Event') : (item.category || 'Tourist Spot'),
         type: item.type || 'attraction',
         status: item.status || 'active',
         rating: String(item.rating || '4.8'),
@@ -372,8 +377,8 @@
         capacity_per_slot: Number(item.capacityPerSlot || item.capacity_per_slot || 100),
         image: primaryImg,
         images: cleanImages,
-        location: item.location || 'Metro Manila',
-        badge: item.badge || 'Featured',
+        location: item.location || 'Manila',
+        badge: isEvent ? (item.parentAttractionId || item.badge || '') : (item.badge || 'Featured'),
         description: item.description || ''
       };
     },
@@ -564,7 +569,7 @@
           .from('attractions')
           .list(cleanFolder, {
             limit: 10,
-            sortBy: { column: 'name', order: 'asc' }
+            sortBy: { column: 'name', order: 'desc' }
           });
 
         if (error) throw error;
@@ -579,7 +584,7 @@
             return urlData ? urlData.publicUrl : '';
           })
           .filter(Boolean)
-          .slice(0, 5);
+          .slice(0, 1);
 
         return publicUrls;
       } catch (err) {

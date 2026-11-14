@@ -419,7 +419,7 @@ body {
 /* Top Header */
 .admin-header {
   height: var(--header-height);
-  background: #ffffff;
+  background: var(--bg-card);
   border-bottom: 1px solid var(--border);
   padding: 0 2rem;
   display: flex;
@@ -525,7 +525,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #fff;
+  border: 2px solid var(--bg-card);
 }
 
 /* Page Content Viewports */
@@ -598,7 +598,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #fff;
+  background-color: var(--bg-card);
   color: var(--text-main);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -612,7 +612,8 @@ body {
 
 .btn-secondary:hover {
   background-color: var(--bg-subtle);
-  border-color: var(--text-light);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .btn-danger {
@@ -759,7 +760,7 @@ body {
   border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-size: 0.85rem;
-  background: #ffffff;
+  background: var(--bg-card);
   color: var(--text-main);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -776,7 +777,7 @@ body {
   border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-size: 0.85rem;
-  background: #ffffff;
+  background: var(--bg-card);
   color: var(--text-main);
   outline: none;
   cursor: pointer;
@@ -954,7 +955,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 1rem 1.5rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
@@ -1698,7 +1699,7 @@ textarea.form-control {
 }
 
 .admin-modal-content {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 600px;
@@ -1832,3 +1833,248 @@ textarea.form-control {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Comprehensive Dark Mode Component & Button Overrides (Loaded Late)
+   ========================================================================== */
+[data-theme="dark"] .admin-header,
+[data-theme="dark"] .admin-topbar {
+  background-color: rgba(15, 23, 42, 0.94) !important;
+  border-bottom-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .header-title-box h1 {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .header-title-box p {
+  color: #94a3b8 !important;
+}
+
+/* Buttons */
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] label.btn-secondary {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #475569 !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover,
+[data-theme="dark"] label.btn-secondary:hover {
+  background-color: #334155 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-primary {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background-color: #0369a1 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .header-action-btn,
+[data-theme="dark"] .menu-toggle-btn {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
+}
+
+[data-theme="dark"] .header-action-btn:hover,
+[data-theme="dark"] .menu-toggle-btn:hover {
+  background-color: #334155 !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .notification-count {
+  border-color: #0f172a !important;
+}
+
+[data-theme="dark"] .btn-icon-action {
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
+  border: 1px solid #334155 !important;
+}
+
+[data-theme="dark"] .btn-icon-action:hover {
+  background-color: #334155 !important;
+  color: #38bdf8 !important;
+  border-color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .btn-icon-action.delete:hover {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+  border-color: #ef4444 !important;
+}
+
+[data-theme="dark"] .preset-chip {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .preset-chip:hover {
+  background-color: rgba(56, 189, 248, 0.16) !important;
+  color: #38bdf8 !important;
+  border-color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .modal-close-btn {
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
+  border-radius: var(--radius-full);
+}
+
+[data-theme="dark"] .modal-close-btn:hover {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+/* Priority Radio Options */
+[data-theme="dark"] .radio-pill,
+[data-theme="dark"] .priority-option span {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .priority-option input:checked + span {
+  background-color: rgba(2, 132, 199, 0.25) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .priority-option input[value="urgent"]:checked + span {
+  background-color: rgba(239, 68, 68, 0.25) !important;
+  border-color: #f87171 !important;
+  color: #f87171 !important;
+}
+
+/* Cards, Panels, Tables, Modals */
+[data-theme="dark"] .catalog-item-card,
+[data-theme="dark"] .scanner-camera-panel,
+[data-theme="dark"] .recent-scans-box,
+[data-theme="dark"] .analytics-card,
+[data-theme="dark"] .data-table-card,
+[data-theme="dark"] .dispatch-composer-card,
+[data-theme="dark"] .chart-card,
+[data-theme="dark"] .kpi-card,
+[data-theme="dark"] .slot-card,
+[data-theme="dark"] .capacity-attraction-selector,
+[data-theme="dark"] .admin-modal,
+[data-theme="dark"] .admin-modal-content {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .admin-modal-header,
+[data-theme="dark"] .recent-scans-header,
+[data-theme="dark"] .data-table-header {
+  border-bottom-color: #334155 !important;
+}
+
+[data-theme="dark"] .admin-modal-footer {
+  background-color: #0f172a !important;
+  border-top-color: #334155 !important;
+}
+
+[data-theme="dark"] .scans-table th,
+[data-theme="dark"] .data-table th {
+  background-color: #0f172a !important;
+  color: #94a3b8 !important;
+  border-bottom-color: #334155 !important;
+}
+
+[data-theme="dark"] .scans-table td,
+[data-theme="dark"] .data-table td {
+  color: #f8fafc !important;
+  border-bottom-color: #334155 !important;
+}
+
+[data-theme="dark"] .scans-table tr:hover td,
+[data-theme="dark"] .data-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .scans-table code {
+  background-color: #0f172a;
+  color: #38bdf8;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Validation Result Cards */
+[data-theme="dark"] .validation-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .validation-card.valid {
+  background-color: rgba(16, 185, 129, 0.14) !important;
+  border-color: #10b981 !important;
+}
+
+[data-theme="dark"] .validation-card.invalid {
+  background-color: rgba(239, 68, 68, 0.14) !important;
+  border-color: #ef4444 !important;
+}
+
+[data-theme="dark"] .validation-card.valid .validation-title {
+  color: #6ee7b7 !important;
+}
+
+[data-theme="dark"] .validation-card.invalid .validation-title {
+  color: #fca5a5 !important;
+}
+
+[data-theme="dark"] .validation-field label {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .validation-field span {
+  color: #f8fafc !important;
+}
+
+/* Badges & Pills */
+[data-theme="dark"] .catalog-status-badge.active,
+[data-theme="dark"] .scan-status-badge.approved,
+[data-theme="dark"] .slot-status-pill.open {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #6ee7b7 !important;
+}
+
+[data-theme="dark"] .catalog-status-badge.maintenance,
+[data-theme="dark"] .slot-status-pill.near-full,
+[data-theme="dark"] .announcement-type-badge.weather {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #fcd34d !important;
+}
+
+[data-theme="dark"] .catalog-status-badge.closed,
+[data-theme="dark"] .scan-status-badge.rejected,
+[data-theme="dark"] .slot-status-pill.sold-out,
+[data-theme="dark"] .announcement-type-badge.urgent {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #fca5a5 !important;
+}
+
+[data-theme="dark"] .announcement-type-badge.info {
+  background: rgba(2, 132, 199, 0.22) !important;
+  color: #7dd3fc !important;
+}
+
+[data-theme="dark"] .admin-toast {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #f8fafc !important;
+}
+

@@ -65,6 +65,9 @@
 [data-theme="dark"] [style*="color: #15803d"] {
   color: #86efac !important;
 }
+[data-theme="dark"] [style*="color: #991b1b"] {
+  color: #fca5a5 !important;
+}
 [data-theme="dark"] [style*="color: #0369a1"] {
   color: #7dd3fc !important;
 }
@@ -249,5 +252,153 @@
   border-color: #0284c7 !important;
   color: #ffffff !important;
 }
+
+/* --- Admin Dashboard Quick Buttons & Action Controls in Dark Mode --- */
+[data-theme="dark"] .nav-admin-dashboard-btn {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25) !important;
+}
+
+[data-theme="dark"] .nav-admin-dashboard-btn:hover {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+  border-color: #7dd3fc !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.38) !important;
+}
+
+[data-theme="dark"] #adminDashboardHeroBtn {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] #adminDashboardHeroBtn:hover {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+  border-color: #7dd3fc !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .admin-main .btn-secondary,
+[data-theme="dark"] .admin-modal-overlay .btn-secondary,
+[data-theme="dark"] .admin-main label.btn-secondary {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .admin-main .btn-secondary:hover,
+[data-theme="dark"] .admin-modal-overlay .btn-secondary:hover,
+[data-theme="dark"] .admin-main label.btn-secondary:hover {
+  background-color: #334155 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .admin-main .btn-primary,
+[data-theme="dark"] .admin-modal-overlay .btn-primary {
+  background-color: #0284c7 !important;
+  border-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .admin-main .btn-primary:hover,
+[data-theme="dark"] .admin-modal-overlay .btn-primary:hover {
+  background-color: #0369a1 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .admin-main .btn-icon-action {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .admin-main .btn-icon-action:hover {
+  background-color: #334155 !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .admin-main .btn-icon-action.delete:hover {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+  color: #f87171 !important;
+}
+
+[data-theme="dark"] .admin-header .header-action-btn,
+[data-theme="dark"] .admin-header .menu-toggle-btn {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .admin-header .header-action-btn:hover,
+[data-theme="dark"] .admin-header .menu-toggle-btn:hover {
+  background-color: #334155 !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .admin-main .preset-chip {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .admin-main .preset-chip:hover {
+  background-color: rgba(56, 189, 248, 0.16) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .admin-modal-overlay .modal-close-btn {
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .admin-modal-overlay .modal-close-btn:hover {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+/* --- About Page Dark Mode Overrides --- */
+[data-theme="dark"] .about-hero-card,
+[data-theme="dark"] .about-purpose-card,
+[data-theme="dark"] .about-feature-card,
+[data-theme="dark"] .about-team-card {
+  background: var(--dm-bg-card) !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text-main) !important;
+}
+
+[data-theme="dark"] .about-logo-frame {
+  background: var(--dm-bg-subtle) !important;
+  border-color: var(--dm-border) !important;
+}
+
+[data-theme="dark"] .about-highlight-pill {
+  background: rgba(2, 132, 199, 0.16) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #7dd3fc !important;
+}
+
+[data-theme="dark"] .about-role-badge {
+  background: var(--dm-bg-subtle) !important;
+  border-color: var(--dm-border) !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .about-section-heading,
+[data-theme="dark"] .about-card-title {
+  color: var(--dm-text-main) !important;
+}
+
+[data-theme="dark"] .about-section-sub,
+[data-theme="dark"] .about-card-desc {
+  color: var(--dm-text-muted) !important;
+}
+
 
 

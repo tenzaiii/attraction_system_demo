@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //  1. Central Data Store
   // ==========================================================================
 
-  // Attraction & Event Catalog Data Store (Synchronized with TourismHubStore)
+  // Attraction Catalog Data Store (Strictly Attractions; Events live separately)
   let catalogData = (window.TourismHubStore && typeof TourismHubStore.getCatalog === 'function')
     ? TourismHubStore.getCatalog()
     : [
@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
       price: 15,
       capacityPerSlot: 150,
       image: 'assets/rizal-monument.jpg',
-      location: 'Manila, Metro Manila',
+      images: ['assets/rizal-monument.jpg'],
+      location: 'Manila',
       description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines with ceremonial guards.'
     },
     {
@@ -82,80 +83,60 @@ document.addEventListener('DOMContentLoaded', () => {
       price: 20,
       capacityPerSlot: 120,
       image: 'assets/rizal-monument.jpg',
-      location: 'Intramuros, Manila',
+      images: ['assets/rizal-monument.jpg'],
+      location: 'Manila',
       description: 'Centuries of Spanish colonial history featuring stone ramparts, Fort Santiago, cobblestone roadways, and museum plazas.'
     },
     {
-      id: 'white-beach-boracay',
-      title: 'White Beach Eco-Tourism Reserve',
-      category: 'Tourist Spot',
-      type: 'beach',
+      id: 'qc-memorial-circle',
+      title: 'Quezon Memorial Circle & Park',
+      category: 'Park & Nature',
+      type: 'park',
       status: 'active',
-      operatingHours: '05:30 AM - 10:00 PM',
-      admission: 'Environmental Pass ₱25',
-      price: 25,
+      operatingHours: '05:00 AM - 09:00 PM',
+      admission: 'Free Admission',
+      price: 0,
       capacityPerSlot: 200,
-      image: 'assets/white-beach.jpg',
-      location: 'Boracay Island, Aklan',
-      description: 'Powdery sugar-white sand, turquoise lagoon waters, and curated marine activities with regulated daily eco-caps.'
+      image: 'assets/qc-memorial-circle.jpg',
+      images: ['assets/qc-memorial-circle.jpg'],
+      location: 'Quezon City',
+      description: 'Iconic elliptical park and national shrine in Quezon City featuring museums, landscaped gardens, and recreational trails.'
     },
     {
-      id: 'el-nido-big-lagoon',
-      title: 'Big Lagoon Marine Sanctuary',
-      category: 'Tourist Spot',
-      type: 'beach',
-      status: 'maintenance',
+      id: 'la-mesa-ecopark',
+      title: 'La Mesa Eco Park & Nature Reserve',
+      category: 'Park & Nature',
+      type: 'park',
+      status: 'active',
       operatingHours: '07:00 AM - 04:00 PM',
-      admission: 'Eco-Tour Pass ₱45',
-      price: 45,
-      capacityPerSlot: 80,
+      admission: 'Eco Pass ₱50',
+      price: 50,
+      capacityPerSlot: 150,
       image: 'assets/hero-banner.jpg',
-      location: 'El Nido, Palawan',
-      description: 'Emerald waters surrounded by soaring limestone karst cliffs with strict kayak slot rationing to prevent reef degradation.'
+      images: ['assets/hero-banner.jpg'],
+      location: 'Quezon City',
+      description: 'Lush urban watershed reserve in Quezon City offering shaded canopy trails, picnic groves, and guided nature walks.'
     },
     {
-      id: 'pahiyas-festival',
-      title: 'Pahiyas Harvest Celebration',
-      category: 'Festival',
-      type: 'festival',
+      id: 'national-museum-manila',
+      title: 'National Museum Complex Manila',
+      category: 'Museum & Gallery',
+      type: 'museum',
       status: 'active',
-      operatingHours: '07:00 AM - 08:00 PM',
-      admission: 'Fiesta Access ₱35',
-      price: 35,
-      capacityPerSlot: 300,
-      image: 'assets/pahiyas-festival.jpg',
-      location: 'Lucban, Quezon',
-      description: 'Vibrant annual harvest fiesta featuring house facades decorated with colorful kiping rice wafers, fruits, and crafts.'
-    },
-    {
-      id: 'testing-testing',
-      title: 'TESTING TESTING',
-      category: 'TESTING TESTING',
-      type: 'historical',
-      status: 'maintenance',
-      operatingHours: '23',
-      admission: 'TESTING TESTING',
-      price: 20,
-      capacityPerSlot: 2321,
+      operatingHours: '09:00 AM - 06:00 PM',
+      admission: 'Free Admission (Timed Pass)',
+      price: 0,
+      capacityPerSlot: 180,
       image: 'assets/hero-banner.jpg',
-      location: 'TESTING TESTING',
-      description: 'TESTING TESTING'
-    },
-    {
-      id: 'bayan-glori',
-      title: 'Bayan Glori',
-      category: 'Historical Monument',
-      type: 'historical',
-      status: 'active',
-      operatingHours: '24/7',
-      admission: 'Free',
-      price: 20,
-      capacityPerSlot: 102000,
-      image: 'assets/hero-banner.jpg',
-      location: 'Bayan, Q.C.',
-      description: 'Traffic and Traffic'
+      images: ['assets/hero-banner.jpg'],
+      location: 'Manila',
+      description: 'Premier museum cluster in Manila showcasing fine arts, anthropology, and natural history collections.'
     }
   ];
+
+  let eventsData = (window.TourismHubStore && typeof TourismHubStore.getEvents === 'function')
+    ? TourismHubStore.getEvents()
+    : [];
 
   // Capacity & Schedule Time-Slots Store (Mapped by attraction ID)
   let capacityScheduleData = (window.TourismHubStore && typeof TourismHubStore.getCapacityData === 'function')
@@ -174,29 +155,20 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 'in-3', time: '01:30 PM - 03:30 PM', booked: 120, max: 120, status: 'sold-out' },
       { id: 'in-4', time: '03:30 PM - 05:30 PM', booked: 85, max: 120, status: 'open' }
     ],
-    'white-beach-boracay': [
-      { id: 'wb-1', time: '06:00 AM - 09:00 AM', booked: 88, max: 200, status: 'open' },
-      { id: 'wb-2', time: '09:00 AM - 12:00 PM', booked: 185, max: 200, status: 'near-full' },
-      { id: 'wb-3', time: '01:00 PM - 04:00 PM', booked: 160, max: 200, status: 'open' },
-      { id: 'wb-4', time: '04:00 PM - 07:00 PM', booked: 200, max: 200, status: 'sold-out' }
+    'qc-memorial-circle': [
+      { id: 'qc-1', time: '06:00 AM - 10:00 AM', booked: 110, max: 200, status: 'open' },
+      { id: 'qc-2', time: '10:00 AM - 02:00 PM', booked: 155, max: 200, status: 'open' },
+      { id: 'qc-3', time: '02:00 PM - 06:00 PM', booked: 185, max: 200, status: 'near-full' }
     ],
-    'el-nido-big-lagoon': [
-      { id: 'en-1', time: '07:30 AM - 10:30 AM', booked: 76, max: 90, status: 'near-full' },
-      { id: 'en-2', time: '11:00 AM - 02:00 PM', booked: 88, max: 90, status: 'sold-out' },
-      { id: 'en-3', time: '02:30 PM - 05:30 PM', booked: 25, max: 90, status: 'open' }
+    'la-mesa-ecopark': [
+      { id: 'lm-1', time: '07:00 AM - 10:00 AM', booked: 95, max: 150, status: 'open' },
+      { id: 'lm-2', time: '10:00 AM - 01:00 PM', booked: 132, max: 150, status: 'near-full' },
+      { id: 'lm-3', time: '01:00 PM - 04:00 PM', booked: 60, max: 150, status: 'open' }
     ],
-    'pahiyas-festival': [
-      { id: 'pf-1', time: '08:00 AM - 12:00 PM', booked: 285, max: 300, status: 'near-full' },
-      { id: 'pf-2', time: '01:00 PM - 05:00 PM', booked: 300, max: 300, status: 'sold-out' },
-      { id: 'pf-3', time: '05:00 PM - 09:00 PM', booked: 190, max: 300, status: 'open' }
-    ],
-    'testing-testing': [
-      { id: 'tt-1', time: '08:00 AM - 12:00 PM', booked: 120, max: 2321, status: 'open' },
-      { id: 'tt-2', time: '01:00 PM - 05:00 PM', booked: 350, max: 2321, status: 'open' }
-    ],
-    'bayan-glori': [
-      { id: 'bg-1', time: '08:00 AM - 12:00 PM', booked: 1200, max: 102000, status: 'open' },
-      { id: 'bg-2', time: '01:00 PM - 05:00 PM', booked: 2400, max: 102000, status: 'open' }
+    'national-museum-manila': [
+      { id: 'nm-1', time: '09:00 AM - 12:00 PM', booked: 120, max: 180, status: 'open' },
+      { id: 'nm-2', time: '12:00 PM - 03:00 PM', booked: 168, max: 180, status: 'near-full' },
+      { id: 'nm-3', time: '03:00 PM - 06:00 PM', booked: 90, max: 180, status: 'open' }
     ]
   };
 
@@ -350,20 +322,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================================
-  //  3. Module 1: Attraction & Event Cataloging
+  //  3. Module 1: Attraction Cataloging & Attraction Events
   // ==========================================================================
   const catalogGrid = document.getElementById('catalogGrid');
+  const adminEventsGrid = document.getElementById('adminEventsGrid');
   const catalogSearchInput = document.getElementById('catalogSearchInput');
   const catalogCategoryFilter = document.getElementById('catalogCategoryFilter');
+  const catalogLocationFilter = document.getElementById('catalogLocationFilter');
   const catalogStatusFilter = document.getElementById('catalogStatusFilter');
   const attractionModal = document.getElementById('attractionModal');
   const attractionForm = document.getElementById('attractionForm');
+  const adminEventModal = document.getElementById('adminEventModal');
+  const eventForm = document.getElementById('eventForm');
+
+  function mapCategoryToType(category) {
+    const key = String(category || '').toLowerCase();
+    if (key.includes('historical')) return 'historical';
+    if (key.includes('park') || key.includes('nature') || key.includes('eco')) return 'park';
+    if (key.includes('museum') || key.includes('gallery')) return 'museum';
+    return 'spot';
+  }
+
+  function normalizeAdminLocation(loc) {
+    const s = String(loc || '').toLowerCase();
+    return (s.includes('quezon') || s.includes('q.c.') || /\bqc\b/.test(s)) ? 'Quezon City' : 'Manila';
+  }
 
   function renderCatalog() {
     if (!catalogGrid) return;
 
     const searchTerm = (catalogSearchInput?.value || '').toLowerCase().trim();
     const catVal = catalogCategoryFilter?.value || 'all';
+    const locVal = catalogLocationFilter?.value || 'all';
     const statusVal = catalogStatusFilter?.value || 'all';
 
     const filtered = catalogData.filter(item => {
@@ -371,26 +361,32 @@ document.addEventListener('DOMContentLoaded', () => {
         item.title.toLowerCase().includes(searchTerm) || 
         item.location.toLowerCase().includes(searchTerm) ||
         item.description.toLowerCase().includes(searchTerm);
-      const matchCat = catVal === 'all' || item.type === catVal;
+      const matchCat = catVal === 'all' ||
+        item.category === catVal ||
+        item.type === mapCategoryToType(catVal);
+      const matchLoc = locVal === 'all' || item.location === locVal;
       const matchStatus = statusVal === 'all' || item.status === statusVal;
-      return matchSearch && matchCat && matchStatus;
+      return matchSearch && matchCat && matchLoc && matchStatus;
     });
 
     if (filtered.length === 0) {
       catalogGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: #fff; border-radius: var(--radius-lg); border: 1px dashed var(--border);">
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border);">
           <svg style="width: 44px; height: 44px; color: var(--text-light); margin-bottom: 0.75rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <h4 style="font-family: var(--font-heading); font-size: 1.1rem; margin-bottom: 0.35rem;">No attraction or event found</h4>
-          <p style="color: var(--text-muted); font-size: 0.85rem;">Try modifying search terms or resetting filters.</p>
+          <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.35rem;">No attraction found</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Try modifying search terms or resetting category and location filters.</p>
         </div>
       `;
+      updateAttractionDropdowns();
       return;
     }
 
     catalogGrid.innerHTML = filtered.map(item => {
       const itemImg = (item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg';
+      const linkedEventsCount = eventsData.filter(ev => ev.parentAttractionId === item.id).length;
+      const safeTitle = String(item.title || '').replace(/'/g, "\\'");
       return `
       <article class="catalog-item-card" data-id="${item.id}">
         <div class="catalog-media-header">
@@ -414,14 +410,21 @@ document.addEventListener('DOMContentLoaded', () => {
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               <span>Slot Limit: <strong>${item.capacityPerSlot} visitors</strong></span>
             </div>
+            <div class="catalog-meta-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>Events Hosted: <strong>${linkedEventsCount}</strong></span>
+            </div>
           </div>
           <div class="catalog-card-footer">
             <span class="catalog-price">${item.admission}</span>
             <div class="catalog-actions">
-              <button class="btn-icon-action" title="Edit Attraction Profile" onclick="openEditAttractionModal('${item.id}')">
+              <button type="button" class="btn-icon-action" title="Add Event for ${safeTitle}" onclick="openAddEventModal('${item.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+              </button>
+              <button type="button" class="btn-icon-action" title="Edit Attraction Profile" onclick="openEditAttractionModal('${item.id}')">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
               </button>
-              <button class="btn-icon-action delete" title="Archive / Delete" onclick="deleteAttraction('${item.id}', '${item.title.replace(/'/g, "\\'")}')">
+              <button type="button" class="btn-icon-action delete" title="Archive / Delete" onclick="deleteAttraction('${item.id}', '${safeTitle}')">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               </button>
             </div>
@@ -438,38 +441,52 @@ document.addEventListener('DOMContentLoaded', () => {
   // Filter listeners
   catalogSearchInput?.addEventListener('input', renderCatalog);
   catalogCategoryFilter?.addEventListener('change', renderCatalog);
+  catalogLocationFilter?.addEventListener('change', renderCatalog);
   catalogStatusFilter?.addEventListener('change', renderCatalog);
 
-  // Active photos being added or edited for the attraction modal (limit 5 pictures)
+  // Active single photo state for Attraction & Event modals (limit 1 picture)
   let adminSelectedPhotos = [];
+  let adminEventSelectedPhotos = [];
 
-  function renderAdminPhotosPreview() {
-    const grid = document.getElementById('attrPhotosPreviewGrid');
-    const badge = document.getElementById('attrPhotoCountBadge');
+  function renderSinglePhotoPreview(photosArr, gridId, badgeId, removeFnName) {
+    const grid = document.getElementById(gridId);
+    const badge = document.getElementById(badgeId);
     if (badge) {
-      badge.textContent = `${adminSelectedPhotos.length} / 5 pictures`;
+      badge.textContent = `${photosArr.length} / 1 picture`;
     }
     if (!grid) return;
 
-    if (adminSelectedPhotos.length === 0) {
-      grid.innerHTML = '<div style="grid-column: 1 / -1; font-size: 0.78rem; color: var(--text-muted); text-align: center; padding: 0.5rem 0;">No photos added yet. Default placeholder will be used if left empty.</div>';
+    if (photosArr.length === 0) {
+      grid.innerHTML = '<div style="grid-column: 1 / -1; font-size: 0.78rem; color: var(--text-muted); text-align: center; padding: 0.5rem 0;">No photo added yet. Default placeholder will be used if left empty.</div>';
       return;
     }
 
-    grid.innerHTML = adminSelectedPhotos.map((url, idx) => `
-      <div style="position: relative; border-radius: 8px; overflow: hidden; height: 75px; border: 1.5px solid ${idx === 0 ? '#0284c7' : 'var(--border)'}; background: #0f172a;" title="${idx === 0 ? 'Primary Cover Photo' : `Photo ${idx + 1}`}">
-        <img src="${url}" alt="Preview ${idx + 1}" style="width: 100%; height: 100%; object-fit: cover;">
-        ${idx === 0 ? '<span style="position: absolute; bottom: 2px; left: 2px; right: 2px; background: rgba(2, 132, 199, 0.95); color: #fff; font-size: 0.62rem; font-weight: 700; text-align: center; border-radius: 4px; padding: 1px;">Cover</span>' : ''}
-        <button type="button" onclick="removeAdminPhoto(${idx})" title="Remove photo" style="position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.7); color: #fff; border: none; font-size: 14px; font-weight: 700; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s ease;">&times;</button>
+    const url = photosArr[0];
+    grid.innerHTML = `
+      <div style="position: relative; border-radius: 8px; overflow: hidden; height: 84px; border: 1.5px solid #0284c7; background: #0f172a;" title="Primary Cover Photo">
+        <img src="${url}" alt="Cover Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/no-image.svg'">
+        <span style="position: absolute; bottom: 2px; left: 2px; right: 2px; background: rgba(2, 132, 199, 0.95); color: #fff; font-size: 0.62rem; font-weight: 700; text-align: center; border-radius: 4px; padding: 1px;">Cover</span>
+        <button type="button" onclick="${removeFnName}()" title="Remove photo" style="position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.7); color: #fff; border: none; font-size: 14px; font-weight: 700; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
       </div>
-    `).join('');
+    `;
   }
 
-  window.removeAdminPhoto = function(idx) {
-    if (idx >= 0 && idx < adminSelectedPhotos.length) {
-      adminSelectedPhotos.splice(idx, 1);
-      renderAdminPhotosPreview();
-    }
+  function renderAdminPhotosPreview() {
+    renderSinglePhotoPreview(adminSelectedPhotos, 'attrPhotosPreviewGrid', 'attrPhotoCountBadge', 'removeAdminPhoto');
+  }
+
+  function renderAdminEventPhotoPreview() {
+    renderSinglePhotoPreview(adminEventSelectedPhotos, 'eventPhotoPreviewGrid', 'eventPhotoCountBadge', 'removeAdminEventPhoto');
+  }
+
+  window.removeAdminPhoto = function() {
+    adminSelectedPhotos = [];
+    renderAdminPhotosPreview();
+  };
+
+  window.removeAdminEventPhoto = function() {
+    adminEventSelectedPhotos = [];
+    renderAdminEventPhotoPreview();
   };
 
   // Helper to downscale and compress images client-side before bucket upload
@@ -506,39 +523,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  window.handleAdminPhotoSelection = async function(e) {
-    const files = Array.from(e.target.files || []);
-    if (files.length === 0) return;
-
-    const remainingSlots = 5 - adminSelectedPhotos.length;
-    if (remainingSlots <= 0) {
-      showToast('Maximum of 5 pictures reached. Remove one first to replace.');
-      e.target.value = '';
-      return;
+  async function processSingleSelectedPhoto(e, targetSetter, previewFn) {
+    const file = (e.target.files && e.target.files[0]) || null;
+    if (!file) return;
+    const compressedDataUrl = await downscaleAdminPhoto(file);
+    if (compressedDataUrl) {
+      targetSetter([compressedDataUrl]);
+      previewFn();
+      showToast('Prepared 1 picture for Supabase Storage.');
     }
+    e.target.value = '';
+  }
 
-    if (files.length > remainingSlots) {
-      showToast(`Only ${remainingSlots} more picture(s) allowed (limit is 5).`);
+  window.handleAdminPhotoSelection = function(e) {
+    return processSingleSelectedPhoto(e, (arr) => { adminSelectedPhotos = arr; }, renderAdminPhotosPreview);
+  };
+
+  window.handleAdminEventPhotoSelection = function(e) {
+    return processSingleSelectedPhoto(e, (arr) => { adminEventSelectedPhotos = arr; }, renderAdminEventPhotoPreview);
+  };
+
+  async function resolveAndUploadSinglePhoto(folderId, selectedArr) {
+    if (!Array.isArray(selectedArr) || selectedArr.length === 0) {
+      return 'assets/no-image.svg';
     }
-
-    const filesToRead = files.slice(0, remainingSlots);
-    let loaded = 0;
-
-    for (const file of filesToRead) {
-      const compressedDataUrl = await downscaleAdminPhoto(file);
-      if (compressedDataUrl && adminSelectedPhotos.length < 5) {
-        adminSelectedPhotos.push(compressedDataUrl);
-        loaded++;
+    const photo = selectedArr[0];
+    if (typeof photo === 'string' && photo.startsWith('data:') && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+      try {
+        const uploadRes = await TourismHubSupabase.uploadAttractionImage(folderId, photo, 1);
+        if (uploadRes && uploadRes.success && uploadRes.publicUrl) {
+          return uploadRes.publicUrl;
+        }
+      } catch (uploadErr) {
+        console.warn('[Admin] Bucket upload error:', uploadErr);
       }
     }
-
-    renderAdminPhotosPreview();
-    if (loaded > 0) {
-      showToast(`Prepared ${loaded} picture(s) for Supabase bucket storage.`);
-    }
-
-    e.target.value = '';
-  };
+    return photo || 'assets/no-image.svg';
+  }
 
   // Open modal to add new attraction
   window.openAddAttractionModal = function() {
@@ -546,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
     adminSelectedPhotos = [];
     renderAdminPhotosPreview();
     document.getElementById('attractionModalId').value = '';
-    document.getElementById('attractionModalTitle').textContent = 'Catalog New Attraction / Event';
+    document.getElementById('attractionModalTitle').textContent = 'Catalog New Attraction';
     attractionModal?.classList.add('active');
   };
 
@@ -557,68 +578,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('attractionModalId').value = item.id;
     document.getElementById('attrFormTitle').value = item.title;
-    document.getElementById('attrFormCategory').value = item.category;
-    document.getElementById('attrFormType').value = item.type;
-    document.getElementById('attrFormLocation').value = item.location;
+    const catSelect = document.getElementById('attrFormCategory');
+    if (catSelect) {
+      const validCats = Array.from(catSelect.options).map(o => o.value);
+      catSelect.value = validCats.includes(item.category) ? item.category : 'Tourist Spot';
+    }
+    const locSelect = document.getElementById('attrFormLocation');
+    if (locSelect) {
+      locSelect.value = normalizeAdminLocation(item.location);
+    }
     document.getElementById('attrFormHours').value = item.operatingHours;
     document.getElementById('attrFormPrice').value = item.admission;
     document.getElementById('attrFormCapacity').value = item.capacityPerSlot;
     document.getElementById('attrFormStatus').value = item.status;
     document.getElementById('attrFormDesc').value = item.description;
 
-    // Load existing pictures (max 5)
+    // Load existing picture (max 1)
     adminSelectedPhotos = (Array.isArray(item.images) ? [...item.images] : (item.image ? [item.image] : []))
       .filter(url => url && !String(url).includes('images.unsplash.com/photo-'))
-      .slice(0, 5);
+      .slice(0, 1);
     renderAdminPhotosPreview();
 
     document.getElementById('attractionModalTitle').textContent = 'Edit Attraction Profile';
     attractionModal?.classList.add('active');
   };
 
-  // Save / Update attraction (Uploads photos to Supabase Storage bucket 'attractions' organized by folder)
+  // Save / Update attraction (Uploads 1 photo to Supabase Storage bucket 'attractions')
   attractionForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('attractionModalId')?.value;
-    const title = document.getElementById('attrFormTitle')?.value;
-    const category = document.getElementById('attrFormCategory')?.value;
-    const type = document.getElementById('attrFormType')?.value;
-    const location = document.getElementById('attrFormLocation')?.value;
-    const hours = document.getElementById('attrFormHours')?.value;
-    const priceStr = document.getElementById('attrFormPrice')?.value;
+    const title = document.getElementById('attrFormTitle')?.value.trim();
+    const category = document.getElementById('attrFormCategory')?.value || 'Tourist Spot';
+    const type = mapCategoryToType(category);
+    const location = document.getElementById('attrFormLocation')?.value || 'Manila';
+    const hours = document.getElementById('attrFormHours')?.value.trim();
+    const priceStr = document.getElementById('attrFormPrice')?.value.trim();
     const capacity = parseInt(document.getElementById('attrFormCapacity')?.value) || 100;
-    const status = document.getElementById('attrFormStatus')?.value;
-    const desc = document.getElementById('attrFormDesc')?.value;
+    const status = document.getElementById('attrFormStatus')?.value || 'active';
+    const desc = document.getElementById('attrFormDesc')?.value.trim();
 
     const targetFolderId = id || title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+    showToast('Saving attraction & uploading photo to Supabase...');
 
-    showToast('Uploading pictures to Supabase Storage bucket...');
-
-    // Upload any newly selected photos to Supabase Storage bucket 'attractions' (folder: targetFolderId)
-    const finalImages = [];
-    for (let i = 0; i < adminSelectedPhotos.length && i < 5; i++) {
-      const photo = adminSelectedPhotos[i];
-      if (typeof photo === 'string' && photo.startsWith('data:') && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
-        try {
-          const uploadRes = await TourismHubSupabase.uploadAttractionImage(targetFolderId, photo, i + 1);
-          if (uploadRes && uploadRes.success && uploadRes.publicUrl) {
-            finalImages.push(uploadRes.publicUrl);
-            continue;
-          }
-        } catch (uploadErr) {
-          console.warn('[Admin] Bucket upload error for photo ' + (i + 1), uploadErr);
-        }
-      }
-      finalImages.push(photo);
-    }
-
-    if (finalImages.length === 0) {
-      finalImages.push('assets/no-image.svg');
-    }
-    const primaryImg = finalImages[0];
+    const primaryImg = await resolveAndUploadSinglePhoto(targetFolderId, adminSelectedPhotos);
+    const finalImages = [primaryImg];
 
     if (id) {
-      // Edit existing
       const updates = {
         title,
         category,
@@ -639,9 +644,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const item = catalogData.find(a => a.id === id);
         if (item) Object.assign(item, updates);
       }
-      showToast(`Updated "${title}" with Supabase bucket pictures!`);
+      showToast(`Updated "${title}" successfully!`);
     } else {
-      // Create new
       const newId = targetFolderId;
       const newAttr = {
         id: newId,
@@ -677,21 +681,210 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeModal('attractionModal');
     renderCatalog();
+    renderAdminEvents();
     updateOverviewStats();
   });
 
   // Delete attraction
   window.deleteAttraction = function(id, name) {
-    if (confirm(`Are you sure you want to archive / delete "${name}" from the active catalog?`)) {
+    if (confirm(`Are you sure you want to archive / delete "${name}" and any scheduled events inside it?`)) {
       if (window.TourismHubStore) {
         TourismHubStore.deleteAttraction(id);
         catalogData = TourismHubStore.getCatalog();
+        eventsData = TourismHubStore.getEvents();
         capacityScheduleData = TourismHubStore.getCapacityData();
       } else {
         catalogData = catalogData.filter(a => a.id !== id);
+        eventsData = eventsData.filter(ev => ev.parentAttractionId !== id);
         delete capacityScheduleData[id];
       }
       showToast(`Archived "${name}"`);
+      renderCatalog();
+      renderAdminEvents();
+      updateOverviewStats();
+    }
+  };
+
+  // ==========================================================================
+  //  3b. Attraction Events Management (Separated from Attractions)
+  // ==========================================================================
+  function renderAdminEvents() {
+    if (!adminEventsGrid) return;
+
+    if (!Array.isArray(eventsData) || eventsData.length === 0) {
+      adminEventsGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border);">
+          <h4 style="font-family: var(--font-heading); font-size: 1.05rem; color: var(--text-main); margin-bottom: 0.35rem;">No attraction events scheduled yet</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Click "Add Event for Attraction" or the calendar button on any attraction card to create an event.</p>
+          <button type="button" class="btn-secondary" onclick="openAddEventModal()" style="display: inline-flex; align-items: center; gap: 0.45rem;">+ Add Event for Attraction</button>
+        </div>
+      `;
+      return;
+    }
+
+    adminEventsGrid.innerHTML = eventsData.map(ev => {
+      const evImg = (ev.image && !String(ev.image).includes('images.unsplash.com/photo-')) ? ev.image : 'assets/no-image.svg';
+      const parentAttr = catalogData.find(a => a.id === ev.parentAttractionId);
+      const parentName = parentAttr ? parentAttr.title : (ev.attractionTitle || 'Attraction Event');
+      const evLocation = parentAttr ? parentAttr.location : (ev.location || 'Manila');
+      const safeTitle = String(ev.title || '').replace(/'/g, "\\'");
+
+      return `
+      <article class="catalog-item-card" data-id="${ev.id}">
+        <div class="catalog-media-header">
+          <img src="${evImg}" alt="${ev.title}" class="catalog-img" onerror="this.src='assets/no-image.svg'">
+          <span class="catalog-status-badge active">event</span>
+          <span class="catalog-category-tag">${parentName}</span>
+        </div>
+        <div class="catalog-card-body">
+          <h3 class="catalog-card-title">${ev.title}</h3>
+          <p class="catalog-card-desc">${ev.description || ''}</p>
+          <div class="catalog-meta-list">
+            <div class="catalog-meta-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>${ev.operatingHours || 'TBA'}</span>
+            </div>
+            <div class="catalog-meta-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>${parentName} (${evLocation})</span>
+            </div>
+            <div class="catalog-meta-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <span>Event Cap: <strong>${ev.capacityPerSlot || 100} attendees</strong></span>
+            </div>
+          </div>
+          <div class="catalog-card-footer">
+            <span class="catalog-price">${ev.admission || 'Free'}</span>
+            <div class="catalog-actions">
+              <button type="button" class="btn-icon-action" title="Edit Event" onclick="openEditEventModal('${ev.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              </button>
+              <button type="button" class="btn-icon-action delete" title="Delete Event" onclick="deleteAdminEvent('${ev.id}', '${safeTitle}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+      `;
+    }).join('');
+  }
+
+  window.openAddEventModal = function(preselectedAttractionId = '') {
+    if (catalogData.length === 0) {
+      showToast('Please catalog an attraction first before adding an event.');
+      return;
+    }
+    eventForm?.reset();
+    updateAttractionDropdowns();
+    adminEventSelectedPhotos = [];
+    renderAdminEventPhotoPreview();
+    document.getElementById('eventModalId').value = '';
+    document.getElementById('adminEventModalTitle').textContent = 'Add Event for Attraction';
+
+    const attrSel = document.getElementById('eventFormAttractionId');
+    if (attrSel && preselectedAttractionId && catalogData.some(a => a.id === preselectedAttractionId)) {
+      attrSel.value = preselectedAttractionId;
+    }
+    adminEventModal?.classList.add('active');
+  };
+
+  window.openEditEventModal = function(id) {
+    const ev = eventsData.find(item => item.id === id);
+    if (!ev) return;
+
+    updateAttractionDropdowns();
+    document.getElementById('eventModalId').value = ev.id;
+    const attrSel = document.getElementById('eventFormAttractionId');
+    if (attrSel && ev.parentAttractionId) {
+      attrSel.value = ev.parentAttractionId;
+    }
+    document.getElementById('eventFormTitle').value = ev.title || '';
+    document.getElementById('eventFormSchedule').value = ev.operatingHours || '';
+    document.getElementById('eventFormAdmission').value = ev.admission || 'Free';
+    document.getElementById('eventFormCapacity').value = ev.capacityPerSlot || 100;
+    document.getElementById('eventFormDesc').value = ev.description || '';
+
+    adminEventSelectedPhotos = (Array.isArray(ev.images) ? [...ev.images] : (ev.image ? [ev.image] : []))
+      .filter(url => url && !String(url).includes('images.unsplash.com/photo-'))
+      .slice(0, 1);
+    renderAdminEventPhotoPreview();
+
+    document.getElementById('adminEventModalTitle').textContent = 'Edit Attraction Event';
+    adminEventModal?.classList.add('active');
+  };
+
+  eventForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('eventModalId')?.value;
+    const parentAttractionId = document.getElementById('eventFormAttractionId')?.value;
+    const title = document.getElementById('eventFormTitle')?.value.trim();
+    const schedule = document.getElementById('eventFormSchedule')?.value.trim();
+    const admission = document.getElementById('eventFormAdmission')?.value.trim();
+    const capacity = parseInt(document.getElementById('eventFormCapacity')?.value) || 100;
+    const desc = document.getElementById('eventFormDesc')?.value.trim();
+
+    const parentAttr = catalogData.find(a => a.id === parentAttractionId);
+    const parentTitle = parentAttr ? parentAttr.title : 'Attraction Event';
+    const location = parentAttr ? normalizeAdminLocation(parentAttr.location) : 'Manila';
+    const targetFolderId = id || (`event-${title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')}-${Date.now()}`);
+
+    showToast('Saving event & uploading photo to Supabase...');
+    const primaryImg = await resolveAndUploadSinglePhoto(targetFolderId, adminEventSelectedPhotos);
+    const finalImages = [primaryImg];
+
+    const payload = {
+      id: targetFolderId,
+      title,
+      type: 'event',
+      parentAttractionId,
+      attractionTitle: parentTitle,
+      category: parentTitle,
+      badge: parentAttractionId,
+      location,
+      operatingHours: schedule,
+      admission,
+      price: parseFloat(admission.replace(/[^0-9.]/g, '')) || 0,
+      capacityPerSlot: capacity,
+      status: 'active',
+      description: desc,
+      image: primaryImg,
+      images: finalImages
+    };
+
+    if (window.TourismHubStore) {
+      if (id) {
+        TourismHubStore.updateEvent(id, payload);
+      } else {
+        TourismHubStore.addEvent(payload);
+      }
+      eventsData = TourismHubStore.getEvents();
+    } else {
+      if (id) {
+        const idx = eventsData.findIndex(item => item.id === id);
+        if (idx !== -1) eventsData[idx] = { ...eventsData[idx], ...payload };
+      } else {
+        eventsData.unshift(payload);
+      }
+    }
+
+    showToast(id ? `Updated event "${title}"!` : `Scheduled "${title}" for ${parentTitle}!`);
+    closeModal('adminEventModal');
+    renderAdminEvents();
+    renderCatalog();
+    updateOverviewStats();
+  });
+
+  window.deleteAdminEvent = function(id, title) {
+    if (confirm(`Delete scheduled event "${title}"?`)) {
+      if (window.TourismHubStore) {
+        TourismHubStore.deleteEvent(id);
+        eventsData = TourismHubStore.getEvents();
+      } else {
+        eventsData = eventsData.filter(ev => ev.id !== id);
+      }
+      showToast(`Deleted event "${title}"`);
+      renderAdminEvents();
       renderCatalog();
       updateOverviewStats();
     }
@@ -701,7 +894,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateAttractionDropdowns() {
     const selectors = [
       document.getElementById('capacityAttractionSelect'),
-      document.getElementById('dispatchTargetSelect')
+      document.getElementById('dispatchTargetSelect'),
+      document.getElementById('eventFormAttractionId')
     ];
 
     selectors.forEach(sel => {
@@ -710,7 +904,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isDispatch = sel.id === 'dispatchTargetSelect';
 
       let html = isDispatch ? '<option value="all">Broadcast to All Attractions</option>' : '';
-      html += catalogData.map(a => `<option value="${a.id}">${a.title}</option>`).join('');
+      html += catalogData.map(a => `<option value="${a.id}">${a.title} (${a.location})</option>`).join('');
       sel.innerHTML = html;
 
       if (curVal && catalogData.some(a => a.id === curVal)) {
@@ -734,9 +928,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (slots.length === 0) {
       capacitySlotsGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; background: #fff; border-radius: var(--radius-lg); border: 1px dashed var(--border);">
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border);">
           <p style="color: var(--text-muted);">No active schedule slots configured for this attraction.</p>
-          <button class="btn-primary" style="margin-top: 1rem;" onclick="addSlotForAttraction('${currentAttrId}')">+ Create First Slot</button>
+          <button type="button" class="btn-primary" style="margin-top: 1rem;" onclick="addSlotForAttraction('${currentAttrId}')">+ Create First Slot</button>
         </div>
       `;
       return;
@@ -772,10 +966,10 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div class="slot-card-actions">
-            <button class="btn-secondary btn-sm" onclick="adjustSlotCapacity('${currentAttrId}', '${slot.id}', ${slot.booked}, ${slot.max})">
+            <button type="button" class="btn-secondary btn-sm" onclick="adjustSlotCapacity('${currentAttrId}', '${slot.id}', ${slot.booked}, ${slot.max})">
               Adjust Limit
             </button>
-            <button class="btn-secondary btn-sm" onclick="simulateWalkIn('${currentAttrId}', '${slot.id}')" title="Simulate entry scan">
+            <button type="button" class="btn-secondary btn-sm" onclick="simulateWalkIn('${currentAttrId}', '${slot.id}')" title="Simulate entry scan">
               + Add Visitor
             </button>
           </div>
@@ -1259,15 +1453,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------------------
     const categoryMap = {};
     const colorPalette = {
-      'historical': { name: 'Historical Sites & Heritage', color: '#6366f1' },
-      'beach': { name: 'Tourist Spots & Beaches', color: '#0284c7' },
-      'festival': { name: 'Cultural Festivals & Events', color: '#f59e0b' },
-      'eco': { name: 'Eco-Tourism & Nature', color: '#10b981' }
+      'historical': { name: 'Historical Sites', color: '#6366f1' },
+      'spot': { name: 'Tourist Spots', color: '#0284c7' },
+      'beach': { name: 'Tourist Spots', color: '#0284c7' },
+      'park': { name: 'Parks & Nature', color: '#10b981' },
+      'museum': { name: 'Museums & Galleries', color: '#f59e0b' }
     };
 
     let totalCategoryPax = 0;
     catalogData.forEach(item => {
-      const typeKey = (item.type || 'beach').toLowerCase();
+      const typeKey = (item.type || mapCategoryToType(item.category)).toLowerCase();
       const meta = colorPalette[typeKey] || { name: item.category || 'Destinations', color: '#14b8a6' };
       const catName = meta.name;
 
@@ -1432,7 +1627,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (announcementsList.length === 0) {
       announcementsFeed.innerHTML = `
-        <div style="text-align: center; padding: 2rem; background: #fff; border-radius: var(--radius-md); border: 1px dashed var(--border);">
+        <div style="text-align: center; padding: 2rem; background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--border);">
           <p style="color: var(--text-muted);">No active broadcast announcements.</p>
         </div>
       `;
@@ -1451,7 +1646,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="announcement-text">${a.text}</p>
         <div class="announcement-footer">
           <span>Target: <strong>${a.target}</strong></span>
-          <button class="btn-secondary btn-sm" onclick="deactivateAnnouncement('${a.id}')">Dismiss Broadcast</button>
+          <button type="button" class="btn-secondary btn-sm" onclick="deactivateAnnouncement('${a.id}')">Dismiss Broadcast</button>
         </div>
       </div>
     `).join('');
@@ -1568,9 +1763,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
     TourismHubStore.onSync(() => {
       catalogData = TourismHubStore.getCatalog();
+      eventsData = TourismHubStore.getEvents();
       capacityScheduleData = TourismHubStore.getCapacityData();
       announcementsList = TourismHubStore.getAnnouncements();
       renderCatalog();
+      renderAdminEvents();
       renderCapacitySlots();
       renderAnnouncementsFeed();
       updateOverviewStats();
@@ -1581,6 +1778,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //  10. Initial Execution
   // ==========================================================================
   renderCatalog();
+  renderAdminEvents();
   renderCapacitySlots();
   renderRecentScans();
   renderAnalyticsView();

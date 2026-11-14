@@ -120,7 +120,6 @@
       }
       const name = user.name || (isAdmin ? 'Operator' : 'Tourist');
       const email = user.email || '';
-      const badge = isAdmin ? (user.role || 'Admin Clearance') : (user.badge || 'Verified Tourist');
 
       dropdown.innerHTML = `
         <div class="dropdown-header">
@@ -128,7 +127,6 @@
           <div class="dropdown-user-info">
             <div class="dropdown-user-name">${name}</div>
             <div class="dropdown-user-email">${email}</div>
-            <span class="dropdown-badge" style="${isAdmin ? 'background: #0284c7;' : 'background: #10b981;'}">${badge}</span>
           </div>
         </div>
 
@@ -187,7 +185,6 @@
           <div class="dropdown-user-info">
             <div class="dropdown-user-name">Welcome, Visitor</div>
             <div class="dropdown-user-email">Guest Session</div>
-            <span class="dropdown-badge" style="background: #64748b;">Not Signed In</span>
           </div>
         </div>
 

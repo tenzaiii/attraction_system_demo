@@ -52,15 +52,15 @@
 
     <nav class="sidebar-menu-wrapper" aria-label="Sidebar Menu">
       <ul class="sidebar-menu">
-        <!-- 1. Dashboard -->
+        <!-- 1. Home -->
         <li class="sidebar-menu-item">
-          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Dashboard">
+          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Home">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
               </svg>
             </span>
-            <span class="sidebar-item-text">Dashboard</span>
+            <span class="sidebar-item-text">Home</span>
           </a>
         </li>
 
@@ -138,7 +138,22 @@
           </a>
         </li>
 
-        <!-- 7. Admin Dashboard (Admin Only) -->
+        <!-- 7. About -->
+        <li class="sidebar-menu-item">
+          <a href="about.html" class="sidebar-menu-link" data-nav="about" title="About TourismHub">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">About</span>
+          </a>
+        </li>
+
+        <!-- 8. Admin Dashboard (Admin Only) -->
         <li class="sidebar-menu-item admin-only-feature" style="display: none;">
           <a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard">
             <span class="sidebar-item-icon">
@@ -212,7 +227,6 @@
             alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
           <div class="portal-user-meta">
             <span class="portal-user-name">Tourist Portal</span>
-            <span class="portal-user-role">Sign In / Register</span>
           </div>
         </div>
       </div>
@@ -381,6 +395,28 @@
 
         </div>
 
+      </section>
+
+      <!-- Upcoming Events at this Attraction -->
+      <section class="other-locations-section" id="attractionUpcomingEventsSection" aria-labelledby="attractionEventsTitle" style="margin-bottom: 2.5rem;">
+        <div class="other-locations-header-bar">
+          <div>
+            <h2 class="other-locations-title" id="attractionEventsTitle">Upcoming Events</h2>
+            <p class="other-locations-subtitle">
+              Scheduled events and special activities happening at this attraction.
+            </p>
+          </div>
+          <a href="attractions.html" class="btn-see-all-locations" title="Browse all attractions and events">
+            <span>All Events</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <div id="attractionUpcomingEventsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem;">
+          <!-- Populated dynamically via script -->
+        </div>
       </section>
 
       <!-- Bottom Section: Other Locations Available -->
@@ -584,7 +620,55 @@
         // 8. Update Favorite Button UI
         updateFavoriteButtonUI();
 
-        // 9. Render Other Locations Grid
+        window.renderAttractionEvents = function renderAttractionEvents(attractionId) {
+          const gridEl = document.getElementById('attractionUpcomingEventsGrid');
+          if (!gridEl) return;
+
+          const eventsList = (window.TourismHubStore && typeof TourismHubStore.getEvents === 'function')
+            ? TourismHubStore.getEvents(attractionId)
+            : [];
+
+          if (!eventsList || eventsList.length === 0) {
+            gridEl.innerHTML = `
+              <div style="grid-column: 1 / -1; background: var(--bg-card); border: 1px dashed var(--border); border-radius: 14px; padding: 2rem 1.25rem; text-align: center; color: var(--text-muted); font-size: 0.92rem;">
+                No upcoming events scheduled for this attraction.
+              </div>
+            `;
+            return;
+          }
+
+          const esc = (str) => String(str == null ? '' : str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+
+          gridEl.innerHTML = eventsList.map(ev => {
+            const img = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'assets/no-image.svg';
+            return `
+              <article style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);">
+                <div style="position: relative; height: 150px; background: var(--bg-page); overflow: hidden;">
+                  <img src="${esc(img)}" alt="${esc(ev.title)}" onerror="this.src='assets/no-image.svg'" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                  <span style="position: absolute; top: 10px; left: 10px; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; background: var(--primary, #2563eb); color: #ffffff;">Event</span>
+                </div>
+                <div style="padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.45rem; flex: 1;">
+                  <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-main);">${esc(ev.title)}</h3>
+                  <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.45;">${esc(ev.description || 'Special scheduled event at this attraction.')}</p>
+                  <div style="margin-top: auto; padding-top: 0.65rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; color: var(--text-muted);">
+                    <div><strong>Schedule:</strong> ${esc(ev.operatingHours || 'TBA')}</div>
+                    <div><strong>Location:</strong> ${esc(ev.location || 'Manila')}</div>
+                    <div><strong>Admission:</strong> ${esc(ev.admission || 'Free')} &bull; <strong>Slots:</strong> ${esc(ev.capacityPerSlot || 50)}</div>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join('');
+        };
+
+        // 9. Render Upcoming Events & Other Locations Grid
+        if (currentAttraction && currentAttraction.id) {
+          window.renderAttractionEvents(currentAttraction.id);
+        }
         renderOtherLocations(catalog);
 
         // 10. Fetch latest pictures & details directly from Supabase Storage bucket & catalog
@@ -651,13 +735,15 @@
           } catch (_) {}
 
           if (liveItem) {
-            // Prioritize bucket photos, followed by catalog images
+            // Prioritize catalog image first (1 picture limit), falling back to bucket photos
+            const liveImages = (Array.isArray(liveItem.images) ? liveItem.images : (liveItem.image ? [liveItem.image] : []))
+              .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-') && !url.includes('assets/no-image.svg'));
             const combinedImages = [
-              ...bucketPhotos,
-              ...(Array.isArray(liveItem.images) ? liveItem.images : (liveItem.image ? [liveItem.image] : []))
+              ...liveImages,
+              ...bucketPhotos
             ]
               .filter((url, idx, self) => url && typeof url === 'string' && self.indexOf(url) === idx && !url.includes('images.unsplash.com/photo-'))
-              .slice(0, 5);
+              .slice(0, 1);
 
             if (combinedImages.length > 0) {
               liveItem.images = combinedImages;
@@ -666,6 +752,9 @@
 
             currentAttraction = liveItem;
             initCarousel();
+            if (typeof window.renderAttractionEvents === 'function') {
+              window.renderAttractionEvents(currentAttraction.id);
+            }
             updateCapacityUI();
             updateFavoriteButtonUI();
           }
@@ -685,10 +774,10 @@
           rawImages = [currentAttraction.image];
         }
 
-        // Purge any mock Unsplash URLs
+        // Purge any mock Unsplash URLs and enforce 1 picture limit
         rawImages = rawImages
           .filter(url => url && typeof url === 'string' && !url.includes('images.unsplash.com/photo-'))
-          .slice(0, 5);
+          .slice(0, 1);
 
         // If no images left, use default "No Image Available" picture
         if (rawImages.length === 0) {
@@ -1098,7 +1187,7 @@
         });
       });
 
-      // Multi-tab real-time sync listener (Live catalog & bucket image updates)
+      // Multi-tab real-time sync listener (Live catalog, events & bucket image updates)
       if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
         TourismHubStore.onSync(() => {
           const catalog = TourismHubStore.getCatalog();
@@ -1107,6 +1196,9 @@
           if (updated) {
             currentAttraction = updated;
             initCarousel();
+          }
+          if (typeof window.renderAttractionEvents === 'function') {
+            window.renderAttractionEvents((currentAttraction && currentAttraction.id) || reqId);
           }
           updateCapacityUI();
           updateFavoriteButtonUI();

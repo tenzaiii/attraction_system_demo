@@ -52,15 +52,15 @@
 
     <nav class="sidebar-menu-wrapper" aria-label="Sidebar Menu">
       <ul class="sidebar-menu">
-        <!-- 1. Dashboard -->
+        <!-- 1. Home -->
         <li class="sidebar-menu-item">
-          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Dashboard">
+          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Home">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
               </svg>
             </span>
-            <span class="sidebar-item-text">Dashboard</span>
+            <span class="sidebar-item-text">Home</span>
           </a>
         </li>
 
@@ -142,7 +142,22 @@
           </a>
         </li>
 
-        <!-- 9. Admin Dashboard (Admin Only) -->
+        <!-- 9. About -->
+        <li class="sidebar-menu-item">
+          <a href="about.html" class="sidebar-menu-link" data-nav="about" title="About TourismHub">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">About</span>
+          </a>
+        </li>
+
+        <!-- 10. Admin Dashboard (Admin Only) -->
         <li class="sidebar-menu-item admin-only-feature" style="display: none;">
           <a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard">
             <span class="sidebar-item-icon">
@@ -208,7 +223,6 @@
             alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
           <div class="portal-user-meta">
             <span class="portal-user-name">Tourist Portal</span>
-            <span class="portal-user-role">Sign In / Register</span>
           </div>
         </div>
       </div>
@@ -344,27 +358,29 @@
         <!-- Filter Controls Bar -->
         <div class="portal-filter-bar">
           <div class="portal-filter-tabs">
-            <button class="portal-filter-tab active" data-tab-type="all">All</button>
-            <button class="portal-filter-tab" data-tab-type="attraction">Attractions</button>
-            <button class="portal-filter-tab" data-tab-type="event">Events</button>
+            <button class="portal-filter-tab active" data-tab-cat="all">All</button>
+            <button class="portal-filter-tab" data-tab-cat="Historical Site">Historical Site</button>
+            <button class="portal-filter-tab" data-tab-cat="Tourist Spot">Tourist Spot</button>
+            <button class="portal-filter-tab" data-tab-cat="Park & Nature">Park &amp; Nature</button>
+            <button class="portal-filter-tab" data-tab-cat="Museum & Gallery">Museum &amp; Gallery</button>
           </div>
 
           <div class="portal-dropdown-group">
-            <select class="portal-select" id="categorySelect">
+            <select class="portal-select" id="categorySelect" aria-label="Filter by category">
               <option value="all">All Categories</option>
-              <option value="amenity">Amenities</option>
-              <option value="attraction">Attractions</option>
-              <option value="event">Events</option>
+              <option value="Historical Site">Historical Site</option>
+              <option value="Tourist Spot">Tourist Spot</option>
+              <option value="Park & Nature">Park &amp; Nature</option>
+              <option value="Museum & Gallery">Museum &amp; Gallery</option>
             </select>
 
-            <select class="portal-select" id="areaSelect">
-              <option value="all">All Areas</option>
-              <option value="main-wing">Main Wing</option>
-              <option value="beachfront">Beachfront</option>
-              <option value="garden">Garden Area</option>
+            <select class="portal-select" id="areaSelect" aria-label="Filter by location">
+              <option value="all">All Locations</option>
+              <option value="Manila">Manila</option>
+              <option value="Quezon City">Quezon City</option>
             </select>
 
-            <select class="portal-select" id="sortSelect">
+            <select class="portal-select" id="sortSelect" aria-label="Sort attractions">
               <option value="newest">Newest First</option>
               <option value="capacity">Capacity (High to Low)</option>
               <option value="name">Name (A-Z)</option>
@@ -372,339 +388,9 @@
           </div>
         </div>
 
-        <!-- 8 Attraction Cards Grid (Matching Image 1) -->
+        <!-- Dynamic Attractions Grid (Rendered via js/portal-sync.js) -->
         <div class="portal-cards-grid" id="portalCardsGrid">
-
-          <!-- Card 1: Infinity Pool -->
-          <article class="portal-item-card" data-type="attraction" data-area="main-wing" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=intramuros-walled-city'">
-            <div class="portal-item-media">
-              <img src="assets/white-beach.jpg"
-                alt="Infinity Pool" onerror="this.src='assets/no-image.svg'">
-              <span class="portal-badge-tag attraction">Attraction</span>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title">Infinity Pool</h3>
-              <p class="portal-item-desc">Take a dip in our stunning infinity pool with ocean views and a relaxing
-                atmosphere.</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                  </svg>
-                  <span>Main Wing</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  <span>6:00 AM – 10:00 PM</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                  </svg>
-                  <span>Capacity: 50 / 80</span>
-                </div>
-              </div>
-            </div>
-            <div class="portal-item-footer">
-              <button class="portal-view-details-btn"
-                onclick="window.location.href='attraction-details.html?id=intramuros-walled-city'">View
-                Details &gt;</button>
-            </div>
-          </article>
-
-          <!-- Card 2: Wellness & Spa -->
-          <article class="portal-item-card" data-type="amenity" data-area="beachfront">
-            <div class="portal-item-media">
-              <img src="assets/qc-memorial-circle.jpg"
-                alt="Wellness & Spa">
-              <span class="portal-badge-tag amenity">Amenity</span>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title">Wellness & Spa</h3>
-              <p class="portal-item-desc">Rejuvenate your mind and body with our signature spa treatments and massage
-                services.</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                  </svg>
-                  <span>Beachfront Villa</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 16 14" />
-                  </svg>
-                  <span>9:00 AM – 9:00 PM</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                  </svg>
-                  <span>Capacity: 10 / 20</span>
-                </div>
-              </div>
-            </div>
-            <div class="portal-item-footer">
-              <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Wellness & Spa', 'Beachfront Villa', '9:00 AM – 9:00 PM', '10 / 20', 'assets/qc-memorial-circle.jpg')">View
-                Details &gt;</button>
-            </div>
-          </article>
-
-          <!-- Card 3: Fitness Center -->
-          <article class="portal-item-card" data-type="amenity" data-area="main-wing">
-            <div class="portal-item-media">
-              <img src="assets/rizal-monument.jpg"
-                alt="Fitness Center">
-              <span class="portal-badge-tag amenity">Amenity</span>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title">Fitness Center</h3>
-              <p class="portal-item-desc">Stay active with our fully equipped fitness center overlooking the ocean.</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                  </svg>
-                  <span>Main Wing</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 16 14" />
-                  </svg>
-                  <span>5:00 AM – 11:00 PM</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                  </svg>
-                  <span>Capacity: 15 / 30</span>
-                </div>
-              </div>
-            </div>
-            <div class="portal-item-footer">
-              <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Fitness Center', 'Main Wing', '5:00 AM – 11:00 PM', '15 / 30', 'assets/rizal-monument.jpg')">View
-                Details &gt;</button>
-            </div>
-          </article>
-
-          <!-- Card 4: Private Beach -->
-          <article class="portal-item-card" data-type="attraction" data-area="beachfront">
-            <div class="portal-item-media">
-              <img src="assets/white-beach.jpg" alt="Private Beach">
-              <span class="portal-badge-tag attraction">Attraction</span>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title">Private Beach</h3>
-              <p class="portal-item-desc">Enjoy a pristine beach with crystal-clear waters, perfect for swimming and
-                relaxation.</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                  </svg>
-                  <span>Beachfront</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 16 14" />
-                  </svg>
-                  <span>6:00 AM – 8:00 PM</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                  </svg>
-                  <span>Capacity: 100 / 200</span>
-                </div>
-              </div>
-            </div>
-            <div class="portal-item-footer">
-              <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Private Beach', 'Beachfront', '6:00 AM – 8:00 PM', '100 / 200', 'assets/white-beach.jpg')">View
-                Details &gt;</button>
-            </div>
-          </article>
-
-          <!-- Card 5: Sunset Beach Party -->
-          <article class="portal-item-card" data-type="event" data-area="beachfront">
-            <div class="portal-item-media">
-              <img src="assets/hero-banner.jpg"
-                alt="Sunset Beach Party">
-              <span class="portal-badge-tag event">Event</span>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title">Sunset Beach Party</h3>
-              <p class="portal-item-desc">Live music, food, and drinks by the beach. A perfect way to end the day!</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                  </svg>
-                  <span>Beachfront</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 16 14" />
-                  </svg>
-                  <span>5:00 PM – 10:00 PM</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                  </svg>
-                  <span>Capacity: 120 / 150</span>
-                </div>
-              </div>
-            </div>
-            <div class="portal-item-footer">
-              <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Sunset Beach Party', 'Beachfront', '5:00 PM – 10:00 PM', '120 / 150', 'assets/hero-banner.jpg')">View
-                Details &gt;</button>
-            </div>
-          </article>
-
-          <!-- Card 6: Seaside Restaurant -->
-          <article class="portal-item-card" data-type="attraction" data-area="main-wing">
-            <div class="portal-item-media">
-              <img src="assets/pahiyas-festival.jpg"
-                alt="Seaside Restaurant">
-              <span class="portal-badge-tag attraction">Attraction</span>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title">Seaside Restaurant</h3>
-              <p class="portal-item-desc">Dine with a breathtaking view of the ocean and enjoy fresh, local cuisine.</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                  </svg>
-                  <span>Main Wing</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 16 14" />
-                  </svg>
-                  <span>6:00 AM – 11:00 PM</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                  </svg>
-                  <span>Capacity: 80 / 120</span>
-                </div>
-              </div>
-            </div>
-            <div class="portal-item-footer">
-              <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Seaside Restaurant', 'Main Wing', '6:00 AM – 11:00 PM', '80 / 120', 'assets/pahiyas-festival.jpg')">View
-                Details &gt;</button>
-            </div>
-          </article>
-
-          <!-- Card 7: Island Night Market -->
-          <article class="portal-item-card" data-type="event" data-area="beachfront">
-            <div class="portal-item-media">
-              <img src="assets/pahiyas-festival.jpg" alt="Island Night Market">
-              <span class="portal-badge-tag event">Event</span>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title">Island Night Market</h3>
-              <p class="portal-item-desc">Local food, crafts, and live entertainment by the beach under festivity
-                lights.</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                  </svg>
-                  <span>Beachfront</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 16 14" />
-                  </svg>
-                  <span>4:00 PM – 11:00 PM</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                  </svg>
-                  <span>Capacity: 320 / 500</span>
-                </div>
-              </div>
-            </div>
-            <div class="portal-item-footer">
-              <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Island Night Market', 'Beachfront', '4:00 PM – 11:00 PM', '320 / 500', 'assets/pahiyas-festival.jpg')">View
-                Details &gt;</button>
-            </div>
-          </article>
-
-          <!-- Card 8: Yoga Pavilion -->
-          <article class="portal-item-card" data-type="amenity" data-area="garden">
-            <div class="portal-item-media">
-              <img src="assets/qc-memorial-circle.jpg"
-                alt="Yoga Pavilion">
-              <span class="portal-badge-tag amenity">Amenity</span>
-            </div>
-            <div class="portal-item-body">
-              <h3 class="portal-item-title">Yoga Pavilion</h3>
-              <p class="portal-item-desc">Find your balance with our ocean view morning and sunset yoga sessions.</p>
-              <div class="portal-item-meta-list">
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                  </svg>
-                  <span>Garden Area</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 16 14" />
-                  </svg>
-                  <span>6:00 AM – 8:00 AM</span>
-                </div>
-                <div class="portal-item-meta-row">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                  </svg>
-                  <span>Capacity: 20 / 30</span>
-                </div>
-              </div>
-            </div>
-            <div class="portal-item-footer">
-              <button class="portal-view-details-btn"
-                onclick="openDetailsModal('Yoga Pavilion', 'Garden Area', '6:00 AM – 8:00 AM', '20 / 30', 'assets/qc-memorial-circle.jpg')">View
-                Details &gt;</button>
-            </div>
-          </article>
-
+          <!-- Dynamically rendered via js/portal-sync.js -->
         </div>
       </div>
 
@@ -713,7 +399,7 @@
 
 
 
-        <!-- Upcoming Events Widget (Matching Image 1) -->
+        <!-- Upcoming Events Widget (Strictly Admin-Scheduled Events; Zero Mock Data) -->
         <div class="upcoming-events-card">
           <div class="upcoming-events-header">
             <span class="upcoming-events-title">Upcoming Events</span>
@@ -721,93 +407,8 @@
           </div>
 
           <div class="upcoming-events-list">
-            <!-- Event 1 -->
-            <div class="upcoming-event-item">
-              <img src="assets/hero-banner.jpg"
-                alt="Sunset Beach Party" class="upcoming-event-img">
-              <div class="upcoming-event-details">
-                <span class="upcoming-event-name">Sunset Beach Party</span>
-                <span class="upcoming-event-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  May 24, 2025 • 5:00 PM
-                </span>
-                <span class="upcoming-event-loc">Beachfront</span>
-                <span class="upcoming-event-badge">Event</span>
-              </div>
-            </div>
-
-            <!-- Event 2 -->
-            <div class="upcoming-event-item">
-              <img src="assets/pahiyas-festival.jpg" alt="Island Night Market" class="upcoming-event-img">
-              <div class="upcoming-event-details">
-                <span class="upcoming-event-name">Island Night Market</span>
-                <span class="upcoming-event-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  May 31, 2025 • 4:00 PM
-                </span>
-                <span class="upcoming-event-loc">Beachfront</span>
-                <span class="upcoming-event-badge">Event</span>
-              </div>
-            </div>
-
-            <!-- Event 3 -->
-            <div class="upcoming-event-item">
-              <img src="assets/qc-memorial-circle.jpg"
-                alt="Wellness & Yoga Retreat" class="upcoming-event-img">
-              <div class="upcoming-event-details">
-                <span class="upcoming-event-name">Wellness & Yoga Retreat</span>
-                <span class="upcoming-event-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  Jun 14, 2025 • 7:00 AM
-                </span>
-                <span class="upcoming-event-loc">Yoga Pavilion</span>
-                <span class="upcoming-event-badge">Event</span>
-              </div>
-            </div>
-
-            <!-- Event 4 -->
-            <div class="upcoming-event-item">
-              <img src="assets/white-beach.jpg"
-                alt="Poolside Movie Night" class="upcoming-event-img">
-              <div class="upcoming-event-details">
-                <span class="upcoming-event-name">Poolside Movie Night</span>
-                <span class="upcoming-event-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  Jun 21, 2025 • 7:00 PM
-                </span>
-                <span class="upcoming-event-loc">Main Pool</span>
-                <span class="upcoming-event-badge">Event</span>
-              </div>
-            </div>
-
-            <!-- Event 5 -->
-            <div class="upcoming-event-item">
-              <img src="assets/rizal-monument.jpg"
-                alt="Chef's Special Dinner" class="upcoming-event-img">
-              <div class="upcoming-event-details">
-                <span class="upcoming-event-name">Chef's Special Dinner</span>
-                <span class="upcoming-event-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  Jun 28, 2025 • 6:00 PM
-                </span>
-                <span class="upcoming-event-loc">Seaside Restaurant</span>
-                <span class="upcoming-event-badge">Event</span>
-              </div>
+            <div style="text-align: center; padding: 1.5rem 0.75rem; color: var(--text-muted); font-size: 0.85rem;">
+              No upcoming events scheduled.
             </div>
           </div>
         </div>
@@ -869,27 +470,29 @@
       </div>
       <form id="portalAddAttrForm" style="padding: 1.5rem;" onsubmit="handlePortalAddAttr(event)">
         <div style="margin-bottom: 1rem;">
-          <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Attraction or
-            Amenity Name</label>
-          <input type="text" id="newAttrTitle" required placeholder="e.g. Scuba Diving Sanctuary"
-            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+          <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Attraction Name</label>
+          <input type="text" id="newAttrTitle" required placeholder="e.g. Manila Ocean Park"
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
           <div>
             <label
               style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Category</label>
             <select id="newAttrType"
-              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
-              <option value="attraction">Attraction</option>
-              <option value="amenity">Amenity</option>
-              <option value="event">Event / Festival</option>
+              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
+              <option value="Historical Site">Historical Site</option>
+              <option value="Tourist Spot">Tourist Spot</option>
+              <option value="Park & Nature">Park &amp; Nature</option>
+              <option value="Museum & Gallery">Museum &amp; Gallery</option>
             </select>
           </div>
           <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Location
-              Area</label>
-            <input type="text" id="newAttrLocation" required placeholder="e.g. Main Wing Beach"
-              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Location</label>
+            <select id="newAttrLocation" required
+              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
+              <option value="Manila">Manila</option>
+              <option value="Quezon City">Quezon City</option>
+            </select>
           </div>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
@@ -897,22 +500,22 @@
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Operating
               Hours</label>
             <input type="text" id="newAttrHours" required value="08:00 AM – 08:00 PM"
-              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
           </div>
           <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Max
               Capacity</label>
             <input type="number" id="newAttrCap" min="10" required value="120"
-              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
           </div>
         </div>
         <div style="margin-bottom: 1.25rem;">
           <label
             style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Description</label>
           <textarea id="newAttrDesc" rows="2" required placeholder="Short summary of attraction experience..."
-            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; resize: vertical;"></textarea>
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; resize: vertical; background: var(--bg-page); color: var(--text-main);"></textarea>
         </div>
-        <button type="submit" class="btn-primary-blue" style="width: 100%; justify-content: center;">Save & Publish Attraction</button>
+        <button type="submit" class="btn-primary-blue" style="width: 100%; justify-content: center;">Save &amp; Publish Attraction</button>
       </form>
     </div>
   </div>
@@ -921,46 +524,45 @@
   <div class="modal-overlay" id="addEventModal" role="dialog" aria-modal="true">
     <div class="modal-dialog" style="max-width: 500px;">
       <div class="modal-header">
-        <h3 class="modal-title">Add New Event or Festival</h3>
+        <h3 class="modal-title">Add Event for Attraction</h3>
         <button class="modal-close" onclick="closePortalModal('addEventModal')">&times;</button>
       </div>
       <form id="portalAddEventForm" style="padding: 1.5rem;" onsubmit="handlePortalAddEvent(event)">
         <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Parent Attraction</label>
+          <select id="newEventAttractionId" required
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
+          </select>
+        </div>
+        <div style="margin-bottom: 1rem;">
           <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Event Title</label>
-          <input type="text" id="newEventTitle" required placeholder="e.g. Kadayawan Floral Parade"
-            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+          <input type="text" id="newEventTitle" required placeholder="e.g. Cultural Sunset Showcase"
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
           <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Schedule & Time</label>
-            <input type="text" id="newEventHours" required value="09:00 AM – 05:00 PM"
-              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Schedule &amp; Time</label>
+            <input type="text" id="newEventHours" required value="05:00 PM – 08:00 PM"
+              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
           </div>
-          <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Venue Area</label>
-            <input type="text" id="newEventLocation" required placeholder="e.g. Festival Plaza"
-              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
-          </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
           <div>
             <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Admission Type</label>
-            <select id="newEventAdmission" style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
+            <select id="newEventAdmission" style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
               <option value="Free Access">Free Open Access</option>
-              <option value="Festival Pass">Festival Pass (₱20)</option>
-              <option value="VIP Pass">VIP Fast Track (₱45)</option>
+              <option value="Event Pass ₱50">Event Pass (₱50)</option>
+              <option value="VIP Pass ₱120">VIP Fast Track (₱120)</option>
             </select>
           </div>
-          <div>
-            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Attendee Limit</label>
-            <input type="number" id="newEventCap" min="20" required value="250"
-              style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;">
-          </div>
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Attendee Limit</label>
+          <input type="number" id="newEventCap" min="10" required value="150"
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-page); color: var(--text-main);">
         </div>
         <div style="margin-bottom: 1.25rem;">
           <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Event Summary</label>
           <textarea id="newEventDesc" rows="2" required placeholder="Highlights of performances, celebrations, and schedules..."
-            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; resize: vertical;"></textarea>
+            style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; resize: vertical; background: var(--bg-page); color: var(--text-main);"></textarea>
         </div>
         <button type="submit" class="btn-primary-blue" style="width: 100%; justify-content: center;">Publish Event Schedule</button>
       </form>
@@ -1028,36 +630,50 @@
     const filterTabs = document.querySelectorAll('.portal-filter-tab');
     const categorySelect = document.getElementById('categorySelect');
     const areaSelect = document.getElementById('areaSelect');
+    const sortSelect = document.getElementById('sortSelect');
 
     function filterCards() {
       const q = ((searchInput?.value || '') + ' ' + (headerSearch?.value || '')).toLowerCase().trim();
-      const activeTab = document.querySelector('.portal-filter-tab.active')?.getAttribute('data-tab-type') || 'all';
+      const activeTabCat = document.querySelector('.portal-filter-tab.active')?.getAttribute('data-tab-cat') || 'all';
       const cat = categorySelect ? categorySelect.value : 'all';
       const area = areaSelect ? areaSelect.value : 'all';
-      const cards = document.querySelectorAll('.portal-item-card');
+      const sortMode = sortSelect ? sortSelect.value : 'newest';
+      const grid = document.getElementById('portalCardsGrid');
+      const cards = Array.from(document.querySelectorAll('.portal-item-card'));
 
       cards.forEach(card => {
         const text = card.textContent.toLowerCase();
-        const type = card.getAttribute('data-type') || '';
-        const cardArea = card.getAttribute('data-area') || '';
+        const cardCat = (card.getAttribute('data-category') || '').toLowerCase();
+        const cardType = (card.getAttribute('data-type') || '').toLowerCase();
+        const cardArea = (card.getAttribute('data-area') || '').toLowerCase();
 
         const matchesQuery = !q || text.includes(q);
-        const matchesTab = (activeTab === 'all') || (type === activeTab);
-        const matchesCat = (cat === 'all') || (type === cat);
-        const matchesArea = (area === 'all') || (cardArea === area);
+        const matchesTab = (activeTabCat === 'all') || (cardCat === activeTabCat.toLowerCase()) || (cardType === activeTabCat.toLowerCase());
+        const matchesCat = (cat === 'all') || (cardCat === cat.toLowerCase()) || (cardType === cat.toLowerCase());
+        const matchesArea = (area === 'all') || (cardArea === area.toLowerCase());
 
-        if (matchesQuery && matchesTab && matchesCat && matchesArea) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
+        card.style.display = (matchesQuery && matchesTab && matchesCat && matchesArea) ? 'flex' : 'none';
       });
+
+      if (grid && cards.length > 1 && sortMode !== 'newest') {
+        cards.sort((a, b) => {
+          if (sortMode === 'name') {
+            return (a.getAttribute('data-title') || '').localeCompare(b.getAttribute('data-title') || '');
+          }
+          if (sortMode === 'capacity') {
+            return (parseInt(b.getAttribute('data-capacity') || '0', 10) - parseInt(a.getAttribute('data-capacity') || '0', 10));
+          }
+          return 0;
+        }).forEach(card => grid.appendChild(card));
+      }
     }
+    window.filterCards = filterCards;
 
     searchInput?.addEventListener('input', filterCards);
     headerSearch?.addEventListener('input', filterCards);
     categorySelect?.addEventListener('change', filterCards);
     areaSelect?.addEventListener('change', filterCards);
+    sortSelect?.addEventListener('change', filterCards);
 
     filterTabs.forEach(tab => {
       tab.addEventListener('click', () => {
@@ -1089,26 +705,31 @@
 
     function handlePortalAddAttr(e) {
       e.preventDefault();
-      const title = document.getElementById('newAttrTitle').value;
-      const type = document.getElementById('newAttrType').value;
+      const title = document.getElementById('newAttrTitle').value.trim();
+      const category = document.getElementById('newAttrType').value;
       const loc = document.getElementById('newAttrLocation').value;
-      const hours = document.getElementById('newAttrHours').value;
-      const cap = parseInt(document.getElementById('newAttrCap').value, 10);
-      const desc = document.getElementById('newAttrDesc').value;
+      const hours = document.getElementById('newAttrHours').value.trim();
+      const cap = parseInt(document.getElementById('newAttrCap').value, 10) || 100;
+      const desc = document.getElementById('newAttrDesc').value.trim();
 
       const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const mappedType = (window.TourismHubStore && typeof TourismHubStore.mapCategoryToType === 'function')
+        ? TourismHubStore.mapCategoryToType(category)
+        : 'spot';
+
       const newAttr = {
         id: slug + '-' + Math.floor(100 + Math.random() * 900),
         title: title,
-        category: type === 'event' ? 'Festival' : (type === 'amenity' ? 'Amenity' : 'Tourist Spot'),
-        type: type,
+        category: category,
+        type: mappedType,
         status: 'active',
         operatingHours: hours,
         admission: 'Standard Access',
         capacityPerSlot: cap,
-        image: 'assets/hero-banner.jpg',
+        image: 'assets/no-image.svg',
+        images: ['assets/no-image.svg'],
         location: loc,
-        badge: type === 'event' ? 'Live Event' : 'Featured',
+        badge: category,
         description: desc
       };
 
@@ -1125,37 +746,47 @@
 
     function handlePortalAddEvent(e) {
       e.preventDefault();
-      const title = document.getElementById('newEventTitle').value;
-      const hours = document.getElementById('newEventHours').value;
-      const loc = document.getElementById('newEventLocation').value;
+      const parentAttractionId = document.getElementById('newEventAttractionId')?.value || '';
+      const title = document.getElementById('newEventTitle').value.trim();
+      const hours = document.getElementById('newEventHours').value.trim();
       const adm = document.getElementById('newEventAdmission').value;
-      const cap = parseInt(document.getElementById('newEventCap').value, 10);
-      const desc = document.getElementById('newEventDesc').value;
+      const cap = parseInt(document.getElementById('newEventCap').value, 10) || 100;
+      const desc = document.getElementById('newEventDesc').value.trim();
 
+      const catalog = (window.TourismHubStore && typeof TourismHubStore.getCatalog === 'function')
+        ? TourismHubStore.getCatalog()
+        : [];
+      const parentAttr = catalog.find(a => a.id === parentAttractionId);
+      const attractionTitle = parentAttr ? parentAttr.title : 'Attraction Event';
+      const loc = parentAttr ? parentAttr.location : 'Manila';
       const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
       const newEvent = {
-        id: slug + '-' + Math.floor(100 + Math.random() * 900),
+        id: `event-${slug}-${Date.now()}`,
         title: title,
-        category: 'Festival',
         type: 'event',
+        parentAttractionId: parentAttractionId,
+        attractionTitle: attractionTitle,
+        category: attractionTitle,
+        badge: parentAttractionId,
         status: 'active',
         operatingHours: hours,
         admission: adm,
         capacityPerSlot: cap,
-        image: 'assets/pahiyas-festival.jpg',
+        image: 'assets/no-image.svg',
+        images: ['assets/no-image.svg'],
         location: loc,
-        badge: 'Festival',
         description: desc
       };
 
-      if (window.TourismHubStore) {
-        TourismHubStore.addAttraction(newEvent);
+      if (window.TourismHubStore && typeof TourismHubStore.addEvent === 'function') {
+        TourismHubStore.addEvent(newEvent);
       }
 
       closePortalModal('addEventModal');
       document.getElementById('portalAddEventForm').reset();
       if (window.showPortalToast) {
-        showPortalToast(`Event "${title}" published and synchronized!`);
+        showPortalToast(`Event "${title}" scheduled for ${attractionTitle}!`);
       }
     }
   </script>

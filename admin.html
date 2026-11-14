@@ -352,7 +352,7 @@
                 <h3>Today's Peak Visiting Hours Overview</h3>
                 <p>Recorded hourly entries across all registered attraction gates.</p>
               </div>
-              <button class="btn-secondary btn-sm" onclick="switchTab('analytics')">View Detailed Report →</button>
+              <button type="button" class="btn-secondary btn-sm" onclick="switchTab('analytics')">View Detailed Report →</button>
             </div>
             <div class="peak-hours-chart-wrap" id="peakHoursOverviewPreview">
               <!-- Rendered via JS -->
@@ -368,19 +368,30 @@
 
           <div class="section-heading-row">
             <div class="section-title-wrap">
-              <h2>Attraction & Event Catalog</h2>
-              <p>Create and configure digital profiles, operating schedules, admission fees, and capacity caps.</p>
+              <h2>Attraction Catalog & Events</h2>
+              <p>Create and configure physical attractions, schedules, admission fees, and dedicated attraction events.</p>
             </div>
-            <button class="btn-primary" onclick="openAddAttractionModal()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              <span> Catalog New Attraction / Event</span>
-            </button>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button type="button" class="btn-secondary" onclick="openAddEventModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>Add Event for Attraction</span>
+              </button>
+              <button type="button" class="btn-primary" onclick="openAddAttractionModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>Catalog New Attraction</span>
+              </button>
+            </div>
           </div>
 
-          <!-- Catalog Toolbar (Search, Filter, Category) -->
+          <!-- Catalog Toolbar (Search, Category, Location, Status) -->
           <div class="catalog-toolbar">
             <div class="search-filter-box">
               <div class="admin-input-group">
@@ -394,9 +405,15 @@
               </div>
               <select id="catalogCategoryFilter" class="admin-select" aria-label="Filter by category">
                 <option value="all">All Categories</option>
-                <option value="historical">Historical Sites</option>
-                <option value="beach">Tourist Spots</option>
-                <option value="festival">Cultural Festivals</option>
+                <option value="Historical Site">Historical Site</option>
+                <option value="Tourist Spot">Tourist Spot</option>
+                <option value="Park & Nature">Park & Nature</option>
+                <option value="Museum & Gallery">Museum & Gallery</option>
+              </select>
+              <select id="catalogLocationFilter" class="admin-select" aria-label="Filter by location">
+                <option value="all">All Locations</option>
+                <option value="Manila">Manila</option>
+                <option value="Quezon City">Quezon City</option>
               </select>
               <select id="catalogStatusFilter" class="admin-select" aria-label="Filter by operational status">
                 <option value="all">All Statuses</option>
@@ -407,8 +424,19 @@
             </div>
           </div>
 
-          <!-- Dynamic Catalog Grid -->
+          <!-- Dynamic Attractions Grid -->
           <div class="catalog-grid" id="catalogGrid">
+            <!-- Populated via admin.js -->
+          </div>
+
+          <!-- Attraction Events Section (Separated from Attractions) -->
+          <div class="section-heading-row" style="margin-top: 2.5rem; margin-bottom: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.75rem;">
+            <div class="section-title-wrap">
+              <h2 style="font-size: 1.25rem;">Attraction Events</h2>
+              <p>Scheduled events hosted inside specific attractions. Events sync live to Upcoming Events and Attraction Details.</p>
+            </div>
+          </div>
+          <div class="catalog-grid" id="adminEventsGrid">
             <!-- Populated via admin.js -->
           </div>
 
@@ -425,7 +453,7 @@
               <p>Real-time monitoring of scheduled time-slot allocations against allowable limits to prevent
                 overcrowding.</p>
             </div>
-            <button class="btn-primary"
+            <button type="button" class="btn-primary"
               onclick="addSlotForAttraction(document.getElementById('capacityAttractionSelect').value)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -503,14 +531,14 @@
               <div class="scanner-manual-input-row">
                 <input type="text" id="scannerManualInput" placeholder="Scan or enter pass code (e.g. PASS-8448-BEA)..."
                   autocomplete="off">
-                <button class="btn-primary" id="scanSubmitBtn">Verify Pass</button>
+                <button type="button" class="btn-primary" id="scanSubmitBtn">Verify Pass</button>
               </div>
 
               <!-- Quick Verification Presets -->
               <div class="scanner-preset-buttons">
                 <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-light); align-self: center;">Verified Passes:</span>
-                <button class="preset-chip" onclick="testPresetPass('TEST-PROBE-001')">✓ TEST-PROBE-001 (Rizal Monument)</button>
-                <button class="preset-chip" onclick="testPresetPass('PASS-8448-BEA')">✓ PASS-8448-BEA (Big Lagoon)</button>
+                <button type="button" class="preset-chip" onclick="testPresetPass('TEST-PROBE-001')">✓ TEST-PROBE-001 (Rizal Monument)</button>
+                <button type="button" class="preset-chip" onclick="testPresetPass('PASS-8448-BEA')">✓ PASS-8448-BEA (Big Lagoon)</button>
               </div>
             </div>
 
@@ -561,7 +589,7 @@
               <h2>Admin Analytics & Reports</h2>
               <p>Track attendance trends, peak visiting hours, and capacity utilization across operations.</p>
             </div>
-            <button class="btn-secondary" onclick="exportAnalyticsReportCSV()">
+            <button type="button" class="btn-secondary" onclick="exportAnalyticsReportCSV()">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
@@ -727,8 +755,8 @@
   <div class="admin-modal-overlay" id="attractionModal">
     <div class="admin-modal-content">
       <div class="admin-modal-header">
-        <h3 id="attractionModalTitle">Catalog New Attraction / Event</h3>
-        <button class="modal-close-btn" onclick="closeModal('attractionModal')" aria-label="Close modal">
+        <h3 id="attractionModalTitle">Catalog New Attraction</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('attractionModal')" aria-label="Close modal">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
@@ -741,36 +769,43 @@
 
         <div class="admin-modal-body">
           <div class="form-group">
-            <label for="attrFormTitle">Attraction / Event Name *</label>
-            <input type="text" id="attrFormTitle" class="form-control" placeholder="e.g. Calle Crisologo Heritage Strip"
+            <label for="attrFormTitle">Attraction Name *</label>
+            <input type="text" id="attrFormTitle" class="form-control" placeholder="e.g. Intramuros Heritage District"
               required>
           </div>
 
           <div class="form-row-2">
             <div class="form-group">
-              <label for="attrFormCategory">Display Category *</label>
-              <input type="text" id="attrFormCategory" class="form-control" placeholder="e.g. Historical Site" required>
+              <label for="attrFormCategory">Category *</label>
+              <select id="attrFormCategory" class="form-control" required>
+                <option value="Historical Site">Historical Site</option>
+                <option value="Tourist Spot">Tourist Spot</option>
+                <option value="Park & Nature">Park & Nature</option>
+                <option value="Museum & Gallery">Museum & Gallery</option>
+              </select>
             </div>
             <div class="form-group">
-              <label for="attrFormType">Internal Category Type *</label>
-              <select id="attrFormType" class="form-control" required>
-                <option value="historical">Historical Site</option>
-                <option value="beach">Tourist Spot / Beach</option>
-                <option value="festival">Cultural Festival</option>
+              <label for="attrFormLocation">Location *</label>
+              <select id="attrFormLocation" class="form-control" required>
+                <option value="Manila">Manila</option>
+                <option value="Quezon City">Quezon City</option>
               </select>
             </div>
           </div>
 
           <div class="form-row-2">
             <div class="form-group">
-              <label for="attrFormLocation">Location / Province *</label>
-              <input type="text" id="attrFormLocation" class="form-control" placeholder="e.g. Vigan, Ilocos Sur"
-                required>
-            </div>
-            <div class="form-group">
               <label for="attrFormHours">Operating Hours *</label>
               <input type="text" id="attrFormHours" class="form-control" placeholder="e.g. 08:00 AM - 06:00 PM"
                 required>
+            </div>
+            <div class="form-group">
+              <label for="attrFormStatus">Operational Status *</label>
+              <select id="attrFormStatus" class="form-control" required>
+                <option value="active">Active (Open to Public)</option>
+                <option value="maintenance">Under Maintenance</option>
+                <option value="closed">Temporarily Closed</option>
+              </select>
             </div>
           </div>
 
@@ -786,15 +821,6 @@
           </div>
 
           <div class="form-group">
-            <label for="attrFormStatus">Operational Status *</label>
-            <select id="attrFormStatus" class="form-control" required>
-              <option value="active">Active (Open to Public)</option>
-              <option value="maintenance">Under Maintenance</option>
-              <option value="closed">Temporarily Closed</option>
-            </select>
-          </div>
-
-          <div class="form-group">
             <label for="attrFormDesc">Description & Highlights *</label>
             <textarea id="attrFormDesc" class="form-control"
               placeholder="Describe the historical importance, natural beauty, or tourist guidelines..."
@@ -803,28 +829,114 @@
 
           <div class="form-group" style="margin-top: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-              <label style="font-weight: 700; margin-bottom: 0;">Location Photos (Max 5 Pictures)</label>
-              <span id="attrPhotoCountBadge" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">0 / 5 pictures</span>
+              <label style="font-weight: 700; margin-bottom: 0;">Attraction Photo (1 Picture)</label>
+              <span id="attrPhotoCountBadge" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">0 / 1 picture</span>
             </div>
             <div style="border: 1.5px dashed var(--border); border-radius: var(--radius-md); padding: 1.25rem 1rem; text-align: center; background: var(--bg-subtle);">
-              <input type="file" id="attrFormPhotosInput" accept="image/*" multiple style="display: none;" onchange="handleAdminPhotoSelection(event)">
+              <input type="file" id="attrFormPhotosInput" accept="image/*" style="display: none;" onchange="handleAdminPhotoSelection(event)">
               <button type="button" class="btn-secondary" onclick="document.getElementById('attrFormPhotosInput').click()" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.15rem; font-size: 0.88rem; cursor: pointer;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                   <circle cx="8.5" cy="8.5" r="1.5"></circle>
                   <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                <span>Upload Pictures (Max 5)</span>
+                <span>Upload Picture</span>
               </button>
-              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.45rem; margin-bottom: 0;">Upload up to 5 photos stored at Supabase. First photo serves as cover.</p>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.45rem; margin-bottom: 0;">Upload 1 cover photo stored in Supabase.</p>
             </div>
-            <div id="attrPhotosPreviewGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 0.65rem; margin-top: 0.85rem;"></div>
+            <div id="attrPhotosPreviewGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.65rem; margin-top: 0.85rem;"></div>
           </div>
         </div>
 
         <div class="admin-modal-footer">
           <button type="button" class="btn-secondary" onclick="closeModal('attractionModal')">Cancel</button>
           <button type="submit" class="btn-primary">Save Attraction Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Modal: Add / Edit Event for an Attraction
+       ========================================================================== -->
+  <div class="admin-modal-overlay" id="adminEventModal">
+    <div class="admin-modal-content">
+      <div class="admin-modal-header">
+        <h3 id="adminEventModalTitle">Add Event for Attraction</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('adminEventModal')" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="eventForm">
+        <input type="hidden" id="eventModalId">
+
+        <div class="admin-modal-body">
+          <div class="form-group">
+            <label for="eventFormAttractionId">Parent Attraction *</label>
+            <select id="eventFormAttractionId" class="form-control" required>
+              <!-- Populated dynamically with attractions -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="eventFormTitle">Event Title *</label>
+            <input type="text" id="eventFormTitle" class="form-control" placeholder="e.g. Cultural Sunset Showcase"
+              required>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="eventFormSchedule">Event Date & Time *</label>
+              <input type="text" id="eventFormSchedule" class="form-control" placeholder="e.g. Nov 20, 05:00 PM - 08:00 PM"
+                required>
+            </div>
+            <div class="form-group">
+              <label for="eventFormAdmission">Admission / Fee Label *</label>
+              <input type="text" id="eventFormAdmission" class="form-control" placeholder="e.g. Free / Event Pass ₱100"
+                required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="eventFormCapacity">Event Capacity Cap *</label>
+            <input type="number" id="eventFormCapacity" class="form-control" placeholder="100" min="10" value="100" required>
+          </div>
+
+          <div class="form-group">
+            <label for="eventFormDesc">Event Description & Highlights *</label>
+            <textarea id="eventFormDesc" class="form-control"
+              placeholder="Describe the event schedule, activities, and visitor guidelines..."
+              required></textarea>
+          </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <label style="font-weight: 700; margin-bottom: 0;">Event Photo (1 Picture)</label>
+              <span id="eventPhotoCountBadge" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">0 / 1 picture</span>
+            </div>
+            <div style="border: 1.5px dashed var(--border); border-radius: var(--radius-md); padding: 1.25rem 1rem; text-align: center; background: var(--bg-subtle);">
+              <input type="file" id="eventFormPhotoInput" accept="image/*" style="display: none;" onchange="handleAdminEventPhotoSelection(event)">
+              <button type="button" class="btn-secondary" onclick="document.getElementById('eventFormPhotoInput').click()" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.15rem; font-size: 0.88rem; cursor: pointer;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>Upload Event Picture</span>
+              </button>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.45rem; margin-bottom: 0;">Upload 1 event cover photo stored in Supabase.</p>
+            </div>
+            <div id="eventPhotoPreviewGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.65rem; margin-top: 0.85rem;"></div>
+          </div>
+        </div>
+
+        <div class="admin-modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeModal('adminEventModal')">Cancel</button>
+          <button type="submit" class="btn-primary">Save Event</button>
         </div>
       </form>
     </div>

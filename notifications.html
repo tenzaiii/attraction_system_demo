@@ -52,15 +52,15 @@
 
     <nav class="sidebar-menu-wrapper" aria-label="Sidebar Menu">
       <ul class="sidebar-menu">
-        <!-- 1. Dashboard -->
+        <!-- 1. Home -->
         <li class="sidebar-menu-item">
-          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Dashboard">
+          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Home">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
               </svg>
             </span>
-            <span class="sidebar-item-text">Dashboard</span>
+            <span class="sidebar-item-text">Home</span>
           </a>
         </li>
 
@@ -141,7 +141,22 @@
           </a>
         </li>
 
-        <!-- 9. Admin Dashboard (Admin Only) -->
+        <!-- 9. About -->
+        <li class="sidebar-menu-item">
+          <a href="about.html" class="sidebar-menu-link" data-nav="about" title="About TourismHub">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">About</span>
+          </a>
+        </li>
+
+        <!-- 10. Admin Dashboard (Admin Only) -->
         <li class="sidebar-menu-item admin-only-feature" style="display: none;">
           <a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard">
             <span class="sidebar-item-icon">
@@ -205,7 +220,6 @@
             alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
           <div class="portal-user-meta">
             <span class="portal-user-name">Tourist Portal</span>
-            <span class="portal-user-role">Sign In / Register</span>
           </div>
         </div>
       </div>

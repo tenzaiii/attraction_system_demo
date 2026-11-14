@@ -419,7 +419,15 @@
     </div>
 
     <div class="portal-topbar-right">
-     
+      <!-- Admin Dashboard Quick Button (Admin Only) -->
+      <a href="admin.html" class="nav-admin-dashboard-btn admin-only-feature" style="display: none;" title="Admin Operator Dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="3" y="3" width="7" height="9"></rect>
+          <rect x="14" y="3" width="7" height="5"></rect>
+          <rect x="14" y="12" width="7" height="9"></rect>
+          <rect x="3" y="16" width="7" height="5"></rect>
+        </svg>
+      </a>
 
       <!-- Dark / Light Mode Toggle Button -->
       <button class="portal-notif-btn topbar-theme-toggle-btn" id="globalDarkModeBtn" onclick="toggleGlobalTheme()" aria-label="Toggle Theme" title="Toggle Theme">
@@ -441,7 +449,6 @@
             alt="User Avatar" class="portal-avatar-img" id="topAvatar">
           <div class="portal-user-meta">
             <span class="portal-user-name" id="topUserName">Tourist User</span>
-            <span class="portal-user-role" id="topUserRole">Verified Tourist</span>
           </div>
         </div>
       </div>
@@ -474,15 +481,15 @@
 
     <nav class="sidebar-menu-wrapper" aria-label="Sidebar Menu">
       <ul class="sidebar-menu">
-        <!-- 1. Dashboard -->
+        <!-- 1. Home -->
         <li class="sidebar-menu-item">
-          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Dashboard">
+          <a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Home">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
               </svg>
             </span>
-            <span class="sidebar-item-text">Dashboard</span>
+            <span class="sidebar-item-text">Home</span>
           </a>
         </li>
 
@@ -559,7 +566,22 @@
           </a>
         </li>
 
-        <!-- 7. Admin Dashboard (Admin Only) -->
+        <!-- 7. About -->
+        <li class="sidebar-menu-item">
+          <a href="about.html" class="sidebar-menu-link" data-nav="about" title="About TourismHub">
+            <span class="sidebar-item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </span>
+            <span class="sidebar-item-text">About</span>
+          </a>
+        </li>
+
+        <!-- 8. Admin Dashboard (Admin Only) -->
         <li class="sidebar-menu-item admin-only-feature" style="display: none;">
           <a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard">
             <span class="sidebar-item-icon">
@@ -603,7 +625,6 @@
             </div>
             <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;" id="heroEmail">maria.santos@email.com</div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <span class="portal-pill-badge blue" id="heroBadge">Verified Resident Tourist</span>
               <span class="portal-pill-badge green" id="heroCountry">Philippines</span>
             </div>
           </div>
@@ -1152,17 +1173,19 @@
 
       // Populate Hero & Header
       document.getElementById('topUserName').textContent = user.name || 'User';
-      document.getElementById('topUserRole').textContent = user.badge || 'Verified Member';
       document.getElementById('heroName').textContent = user.name || 'User';
       document.getElementById('heroEmail').textContent = user.email || '';
-      document.getElementById('heroBadge').textContent = user.badge || (admin ? 'Chief Operator' : 'Verified Resident Tourist');
       document.getElementById('heroCountry').textContent = user.country || 'Philippines';
 
-      // Show Admin Dashboard button if operator
-      if (admin && admin.roleKey) {
-        const adminBtn = document.getElementById('adminDashboardHeroBtn');
-        if (adminBtn) adminBtn.style.display = 'inline-flex';
-      }
+      // Show Admin Dashboard buttons & sidebar link if operator
+      const isAdminSession = Boolean(admin && admin.roleKey);
+      document.querySelectorAll('.admin-only-feature').forEach(el => {
+        if (isAdminSession) {
+          el.style.display = (el.tagName === 'A' || el.tagName === 'BUTTON') ? 'inline-flex' : (el.tagName === 'LI' ? 'block' : '');
+        } else {
+          el.style.display = 'none';
+        }
+      });
 
       const avatar = typeof TourismHubStore.getUserAvatar === 'function'
         ? TourismHubStore.getUserAvatar(user)
