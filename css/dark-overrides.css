@@ -254,7 +254,6 @@
 }
 
 /* --- Admin Dashboard Quick Buttons & Action Controls in Dark Mode --- */
-[data-theme="dark"] .nav-admin-dashboard-btn,
 [data-theme="dark"] .portal-notif-btn {
   background: var(--dm-bg-subtle) !important;
   border: 1px solid var(--dm-border) !important;
@@ -262,7 +261,6 @@
   box-shadow: none !important;
 }
 
-[data-theme="dark"] .nav-admin-dashboard-btn:hover,
 [data-theme="dark"] .portal-notif-btn:hover {
   background: var(--dm-bg-card) !important;
   border-color: #38bdf8 !important;
@@ -270,18 +268,45 @@
   box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2) !important;
 }
 
+[data-theme="dark"] .nav-admin-dashboard-btn {
+  background: linear-gradient(135deg, #0284c7 0%, #1d70f5 100%) !important;
+  border: 1px solid #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.45) !important;
+}
+
+[data-theme="dark"] .nav-admin-dashboard-btn:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #1a62d8 100%) !important;
+  border-color: #7dd3fc !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 16px rgba(56, 189, 248, 0.5) !important;
+}
+
+[data-theme="dark"] .sidebar-menu-link[data-nav="admin-dashboard"]:hover {
+  background: linear-gradient(135deg, #0284c7 0%, #1d70f5 100%) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(29, 112, 245, 0.48) !important;
+}
+
+[data-theme="dark"] .sidebar-menu-link[data-nav="admin-dashboard"]:hover .sidebar-item-icon svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
 [data-theme="dark"] #adminDashboardHeroBtn,
 [data-theme="dark"] .admin-dashboard-hero-btn {
-  background: var(--dm-bg-subtle) !important;
-  border: 1px solid var(--dm-border) !important;
-  color: var(--dm-text-main) !important;
+  background: linear-gradient(135deg, #0284c7 0%, #1d70f5 100%) !important;
+  border: 1px solid #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.42) !important;
 }
 
 [data-theme="dark"] #adminDashboardHeroBtn:hover,
 [data-theme="dark"] .admin-dashboard-hero-btn:hover {
-  background: rgba(2, 132, 199, 0.18) !important;
-  border-color: #38bdf8 !important;
-  color: #38bdf8 !important;
+  background: linear-gradient(135deg, #0369a1 0%, #1a62d8 100%) !important;
+  border-color: #7dd3fc !important;
+  color: #ffffff !important;
 }
 
 [data-theme="dark"] .admin-main .btn-secondary,
@@ -481,6 +506,85 @@
 
 [data-theme="dark"] .brand-logo {
   color: #f8fafc !important;
+}
+
+/* --- Attraction Details Google Map & Capacity Schedule Calendar Dark Mode --- */
+[data-theme="dark"] .details-map-card,
+[data-theme="dark"] .schedule-calendar-section {
+  background: var(--dm-bg-card) !important;
+  border-color: var(--dm-border) !important;
+}
+
+[data-theme="dark"] .details-map-iframe-wrap {
+  border-color: var(--dm-border) !important;
+  background: var(--dm-bg-page) !important;
+}
+
+[data-theme="dark"] .schedule-calendar-card,
+[data-theme="dark"] .schedule-day-events-panel {
+  background: var(--dm-bg-page) !important;
+  border-color: var(--dm-border) !important;
+}
+
+[data-theme="dark"] .schedule-day-events-header {
+  border-bottom-color: var(--dm-border) !important;
+}
+
+[data-theme="dark"] .schedule-section-heading,
+[data-theme="dark"] .schedule-calendar-card .calendar-view-header h4,
+[data-theme="dark"] .schedule-day-events-header h4,
+[data-theme="dark"] .schedule-event-main h5 {
+  color: var(--dm-text-main) !important;
+}
+
+[data-theme="dark"] .schedule-section-sub,
+[data-theme="dark"] .schedule-day-eyebrow,
+[data-theme="dark"] .schedule-event-meta {
+  color: var(--dm-text-muted) !important;
+}
+
+[data-theme="dark"] .btn-outline-sm,
+[data-theme="dark"] .cal-nav-arrows button {
+  background: var(--dm-bg-subtle) !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text-main) !important;
+}
+
+[data-theme="dark"] .btn-outline-sm:hover,
+[data-theme="dark"] .btn-outline-sm.active,
+[data-theme="dark"] .cal-nav-arrows button:hover {
+  background: #0284c7 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .calendar-day-cell.has-events:not(.selected) {
+  background: rgba(56, 189, 248, 0.16) !important;
+  color: #7dd3fc !important;
+}
+
+[data-theme="dark"] .schedule-event-item,
+[data-theme="dark"] .schedule-day-empty {
+  background: var(--dm-bg-card) !important;
+  border-color: var(--dm-border) !important;
+}
+
+[data-theme="dark"] .schedule-event-item:hover {
+  border-color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .schedule-event-venue {
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark"] .schedule-event-fee {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #6ee7b7 !important;
+}
+
+[data-theme="dark"] .schedule-events-badge {
+  background: rgba(56, 189, 248, 0.16) !important;
+  color: #7dd3fc !important;
 }
 
 

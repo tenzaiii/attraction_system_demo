@@ -291,7 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Refresh specific tab renders
     if (tabId === 'catalog') renderCatalog();
-    if (tabId === 'capacity') renderCapacitySlots();
+    if (tabId === 'capacity') {
+      renderCapacitySlots();
+      renderAdminCapacityCalendar();
+    }
     if (tabId === 'scanner') renderRecentScans();
     if (tabId === 'analytics') renderAnalyticsView();
     if (tabId === 'dispatch') renderAnnouncementsFeed();
@@ -561,12 +564,47 @@ document.addEventListener('DOMContentLoaded', () => {
     return photo || 'assets/no-image.svg';
   }
 
+  function updateAdminMapEmbedPreview(showFallback = false) {
+    const mapInput = document.getElementById('attrFormMapEmbed');
+    const previewWrap = document.getElementById('attrMapEmbedPreviewWrap');
+    const previewIframe = document.getElementById('attrMapEmbedPreviewIframe');
+    if (!mapInput || !previewWrap || !previewIframe) return;
+
+    const rawVal = mapInput.value.trim();
+    if (!rawVal && !showFallback) {
+      previewWrap.style.display = 'none';
+      previewIframe.src = 'about:blank';
+      return;
+    }
+
+    const titleVal = document.getElementById('attrFormTitle')?.value.trim() || 'Metro Manila Attraction';
+    const locVal = document.getElementById('attrFormLocation')?.value || 'Manila';
+    const resolvedUrl = (window.TourismHubStore && typeof TourismHubStore.normalizeMapEmbedUrl === 'function')
+      ? TourismHubStore.normalizeMapEmbedUrl(rawVal, titleVal, locVal)
+      : `https://maps.google.com/maps?q=${encodeURIComponent(rawVal || `${titleVal}, ${locVal}, Philippines`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
+    previewIframe.src = resolvedUrl;
+    previewWrap.style.display = 'block';
+  }
+
+  document.getElementById('attrTestMapEmbedBtn')?.addEventListener('click', () => {
+    updateAdminMapEmbedPreview(true);
+  });
+  document.getElementById('attrFormMapEmbed')?.addEventListener('blur', () => {
+    if (document.getElementById('attrFormMapEmbed')?.value.trim()) {
+      updateAdminMapEmbedPreview(false);
+    }
+  });
+
   // Open modal to add new attraction
   window.openAddAttractionModal = function() {
     attractionForm?.reset();
     adminSelectedPhotos = [];
     renderAdminPhotosPreview();
     document.getElementById('attractionModalId').value = '';
+    const mapInput = document.getElementById('attrFormMapEmbed');
+    if (mapInput) mapInput.value = '';
+    updateAdminMapEmbedPreview(false);
     document.getElementById('attractionModalTitle').textContent = 'Catalog New Attraction';
     attractionModal?.classList.add('active');
   };
@@ -588,10 +626,16 @@ document.addEventListener('DOMContentLoaded', () => {
       locSelect.value = normalizeAdminLocation(item.location);
     }
     document.getElementById('attrFormHours').value = item.operatingHours;
-    document.getElementById('attrFormPrice').value = item.admission;
+    document.getElementById('attrFormPrice').value = item.admission || item.priceLabel || '';
     document.getElementById('attrFormCapacity').value = item.capacityPerSlot;
     document.getElementById('attrFormStatus').value = item.status;
     document.getElementById('attrFormDesc').value = item.description;
+
+    const mapInput = document.getElementById('attrFormMapEmbed');
+    if (mapInput) {
+      mapInput.value = item.rawMapEmbed || '';
+    }
+    updateAdminMapEmbedPreview(Boolean(item.rawMapEmbed));
 
     // Load existing picture (max 1)
     adminSelectedPhotos = (Array.isArray(item.images) ? [...item.images] : (item.image ? [item.image] : []))
@@ -616,6 +660,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const capacity = parseInt(document.getElementById('attrFormCapacity')?.value) || 100;
     const status = document.getElementById('attrFormStatus')?.value || 'active';
     const desc = document.getElementById('attrFormDesc')?.value.trim();
+    const rawMapEmbed = document.getElementById('attrFormMapEmbed')?.value.trim() || '';
+
+    const numericPrice = (window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function')
+      ? TourismHubStore.parseNumericPriceFromLabel(priceStr, 0)
+      : (parseFloat(String(priceStr || '').replace(/[^0-9.]/g, '')) || 0);
+    const resolvedMapEmbed = (window.TourismHubStore && typeof TourismHubStore.normalizeMapEmbedUrl === 'function')
+      ? TourismHubStore.normalizeMapEmbedUrl(rawMapEmbed, title, location)
+      : `https://maps.google.com/maps?q=${encodeURIComponent(rawMapEmbed || `${title}, ${location}, Philippines`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 
     const targetFolderId = id || title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
     showToast('Saving attraction & uploading photo to Supabase...');
@@ -631,9 +683,13 @@ document.addEventListener('DOMContentLoaded', () => {
         location,
         operatingHours: hours,
         admission: priceStr,
+        priceLabel: priceStr,
+        price: numericPrice,
         capacityPerSlot: capacity,
         status,
         description: desc,
+        rawMapEmbed,
+        mapEmbed: resolvedMapEmbed,
         image: primaryImg,
         images: finalImages
       };
@@ -655,9 +711,12 @@ document.addEventListener('DOMContentLoaded', () => {
         location,
         operatingHours: hours,
         admission: priceStr,
-        price: 20,
+        priceLabel: priceStr,
+        price: numericPrice,
         capacityPerSlot: capacity,
         status,
+        rawMapEmbed,
+        mapEmbed: resolvedMapEmbed,
         image: primaryImg,
         images: finalImages,
         description: desc
@@ -770,7 +829,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  window.openAddEventModal = function(preselectedAttractionId = '') {
+  function formatShortEventDate(dateStr) {
+    if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return '';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  window.openAddEventModal = function(preselectedAttractionId = '', preselectedDate = '') {
     if (catalogData.length === 0) {
       showToast('Please catalog an attraction first before adding an event.');
       return;
@@ -786,6 +852,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (attrSel && preselectedAttractionId && catalogData.some(a => a.id === preselectedAttractionId)) {
       attrSel.value = preselectedAttractionId;
     }
+    const dateInput = document.getElementById('eventFormDate');
+    if (dateInput) {
+      const fallbackToday = (window.TourismHubStore && typeof TourismHubStore.formatLocalDateKey === 'function')
+        ? TourismHubStore.formatLocalDateKey(new Date())
+        : '';
+      dateInput.value = /^\d{4}-\d{2}-\d{2}$/.test(preselectedDate) ? preselectedDate : (adminSelectedCalDateStr || fallbackToday);
+    }
     adminEventModal?.classList.add('active');
   };
 
@@ -800,7 +873,16 @@ document.addEventListener('DOMContentLoaded', () => {
       attrSel.value = ev.parentAttractionId;
     }
     document.getElementById('eventFormTitle').value = ev.title || '';
-    document.getElementById('eventFormSchedule').value = ev.operatingHours || '';
+
+    const extractedDate = (window.TourismHubStore && typeof TourismHubStore.extractEventDateKey === 'function')
+      ? TourismHubStore.extractEventDateKey(ev)
+      : (ev.eventDate || '');
+    const dateInput = document.getElementById('eventFormDate');
+    if (dateInput) {
+      dateInput.value = extractedDate || '';
+    }
+    const rawHours = String(ev.operatingHours || '').replace(/^(?:[A-Z][a-z]{2}\s+\d{1,2},\s+\d{4}|\d{4}-\d{2}-\d{2})\s*·\s*/i, '').trim();
+    document.getElementById('eventFormSchedule').value = rawHours || ev.operatingHours || '';
     document.getElementById('eventFormAdmission').value = ev.admission || 'Free';
     document.getElementById('eventFormCapacity').value = ev.capacityPerSlot || 100;
     document.getElementById('eventFormDesc').value = ev.description || '';
@@ -819,10 +901,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = document.getElementById('eventModalId')?.value;
     const parentAttractionId = document.getElementById('eventFormAttractionId')?.value;
     const title = document.getElementById('eventFormTitle')?.value.trim();
-    const schedule = document.getElementById('eventFormSchedule')?.value.trim();
+    const eventDate = document.getElementById('eventFormDate')?.value.trim() || '';
+    const scheduleInput = document.getElementById('eventFormSchedule')?.value.trim();
     const admission = document.getElementById('eventFormAdmission')?.value.trim();
     const capacity = parseInt(document.getElementById('eventFormCapacity')?.value) || 100;
     const desc = document.getElementById('eventFormDesc')?.value.trim();
+
+    const datePrefix = formatShortEventDate(eventDate);
+    const operatingHours = (datePrefix && scheduleInput && !scheduleInput.startsWith(datePrefix))
+      ? `${datePrefix} · ${scheduleInput}`
+      : (scheduleInput || datePrefix || 'TBA');
+    const numericEventPrice = (window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function')
+      ? TourismHubStore.parseNumericPriceFromLabel(admission, 0)
+      : (parseFloat(String(admission || '').replace(/[^0-9.]/g, '')) || 0);
 
     const parentAttr = catalogData.find(a => a.id === parentAttractionId);
     const parentTitle = parentAttr ? parentAttr.title : 'Attraction Event';
@@ -842,9 +933,11 @@ document.addEventListener('DOMContentLoaded', () => {
       category: parentTitle,
       badge: parentAttractionId,
       location,
-      operatingHours: schedule,
+      eventDate,
+      priceLabel: eventDate,
+      operatingHours,
       admission,
-      price: parseFloat(admission.replace(/[^0-9.]/g, '')) || 0,
+      price: numericEventPrice,
       capacityPerSlot: capacity,
       status: 'active',
       description: desc,
@@ -868,10 +961,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    if (eventDate && /^\d{4}-\d{2}-\d{2}$/.test(eventDate)) {
+      const [ey, em] = eventDate.split('-').map(Number);
+      adminCalViewDate = new Date(ey, em - 1, 1);
+      adminSelectedCalDateStr = eventDate;
+    }
+
     showToast(id ? `Updated event "${title}"!` : `Scheduled "${title}" for ${parentTitle}!`);
     closeModal('adminEventModal');
     renderAdminEvents();
     renderCatalog();
+    renderAdminCapacityCalendar();
     updateOverviewStats();
   });
 
@@ -886,6 +986,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast(`Deleted event "${title}"`);
       renderAdminEvents();
       renderCatalog();
+      renderAdminCapacityCalendar();
       updateOverviewStats();
     }
   };
@@ -979,6 +1080,162 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   capacitySelect?.addEventListener('change', renderCapacitySlots);
+
+  // Admin Capacity & Schedule Interactive Monthly Events Calendar
+  let adminCalViewDate = new Date();
+  let adminSelectedCalDateStr = (window.TourismHubStore && typeof TourismHubStore.formatLocalDateKey === 'function')
+    ? TourismHubStore.formatLocalDateKey(new Date())
+    : `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`;
+
+  function escapeAdminHtml(str) {
+    return String(str || '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[ch]));
+  }
+
+  function renderAdminCapacityCalendar() {
+    const daysGrid = document.getElementById('adminCalDaysGrid');
+    const monthTitleEl = document.getElementById('adminCalMonthTitle');
+    const selectedTitleEl = document.getElementById('adminCalSelectedDateTitle');
+    const countBadgeEl = document.getElementById('adminCalEventsCountBadge');
+    const eventsListEl = document.getElementById('adminCalEventsList');
+    if (!daysGrid || !monthTitleEl || !eventsListEl) return;
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    const year = adminCalViewDate.getFullYear();
+    const month = adminCalViewDate.getMonth();
+    monthTitleEl.textContent = `${monthNames[month]} ${year}`;
+
+    // Index all events by YYYY-MM-DD
+    const eventsByDate = new Map();
+    const allEvents = Array.isArray(eventsData) ? eventsData : [];
+    allEvents.forEach(ev => {
+      const key = (window.TourismHubStore && typeof TourismHubStore.extractEventDateKey === 'function')
+        ? TourismHubStore.extractEventDateKey(ev)
+        : (ev.eventDate || '');
+      if (key) {
+        if (!eventsByDate.has(key)) eventsByDate.set(key, []);
+        eventsByDate.get(key).push(ev);
+      }
+    });
+
+    const todayKey = (window.TourismHubStore && typeof TourismHubStore.formatLocalDateKey === 'function')
+      ? TourismHubStore.formatLocalDateKey(new Date())
+      : `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+    let html = '';
+    for (let i = firstDay - 1; i >= 0; i--) {
+      html += `<span class="calendar-day-cell muted">${daysInPrevMonth - i}</span>`;
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const cellKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const dayEvents = eventsByDate.get(cellKey) || [];
+      const isToday = cellKey === todayKey;
+      const isSelected = cellKey === adminSelectedCalDateStr;
+      const cls = [
+        'calendar-day-cell',
+        isToday ? 'today' : '',
+        isSelected ? 'selected' : '',
+        dayEvents.length > 0 ? 'has-events' : ''
+      ].filter(Boolean).join(' ');
+
+      const dotBadge = dayEvents.length > 0
+        ? `<span class="cal-event-dot" title="${dayEvents.length} scheduled event${dayEvents.length > 1 ? 's' : ''}"></span>`
+        : '';
+
+      html += `<button type="button" class="${cls}" data-date="${cellKey}" aria-label="${cellKey} (${dayEvents.length} events)">
+        <span>${d}</span>${dotBadge}
+      </button>`;
+    }
+
+    const totalCells = firstDay + daysInMonth;
+    const trailingDays = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+    for (let j = 1; j <= trailingDays; j++) {
+      html += `<span class="calendar-day-cell muted">${j}</span>`;
+    }
+
+    daysGrid.innerHTML = html;
+    daysGrid.querySelectorAll('.calendar-day-cell[data-date]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        adminSelectedCalDateStr = btn.getAttribute('data-date');
+        renderAdminCapacityCalendar();
+      });
+    });
+
+    // Selected Day Upcoming Events Panel
+    let readableDate = adminSelectedCalDateStr;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(adminSelectedCalDateStr)) {
+      const [sy, sm, sd] = adminSelectedCalDateStr.split('-').map(Number);
+      readableDate = new Date(sy, sm - 1, sd).toLocaleDateString('en-US', {
+        weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+      });
+    }
+    if (selectedTitleEl) selectedTitleEl.textContent = readableDate;
+
+    const selectedEvents = eventsByDate.get(adminSelectedCalDateStr) || [];
+    if (countBadgeEl) {
+      countBadgeEl.textContent = `${selectedEvents.length} Event${selectedEvents.length === 1 ? '' : 's'}`;
+    }
+
+    if (selectedEvents.length === 0) {
+      eventsListEl.innerHTML = `
+        <div class="schedule-day-empty">
+          <p>No attraction events scheduled for <strong>${escapeAdminHtml(readableDate)}</strong>.</p>
+          <button type="button" class="btn-secondary btn-sm" onclick="openAddEventModal('', '${escapeAdminHtml(adminSelectedCalDateStr)}')">+ Schedule Event on This Day</button>
+        </div>
+      `;
+      return;
+    }
+
+    eventsListEl.innerHTML = selectedEvents.map(ev => {
+      const venueName = ev.attractionTitle || ev.category || 'Metro Manila Attraction';
+      return `
+        <div class="schedule-event-item">
+          <div class="schedule-event-main">
+            <div class="schedule-event-top">
+              <span class="schedule-event-venue">${escapeAdminHtml(venueName)}</span>
+              <span class="schedule-event-fee">${escapeAdminHtml(ev.admission || 'Free')}</span>
+            </div>
+            <h5>${escapeAdminHtml(ev.title)}</h5>
+            <p class="schedule-event-meta">${escapeAdminHtml(ev.operatingHours || 'TBA')} · Cap: ${Number(ev.capacityPerSlot || 100)} pax</p>
+          </div>
+          <div class="schedule-event-actions">
+            <button type="button" class="btn-secondary btn-sm" onclick="openEditEventModal('${escapeAdminHtml(ev.id)}')">Edit</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('adminCalPrevBtn')?.addEventListener('click', () => {
+    adminCalViewDate = new Date(adminCalViewDate.getFullYear(), adminCalViewDate.getMonth() - 1, 1);
+    renderAdminCapacityCalendar();
+  });
+  document.getElementById('adminCalNextBtn')?.addEventListener('click', () => {
+    adminCalViewDate = new Date(adminCalViewDate.getFullYear(), adminCalViewDate.getMonth() + 1, 1);
+    renderAdminCapacityCalendar();
+  });
+  document.getElementById('adminCalTodayBtn')?.addEventListener('click', () => {
+    const now = new Date();
+    adminCalViewDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    adminSelectedCalDateStr = (window.TourismHubStore && typeof TourismHubStore.formatLocalDateKey === 'function')
+      ? TourismHubStore.formatLocalDateKey(now)
+      : `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    renderAdminCapacityCalendar();
+  });
+  document.getElementById('adminCalAddEventBtn')?.addEventListener('click', () => {
+    openAddEventModal('', adminSelectedCalDateStr);
+  });
 
   // Add new time-slot prompt
   window.addSlotForAttraction = function(attrId) {
@@ -1769,6 +2026,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCatalog();
       renderAdminEvents();
       renderCapacitySlots();
+      renderAdminCapacityCalendar();
       renderAnnouncementsFeed();
       updateOverviewStats();
     });
@@ -1780,6 +2038,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCatalog();
   renderAdminEvents();
   renderCapacitySlots();
+  renderAdminCapacityCalendar();
   renderRecentScans();
   renderAnalyticsView();
   renderAnnouncementsFeed();

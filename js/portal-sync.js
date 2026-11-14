@@ -215,7 +215,7 @@
             <td><strong>${cap}</strong></td>
             <td>${booked}</td>
             <td><span class="${available > 0 ? 'avail-count-green' : 'avail-count-red'}">${available}</span></td>
-            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${cap}, ${booked}, ${available})">View</button></td>
+            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${cap}, ${booked}, ${available}, '${String(item.id).replace(/'/g, "\\'")}')">View</button></td>
           </tr>
         `;
       }).join('');
@@ -546,6 +546,8 @@
       syncNotificationsPage();
       syncScannerPage();
     }
+
+    window.syncCapacityPage = syncCapacityPage;
 
     // Initial sync
     refreshCurrentPage();

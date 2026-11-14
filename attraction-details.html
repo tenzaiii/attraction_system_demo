@@ -230,12 +230,9 @@
       </a>
 
       <div class="user-profile-wrapper">
-        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options" style="display: none;">
+        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options" style="display: none; cursor: pointer;">
           <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
             alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
-          <div class="portal-user-meta">
-            <span class="portal-user-name">Tourist Portal</span>
-          </div>
         </div>
       </div>
 
@@ -262,37 +259,67 @@
         <span id="breadcrumbCurrentTitle" style="color: var(--text-main); font-weight: 700;">Loading...</span>
       </nav>
 
-      <!-- 2-Column Hero Grid: Left = Picture Carousel, Right = Destination Details -->
+      <!-- 2-Column Hero Grid: Left = Picture Carousel + Map Embed, Right = Destination Details -->
       <section class="details-hero-grid">
 
-        <!-- Left Column: Interactive Picture Carousel -->
-        <div class="carousel-wrapper" aria-label="Destination Gallery Carousel">
-          <div class="carousel-viewport" id="carouselViewport">
-            <span class="carousel-caption-pill" id="carouselCaptionPill">Photo Gallery</span>
-            <img id="carouselMainImg" src="assets/hero-banner.jpg" alt="Attraction Showcase"
-              class="carousel-slide-img" loading="eager">
+        <!-- Left Column: Interactive Picture Carousel + Google Map Embed -->
+        <div class="details-left-column">
+          <div class="carousel-wrapper" aria-label="Destination Gallery Carousel">
+            <div class="carousel-viewport" id="carouselViewport">
+              <span class="carousel-caption-pill" id="carouselCaptionPill">Photo Gallery</span>
+              <img id="carouselMainImg" src="assets/hero-banner.jpg" alt="Attraction Showcase"
+                class="carousel-slide-img" loading="eager">
 
-            <!-- Prev / Next Navigation Arrows -->
-            <button type="button" class="carousel-nav-btn prev" id="carouselPrevBtn" aria-label="Previous Photo"
-              title="Previous Photo">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-            <button type="button" class="carousel-nav-btn next" id="carouselNextBtn" aria-label="Next Photo"
-              title="Next Photo">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
+              <!-- Prev / Next Navigation Arrows -->
+              <button type="button" class="carousel-nav-btn prev" id="carouselPrevBtn" aria-label="Previous Photo"
+                title="Previous Photo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button type="button" class="carousel-nav-btn next" id="carouselNextBtn" aria-label="Next Photo"
+                title="Next Photo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
 
-            <!-- Slide Counter Badge -->
-            <span class="carousel-badge" id="carouselCounter">1 / 4 Photos</span>
+              <!-- Slide Counter Badge -->
+              <span class="carousel-badge" id="carouselCounter">1 / 4 Photos</span>
+            </div>
+
+            <!-- Clickable Thumbnails Strip -->
+            <div class="carousel-thumbnails-strip" id="carouselThumbnails">
+              <!-- Populated via script -->
+            </div>
           </div>
 
-          <!-- Clickable Thumbnails Strip -->
-          <div class="carousel-thumbnails-strip" id="carouselThumbnails">
-            <!-- Populated via script -->
+          <!-- Location & Google Map Embed Section (Left Column Bottom of Picture) -->
+          <div class="details-map-section" id="attractionMapSection" aria-labelledby="attractionMapTitle">
+            <div class="details-map-card">
+              <div class="details-map-header">
+                <div>
+                  <h2 class="other-locations-title" id="attractionMapTitle" style="margin-bottom: 0.2rem; font-size: 1.15rem;">Location &amp; Interactive Map</h2>
+                  <p class="other-locations-subtitle" id="detailsMapAddressLabel" style="margin: 0; font-size: 0.84rem;">Explore directions and landmarks around this attraction.</p>
+                </div>
+                <a href="https://maps.google.com" id="detailsOpenGoogleMapsLink" target="_blank" rel="noopener noreferrer" class="btn-see-all-locations">
+                  <span>Open in Google Maps</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+              </div>
+              <div class="details-map-iframe-wrap">
+                <iframe id="detailsGoogleMapIframe"
+                  title="Google Map Location"
+                  src="about:blank"
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                  allowfullscreen></iframe>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -564,6 +591,69 @@
         return params.get('id') || '';
       }
 
+      function getAttractionNumericPrice(attr) {
+        if (!attr) return 0;
+        if (window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function') {
+          return TourismHubStore.parseNumericPriceFromLabel(attr.admission || attr.priceLabel || '', attr.price);
+        }
+        return (typeof attr.price === 'number' && !isNaN(attr.price)) ? attr.price : 0;
+      }
+
+      function populateAttractionDetailsUI(attr) {
+        if (!attr) return;
+        document.title = `${attr.title} — TourismHub`;
+        const titleEl = document.getElementById('detailsTitle');
+        const breadcrumbTitle = document.getElementById('breadcrumbCurrentTitle');
+        const topHeading = document.getElementById('topPageHeading');
+        if (titleEl) titleEl.textContent = attr.title;
+        if (breadcrumbTitle) breadcrumbTitle.textContent = attr.title;
+        if (topHeading) topHeading.textContent = attr.title;
+
+        const catEl = document.getElementById('detailsCategory');
+        const badgeEl = document.getElementById('detailsBadge');
+        if (catEl) catEl.textContent = attr.category || 'Tourist Spot';
+        if (badgeEl) badgeEl.textContent = attr.badge || 'Featured Destination';
+
+        const ratingEl = document.getElementById('detailsRating');
+        const reviewsEl = document.getElementById('detailsReviews');
+        if (ratingEl) ratingEl.textContent = attr.rating || '4.8';
+        if (reviewsEl) reviewsEl.textContent = `(${attr.reviews || '1.2k'} verified tourist reviews)`;
+
+        const descEl = document.getElementById('detailsDescription');
+        if (descEl) descEl.textContent = attr.description || 'Experience world-class resort amenities and sights with real-time pass issuance and gate verification.';
+
+        const locEl = document.getElementById('detailsLocation');
+        const hoursEl = document.getElementById('detailsHours');
+        const priceEl = document.getElementById('detailsPrice');
+        const numericFee = getAttractionNumericPrice(attr);
+        const syncedAdmission = attr.admission || attr.priceLabel || (numericFee > 0 ? `₱${numericFee}` : 'Free Admission');
+
+        if (locEl) locEl.textContent = attr.location || 'Metro Manila';
+        if (hoursEl) hoursEl.textContent = attr.operatingHours || '08:00 AM – 06:00 PM';
+        if (priceEl) priceEl.textContent = syncedAdmission;
+
+        // Google Map Embed & External Link
+        const mapIframe = document.getElementById('detailsGoogleMapIframe');
+        const mapAddrLabel = document.getElementById('detailsMapAddressLabel');
+        const mapExtLink = document.getElementById('detailsOpenGoogleMapsLink');
+        const rawMapInput = attr.rawMapEmbed || attr.mapEmbed || attr.map_embed || '';
+        const embedUrl = (window.TourismHubStore && typeof TourismHubStore.normalizeMapEmbedUrl === 'function')
+          ? TourismHubStore.normalizeMapEmbedUrl(rawMapInput, attr.title, attr.location)
+          : `https://maps.google.com/maps?q=${encodeURIComponent(`${attr.title}, ${attr.location || 'Manila'}, Philippines`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
+        if (mapIframe && mapIframe.getAttribute('src') !== embedUrl) {
+          mapIframe.src = embedUrl;
+          mapIframe.title = `Google Map of ${attr.title}`;
+        }
+        if (mapAddrLabel) {
+          mapAddrLabel.textContent = `${attr.title} · ${attr.location || 'Metro Manila'}, Philippines`;
+        }
+        if (mapExtLink) {
+          const extQuery = encodeURIComponent(`${attr.title}, ${attr.location || 'Manila'}, Philippines`);
+          mapExtLink.href = `https://www.google.com/maps/search/?api=1&query=${extQuery}`;
+        }
+      }
+
       // Initialize destination data and page UI
       function initDetailsPage() {
         if (!window.TourismHubStore) return;
@@ -574,14 +664,8 @@
         const reqId = getRequestedAttractionId();
         currentAttraction = catalog.find(a => a.id === reqId) || catalog[0];
 
-        // 1. Update Title and Browser Tab
-        document.title = `${currentAttraction.title} — TourismHub`;
-        const titleEl = document.getElementById('detailsTitle');
-        const breadcrumbTitle = document.getElementById('breadcrumbCurrentTitle');
-        const topHeading = document.getElementById('topPageHeading');
-        if (titleEl) titleEl.textContent = currentAttraction.title;
-        if (breadcrumbTitle) breadcrumbTitle.textContent = currentAttraction.title;
-        if (topHeading) topHeading.textContent = currentAttraction.title;
+        // 1-5. Populate Metadata, Synced Admission Rates & Google Map Embed
+        populateAttractionDetailsUI(currentAttraction);
 
         // Search Input Navigation
         const searchInput = document.getElementById('headerSearchInput');
@@ -594,30 +678,6 @@
             }
           });
         }
-
-        // 2. Badges & Categories
-        const catEl = document.getElementById('detailsCategory');
-        const badgeEl = document.getElementById('detailsBadge');
-        if (catEl) catEl.textContent = currentAttraction.category || 'Tourist Spot';
-        if (badgeEl) badgeEl.textContent = currentAttraction.badge || 'Featured Destination';
-
-        // 3. Rating & Reviews
-        const ratingEl = document.getElementById('detailsRating');
-        const reviewsEl = document.getElementById('detailsReviews');
-        if (ratingEl) ratingEl.textContent = currentAttraction.rating || '4.8';
-        if (reviewsEl) reviewsEl.textContent = `(${currentAttraction.reviews || '1.2k'} verified tourist reviews)`;
-
-        // 4. Description & Summary
-        const descEl = document.getElementById('detailsDescription');
-        if (descEl) descEl.textContent = currentAttraction.description || 'Experience world-class resort amenities and sights with real-time pass issuance and gate verification.';
-
-        // 5. Location & Operating Hours
-        const locEl = document.getElementById('detailsLocation');
-        const hoursEl = document.getElementById('detailsHours');
-        const priceEl = document.getElementById('detailsPrice');
-        if (locEl) locEl.textContent = currentAttraction.location || 'Metro Manila';
-        if (hoursEl) hoursEl.textContent = currentAttraction.operatingHours || '08:00 AM – 06:00 PM';
-        if (priceEl) priceEl.textContent = currentAttraction.priceLabel || currentAttraction.admission || `₱${currentAttraction.price || 15}`;
 
         // 6. Capacity Meter from Real-Time Store
         updateCapacityUI();
@@ -758,7 +818,20 @@
               liveItem.image = combinedImages[0];
             }
 
+            const prevAttr = currentAttraction;
+            if (!liveItem.rawMapEmbed && !liveItem.mapEmbed && prevAttr) {
+              liveItem.rawMapEmbed = prevAttr.rawMapEmbed || '';
+              liveItem.mapEmbed = prevAttr.mapEmbed || '';
+            }
+            const syncedAdmission = liveItem.admission || liveItem.priceLabel || (prevAttr && prevAttr.admission) || '';
+            if (syncedAdmission) {
+              liveItem.admission = syncedAdmission;
+              liveItem.priceLabel = syncedAdmission;
+              liveItem.price = getAttractionNumericPrice(liveItem);
+            }
+
             currentAttraction = liveItem;
+            populateAttractionDetailsUI(currentAttraction);
             initCarousel();
             if (typeof window.renderAttractionEvents === 'function') {
               window.renderAttractionEvents(currentAttraction.id);
@@ -985,7 +1058,8 @@
             capText = `${firstSlot.booked} / ${firstSlot.max} Pax`;
           }
 
-          const priceStr = item.priceLabel || item.admission || `₱${item.price || 15}`;
+          const numericPrice = getAttractionNumericPrice(item);
+          const priceStr = item.admission || item.priceLabel || (numericPrice > 0 ? `₱${numericPrice}` : 'Free Admission');
           const safeImg = (item.image && !String(item.image).includes('images.unsplash.com/photo-'))
             ? item.image
             : 'assets/no-image.svg';
@@ -1052,10 +1126,11 @@
         const modal = document.getElementById('detailsBookingModal');
         const imgEl = document.getElementById('bookingItemImg');
         const priceEl = document.getElementById('bookingItemPrice');
-        const unitPrice = currentAttraction.price || 15;
+        const unitPrice = getAttractionNumericPrice(currentAttraction);
+        const admissionText = currentAttraction.admission || currentAttraction.priceLabel || '';
 
         if (imgEl) imgEl.src = currentAttraction.image || 'assets/hero-banner.jpg';
-        if (priceEl) priceEl.textContent = `₱${unitPrice}`;
+        if (priceEl) priceEl.textContent = admissionText || (unitPrice > 0 ? `₱${unitPrice}` : 'Free (₱0)');
 
         recalculateBookingTotal();
         if (modal) {
@@ -1077,10 +1152,10 @@
       function recalculateBookingTotal() {
         if (!currentAttraction || !visitorCountInput) return;
         const count = Math.max(1, parseInt(visitorCountInput.value, 10) || 1);
-        const unitPrice = currentAttraction.price || 15;
+        const unitPrice = getAttractionNumericPrice(currentAttraction);
         const total = unitPrice * count;
         const totalEl = document.getElementById('bookingCalculatedTotal');
-        if (totalEl) totalEl.textContent = `₱${total}`;
+        if (totalEl) totalEl.textContent = total > 0 ? `₱${total}` : '₱0 (Free)';
       }
 
       if (visitorCountInput) {
@@ -1098,7 +1173,7 @@
           const count = parseInt(document.getElementById('bookingVisitorCount')?.value, 10) || 1;
           const guestName = document.getElementById('bookingPrimaryGuestName')?.value || activeUser?.name || 'Tourist Guest';
           const visitDate = document.getElementById('bookingPassDate')?.value || new Date().toISOString().split('T')[0];
-          const unitPrice = currentAttraction.price || 15;
+          const unitPrice = getAttractionNumericPrice(currentAttraction);
           const totalAmount = unitPrice * count;
 
           // Generate verified pass reference code
@@ -1203,6 +1278,7 @@
           const updated = catalog.find(a => a.id === reqId);
           if (updated) {
             currentAttraction = updated;
+            populateAttractionDetailsUI(currentAttraction);
             initCarousel();
           }
           if (typeof window.renderAttractionEvents === 'function') {

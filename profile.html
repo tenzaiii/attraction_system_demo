@@ -451,9 +451,6 @@
         <div class="portal-user-profile" id="userProfileBtn" title="My Profile & Options" style="cursor: pointer;">
           <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'400'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
             alt="User Avatar" class="portal-avatar-img" id="topAvatar">
-          <div class="portal-user-meta">
-            <span class="portal-user-name" id="topUserName">Tourist User</span>
-          </div>
         </div>
       </div>
     </div>
@@ -1166,7 +1163,8 @@
       }
 
       // Populate Hero & Header
-      document.getElementById('topUserName').textContent = user.name || 'User';
+      const topUserNameEl = document.getElementById('topUserName');
+      if (topUserNameEl) topUserNameEl.textContent = user.name || 'User';
       document.getElementById('heroName').textContent = user.name || 'User';
       document.getElementById('heroEmail').textContent = user.email || '';
       document.getElementById('heroCountry').textContent = user.country || 'Philippines';

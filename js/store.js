@@ -9,6 +9,7 @@
     ANNOUNCEMENTS: 'tourismhub_temp_announcements_v1',
     PASSES: 'tourismhub_temp_passes_v1',
     LOGS: 'tourismhub_temp_logs_v1',
+    MAP_EMBEDS: 'tourismhub_temp_map_embeds_v1',
     ADMIN_AUTH: 'tourismhub_temp_admin_auth_v1',
     ADMIN_PASSWORDS: 'tourismhub_temp_admin_passwords_v1',
     CLIENT_AUTH: 'tourismhub_temp_client_auth_v1',
@@ -17,6 +18,115 @@
   };
 
   const LEGACY_REMOVED_IDS = new Set(['pahiyas-festival', 'testing-testing', 'bayan-glori']);
+
+  function formatLocalDateKey(dateObj) {
+    if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) return '';
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const d = String(dateObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function parseNumericPriceFromLabel(label, fallbackPrice = 0) {
+    if (typeof label === 'string') {
+      const cleaned = label.replace(/,/g, '').trim();
+      const numMatch = cleaned.match(/(\d+(?:\.\d+)?)/);
+      if (numMatch) {
+        const val = parseFloat(numMatch[1]);
+        return isNaN(val) ? 0 : val;
+      }
+      if (/\bfree\b/i.test(cleaned)) {
+        return 0;
+      }
+    }
+    if (typeof fallbackPrice === 'number' && !isNaN(fallbackPrice)) {
+      return fallbackPrice;
+    }
+    const parsedFallback = parseFloat(fallbackPrice);
+    return isNaN(parsedFallback) ? 0 : parsedFallback;
+  }
+
+  function normalizeMapEmbedUrl(rawInput, title = '', location = 'Manila') {
+    const fallbackQuery = `${title || 'Metro Manila Attraction'}, ${location || 'Manila'}, Philippines`;
+    const buildSearchEmbed = (q) => `https://maps.google.com/maps?q=${encodeURIComponent(q)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
+    if (!rawInput || typeof rawInput !== 'string') {
+      return buildSearchEmbed(fallbackQuery);
+    }
+
+    let candidate = rawInput.trim();
+    if (!candidate) {
+      return buildSearchEmbed(fallbackQuery);
+    }
+
+    // Extract iframe src if full <iframe ...> HTML snippet was pasted
+    const iframeMatch = candidate.match(/<iframe[^>]*src=["']([^"']+)["']/i);
+    if (iframeMatch && iframeMatch[1]) {
+      candidate = iframeMatch[1].replace(/&amp;/g, '&').trim();
+    }
+
+    // Reject unsafe protocols
+    if (/^(javascript|data|vbscript):/i.test(candidate)) {
+      return buildSearchEmbed(fallbackQuery);
+    }
+
+    if (/^https?:\/\//i.test(candidate)) {
+      const lower = candidate.toLowerCase();
+      if (lower.includes('/maps/embed') || lower.includes('output=embed')) {
+        return candidate.replace(/^http:\/\//i, 'https://');
+      }
+      const coordMatch = candidate.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (coordMatch) {
+        return buildSearchEmbed(`${coordMatch[1]},${coordMatch[2]}`);
+      }
+      const placeMatch = candidate.match(/\/maps\/place\/([^/@?#]+)/i);
+      if (placeMatch && placeMatch[1]) {
+        return buildSearchEmbed(decodeURIComponent(placeMatch[1].replace(/\+/g, ' ')));
+      }
+      try {
+        const parsedUrl = new URL(candidate);
+        const qParam = parsedUrl.searchParams.get('q') || parsedUrl.searchParams.get('query');
+        if (qParam) return buildSearchEmbed(qParam);
+      } catch (_) {}
+      return buildSearchEmbed(fallbackQuery);
+    }
+
+    return buildSearchEmbed(candidate);
+  }
+
+  function extractEventDateKey(item) {
+    if (!item) return '';
+    const direct = typeof item === 'string' ? item : (item.eventDate || item.event_date || '');
+    if (typeof direct === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(direct.trim())) {
+      return direct.trim();
+    }
+    const priceDate = typeof item === 'object' ? (item.priceLabel || item.price_label || '') : '';
+    if (typeof priceDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(priceDate.trim())) {
+      return priceDate.trim();
+    }
+    const text = typeof item === 'string' ? item : (item.operatingHours || item.schedule || '');
+    if (!text) return '';
+
+    const isoMatch = text.match(/(\d{4}-\d{2}-\d{2})/);
+    if (isoMatch) return isoMatch[1];
+
+    const monthMap = {
+      jan: 0, january: 0, feb: 1, february: 1, mar: 2, march: 2,
+      apr: 3, april: 3, may: 4, jun: 5, june: 5, jul: 6, july: 6,
+      aug: 7, august: 7, sep: 8, sept: 8, september: 8,
+      oct: 9, october: 9, nov: 10, november: 10, dec: 11, december: 11
+    };
+    const textDateMatch = text.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?\s+(\d{1,2})(?:,?\s*(\d{4}))?/i);
+    if (textDateMatch) {
+      const mIdx = monthMap[textDateMatch[1].toLowerCase()];
+      const day = parseInt(textDateMatch[2], 10);
+      const year = textDateMatch[3] ? parseInt(textDateMatch[3], 10) : new Date().getFullYear();
+      if (mIdx !== undefined && day >= 1 && day <= 31) {
+        return formatLocalDateKey(new Date(year, mIdx, day));
+      }
+    }
+    return '';
+  }
 
   function normalizeLocation(loc) {
     const s = String(loc || '').toLowerCase();
@@ -61,20 +171,62 @@
     const { image, images } = extractSingleImage(item);
     const normalizedType = mapCategoryToType(item.category, item.type);
     const normalizedCategory = normalizeCategoryLabel(item.category, normalizedType);
+    const normalizedLocation = normalizeLocation(item.location);
+
+    const rawAdmissionInput = (typeof item.admission === 'string' && item.admission.trim())
+      ? item.admission.trim()
+      : ((typeof item.priceLabel === 'string' && item.priceLabel.trim()) ? item.priceLabel.trim() : '');
+    const numericPrice = parseNumericPriceFromLabel(rawAdmissionInput, item.price);
+    const syncedAdmission = (rawAdmissionInput || (numericPrice > 0 ? `₱${numericPrice}` : 'Free Admission'))
+      .replace(/\$(\d+)/g, '₱$1');
+
+    const localMaps = getItem(KEYS.MAP_EMBEDS, {});
+    const localMapEntry = (item.id && localMaps && typeof localMaps === 'object') ? localMaps[item.id] : null;
+    const hasExplicitRaw = typeof item.rawMapEmbed === 'string';
+    const rawMapInput = hasExplicitRaw
+      ? item.rawMapEmbed.trim()
+      : String(item.mapEmbed || item.map_embed || (localMapEntry && (localMapEntry.raw || localMapEntry.embed)) || '').trim();
+    const resolvedMapEmbed = normalizeMapEmbedUrl(rawMapInput, item.title || '', normalizedLocation);
+
     return {
       ...item,
       category: normalizedCategory,
       type: normalizedType,
-      location: normalizeLocation(item.location),
+      location: normalizedLocation,
       image,
       images,
-      priceLabel: typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : item.priceLabel,
-      admission: typeof item.admission === 'string' ? item.admission.replace(/\$(\d+)/g, '₱$1') : item.admission
+      price: numericPrice,
+      priceLabel: syncedAdmission,
+      admission: syncedAdmission,
+      rawMapEmbed: rawMapInput,
+      mapEmbed: resolvedMapEmbed
     };
+  }
+
+  function persistLocalMapEmbed(attraction) {
+    if (!attraction || !attraction.id) return;
+    const localMaps = getItem(KEYS.MAP_EMBEDS, {});
+    const next = (localMaps && typeof localMaps === 'object') ? { ...localMaps } : {};
+    if (attraction.rawMapEmbed) {
+      next[attraction.id] = {
+        raw: attraction.rawMapEmbed,
+        embed: attraction.mapEmbed || normalizeMapEmbedUrl(attraction.rawMapEmbed, attraction.title, attraction.location)
+      };
+    } else {
+      delete next[attraction.id];
+    }
+    setItem(KEYS.MAP_EMBEDS, next);
   }
 
   function normalizeEventItem(item) {
     const { image, images } = extractSingleImage(item);
+    const eventDate = extractEventDateKey(item);
+    const rawAdmissionInput = (typeof item.admission === 'string' && item.admission.trim())
+      ? item.admission.trim()
+      : 'Free Entry';
+    const syncedAdmission = rawAdmissionInput.replace(/\$(\d+)/g, '₱$1');
+    const numericPrice = parseNumericPriceFromLabel(syncedAdmission, item.price);
+
     return {
       ...item,
       type: 'event',
@@ -83,12 +235,14 @@
       category: item.attractionTitle || item.category || 'Attraction Event',
       badge: item.parentAttractionId || item.badge || '',
       location: normalizeLocation(item.location),
+      eventDate,
       operatingHours: item.operatingHours || item.schedule || 'TBA',
       capacityPerSlot: Number(item.capacityPerSlot || item.capacity || 100),
       image,
       images,
-      priceLabel: typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : item.priceLabel,
-      admission: typeof item.admission === 'string' ? item.admission.replace(/\$(\d+)/g, '₱$1') : item.admission
+      price: numericPrice,
+      priceLabel: eventDate || (typeof item.priceLabel === 'string' ? item.priceLabel.replace(/\$(\d+)/g, '₱$1') : syncedAdmission),
+      admission: syncedAdmission
     };
   }
 
@@ -181,7 +335,7 @@
       rating: '4.8',
       reviews: '1.2k',
       price: 15,
-      priceLabel: 'Free / Guided ₱15',
+      priceLabel: 'Free Entry / Guided ₱15',
       admission: 'Free Entry / Guided ₱15',
       operatingHours: '06:00 AM - 09:00 PM',
       capacityPerSlot: 150,
@@ -190,6 +344,7 @@
       badge: 'Iconic Landmark',
       location: 'Manila',
       status: 'active',
+      rawMapEmbed: 'Rizal Monument & Luneta Park, Ermita, Manila, Philippines',
       description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines with ceremonial guards.'
     },
     {
@@ -200,7 +355,7 @@
       rating: '4.8',
       reviews: '2.1k',
       price: 20,
-      priceLabel: 'Pass from ₱20',
+      priceLabel: 'Heritage Pass ₱20',
       admission: 'Heritage Pass ₱20',
       operatingHours: '08:00 AM - 06:00 PM',
       capacityPerSlot: 120,
@@ -209,6 +364,7 @@
       badge: 'UNESCO Heritage',
       location: 'Manila',
       status: 'active',
+      rawMapEmbed: 'Intramuros, Manila, Philippines',
       description: 'Centuries of Spanish colonial history featuring stone ramparts, Fort Santiago, cobblestone roadways, and museum plazas.'
     },
     {
@@ -219,7 +375,7 @@
       rating: '4.8',
       reviews: '1.6k',
       price: 0,
-      priceLabel: 'Free Entry',
+      priceLabel: 'Free Admission',
       admission: 'Free Admission',
       operatingHours: '05:00 AM - 09:00 PM',
       capacityPerSlot: 200,
@@ -228,6 +384,7 @@
       badge: 'QC Landmark',
       location: 'Quezon City',
       status: 'active',
+      rawMapEmbed: 'Quezon Memorial Circle, Diliman, Quezon City, Philippines',
       description: 'Iconic elliptical park and national shrine in Quezon City featuring museums, landscaped gardens, and recreational trails.'
     },
     {
@@ -247,6 +404,7 @@
       badge: 'Eco Sanctuary',
       location: 'Quezon City',
       status: 'active',
+      rawMapEmbed: 'La Mesa Eco Park, Greater Lagro, Quezon City, Philippines',
       description: 'Lush urban watershed reserve in Quezon City offering shaded canopy trails, picnic groves, and guided nature walks.'
     },
     {
@@ -257,7 +415,7 @@
       rating: '4.9',
       reviews: '2.4k',
       price: 0,
-      priceLabel: 'Free Entry',
+      priceLabel: 'Free Admission (Timed Pass)',
       admission: 'Free Admission (Timed Pass)',
       operatingHours: '09:00 AM - 06:00 PM',
       capacityPerSlot: 180,
@@ -266,6 +424,7 @@
       badge: 'Cultural Gem',
       location: 'Manila',
       status: 'active',
+      rawMapEmbed: 'National Museum of Fine Arts, Ermita, Manila, Philippines',
       description: 'Premier museum cluster in Manila showcasing fine arts, anthropology, and natural history collections.'
     }
   ];
@@ -531,15 +690,29 @@
   function syncCatalogAndEventsFromRemote(remoteRows) {
     if (!Array.isArray(remoteRows)) return;
     const validRows = remoteRows.filter(item => item && item.id && !LEGACY_REMOVED_IDS.has(item.id) && item.type !== 'festival');
-    const remoteAttractions = validRows.filter(item => item.type !== 'event').map(normalizeAttractionItem);
+    const remoteAttractionsRaw = validRows.filter(item => item.type !== 'event');
     const remoteEvents = validRows.filter(item => item.type === 'event').map(normalizeEventItem);
 
-    if (remoteAttractions.length > 0) {
+    if (remoteAttractionsRaw.length > 0) {
       const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG)
         .filter(item => item && item.id && item.type !== 'event' && item.type !== 'festival' && !LEGACY_REMOVED_IDS.has(item.id));
       const catalogMap = new Map();
       localCatalog.forEach(item => catalogMap.set(item.id, normalizeAttractionItem(item)));
-      remoteAttractions.forEach(item => catalogMap.set(item.id, item));
+      remoteAttractionsRaw.forEach(rawRemote => {
+        const existingLocal = catalogMap.get(rawRemote.id);
+        const mergedRaw = {
+          ...(existingLocal || {}),
+          ...rawRemote
+        };
+        if (!rawRemote.mapEmbed && !rawRemote.map_embed && !rawRemote.rawMapEmbed && existingLocal) {
+          mergedRaw.rawMapEmbed = existingLocal.rawMapEmbed || existingLocal.mapEmbed || '';
+        }
+        const normalized = normalizeAttractionItem(mergedRaw);
+        if (rawRemote.mapEmbed || rawRemote.map_embed || rawRemote.rawMapEmbed) {
+          persistLocalMapEmbed(normalized);
+        }
+        catalogMap.set(rawRemote.id, normalized);
+      });
       const mergedCatalog = Array.from(catalogMap.values());
       setItem(KEYS.CATALOG, mergedCatalog);
     }
@@ -561,6 +734,7 @@
     },
     addAttraction(item) {
       const normalized = normalizeAttractionItem(item);
+      persistLocalMapEmbed(normalized);
       const catalog = this.getCatalog();
       catalog.unshift(normalized);
       this.saveCatalog(catalog);
@@ -589,6 +763,7 @@
       const idx = catalog.findIndex(a => a.id === id);
       if (idx !== -1) {
         const merged = normalizeAttractionItem({ ...catalog[idx], ...updates });
+        persistLocalMapEmbed(merged);
         catalog[idx] = merged;
         this.saveCatalog(catalog);
 
@@ -603,6 +778,7 @@
       let catalog = this.getCatalog();
       catalog = catalog.filter(a => a.id !== id);
       this.saveCatalog(catalog);
+      persistLocalMapEmbed({ id, rawMapEmbed: '' });
 
       // Cascade delete any events belonging to this attraction
       const existingEvents = this.getEvents();
@@ -637,6 +813,14 @@
       }
       return list;
     },
+    getEventsByDate(dateStr) {
+      if (!dateStr) return this.getEvents();
+      return this.getEvents().filter(ev => extractEventDateKey(ev) === dateStr);
+    },
+    formatLocalDateKey,
+    parseNumericPriceFromLabel,
+    normalizeMapEmbedUrl,
+    extractEventDateKey,
     saveEvents(events) {
       setItem(KEYS.EVENTS, events);
     },
@@ -1323,6 +1507,7 @@
       setItem(KEYS.CLIENT_AUTH, null);
       setItem(KEYS.CLIENT_USERS, DEFAULT_CLIENT_USERS);
       setItem(KEYS.FAVORITES, {});
+      setItem(KEYS.MAP_EMBEDS, {});
     }
   };
 

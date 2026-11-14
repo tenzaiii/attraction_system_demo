@@ -317,6 +317,10 @@
       }
 
       const isEvent = row.type === 'event';
+      const rawAdmission = row.admission ? String(row.admission).replace(/\$(\d+)/g, '₱$1') : '';
+      const rawPriceLabel = row.price_label ? String(row.price_label).replace(/\$(\d+)/g, '₱$1') : '';
+      const syncedLabel = rawAdmission || rawPriceLabel || (row.price ? `₱${row.price}` : 'Free Admission');
+      const eventDate = (isEvent && /^\d{4}-\d{2}-\d{2}$/.test(rawPriceLabel.trim())) ? rawPriceLabel.trim() : undefined;
 
       return {
         id: row.id,
@@ -325,12 +329,13 @@
         type: row.type || 'attraction',
         parentAttractionId: isEvent ? (row.badge || '') : undefined,
         attractionTitle: isEvent ? (row.category || 'Attraction Event') : undefined,
+        eventDate,
         status: row.status || 'active',
         rating: row.rating ? String(row.rating) : '4.8',
         reviews: row.reviews ? String(row.reviews) : '1.2k',
-        price: row.price !== null && row.price !== undefined ? Number(row.price) : 20,
-        priceLabel: (row.price_label ? String(row.price_label).replace(/\$(\d+)/g, '₱$1') : null) || (row.price ? `₱${row.price}` : 'Free'),
-        admission: (row.admission ? String(row.admission).replace(/\$(\d+)/g, '₱$1') : 'Standard Admission'),
+        price: row.price !== null && row.price !== undefined ? Number(row.price) : 0,
+        priceLabel: isEvent ? (rawPriceLabel || '') : syncedLabel,
+        admission: rawAdmission || syncedLabel,
         operatingHours: row.operating_hours || '08:00 AM - 06:00 PM',
         capacityPerSlot: row.capacity_per_slot || 100,
         image: rawImage,
@@ -338,6 +343,7 @@
         location: row.location || 'Manila',
         badge: row.badge || 'Featured',
         description: row.description || '',
+        ...(row.map_embed ? { mapEmbed: row.map_embed, rawMapEmbed: row.map_embed } : {}),
         created_at: row.created_at,
         updated_at: row.updated_at
       };
@@ -348,8 +354,9 @@
      */
     mapCatalogToDb(item) {
       if (!item) return null;
-      const priceVal = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+      const priceVal = typeof item.price === 'number' && !isNaN(item.price) ? item.price : (parseFloat(item.price) || 0);
       const isEvent = item.type === 'event';
+      const syncedAdmission = item.admission || item.priceLabel || (priceVal ? `₱${priceVal}` : 'Free Admission');
 
       // Ensure max 1 picture and purge any mock unsplash links
       let cleanImages = (Array.isArray(item.images) ? item.images : (item.image ? [item.image] : []))
@@ -371,14 +378,15 @@
         rating: String(item.rating || '4.8'),
         reviews: String(item.reviews || '100'),
         price: priceVal,
-        price_label: item.priceLabel || item.price_label || (priceVal ? `₱${priceVal}` : 'Free'),
-        admission: item.admission || 'Standard Admission',
+        price_label: isEvent ? (item.eventDate || item.priceLabel || '') : syncedAdmission,
+        admission: syncedAdmission,
         operating_hours: item.operatingHours || item.operating_hours || '08:00 AM - 06:00 PM',
         capacity_per_slot: Number(item.capacityPerSlot || item.capacity_per_slot || 100),
         image: primaryImg,
         images: cleanImages,
         location: item.location || 'Manila',
         badge: isEvent ? (item.parentAttractionId || item.badge || '') : (item.badge || 'Featured'),
+        map_embed: item.rawMapEmbed || item.mapEmbed || '',
         description: item.description || ''
       };
     },
@@ -415,11 +423,24 @@
           .upsert([dbPayload], { onConflict: 'id' })
           .select();
 
-        // Graceful fallback if `images` column is not yet present in live Supabase table
-        if (error && error.message && error.message.toLowerCase().includes('images')) {
-          console.warn('⚠️ [Supabase] Retrying catalog upsert without `images` column...');
-          const fallbackPayload = { ...dbPayload };
-          delete fallbackPayload.images;
+        // Graceful fallback if optional columns (`images`, `map_embed`) are missing in live Supabase schema
+        let fallbackPayload = { ...dbPayload };
+        let attempts = 0;
+        while (error && error.message && attempts < 2) {
+          const msg = error.message.toLowerCase();
+          let stripped = false;
+          if (msg.includes('images') && Object.prototype.hasOwnProperty.call(fallbackPayload, 'images')) {
+            console.warn('⚠️ [Supabase] Retrying catalog upsert without `images` column...');
+            delete fallbackPayload.images;
+            stripped = true;
+          }
+          if (msg.includes('map_embed') && Object.prototype.hasOwnProperty.call(fallbackPayload, 'map_embed')) {
+            console.warn('⚠️ [Supabase] Retrying catalog upsert without `map_embed` column...');
+            delete fallbackPayload.map_embed;
+            stripped = true;
+          }
+          if (!stripped) break;
+          attempts++;
           const retryRes = await supabaseClient
             .from('catalog')
             .upsert([fallbackPayload], { onConflict: 'id' })

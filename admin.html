@@ -476,6 +476,49 @@
             <!-- Populated via admin.js -->
           </div>
 
+          <!-- Capacity & Schedule: Interactive Monthly Events Calendar -->
+          <section class="admin-capacity-calendar-section" id="adminCapacityCalendarSection" aria-label="Upcoming Events Calendar">
+            <div class="section-header-flex" style="margin-top: 2rem; margin-bottom: 1rem;">
+              <div>
+                <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Upcoming Events Calendar</h2>
+                <p style="font-size: 0.88rem; color: var(--text-muted);">Select any date on the calendar to view or schedule attraction events for that day.</p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                <button type="button" class="btn-secondary btn-sm" id="adminCalTodayBtn">Today</button>
+                <button type="button" class="btn-primary btn-sm" id="adminCalAddEventBtn">+ Add Event for Day</button>
+              </div>
+            </div>
+
+            <div class="schedule-calendar-layout">
+              <div class="calendar-view-card schedule-calendar-card">
+                <div class="calendar-view-header">
+                  <h4 id="adminCalMonthTitle">November 2026</h4>
+                  <div class="cal-nav-arrows">
+                    <button type="button" id="adminCalPrevBtn" title="Previous month" aria-label="Previous month">&lsaquo;</button>
+                    <button type="button" id="adminCalNextBtn" title="Next month" aria-label="Next month">&rsaquo;</button>
+                  </div>
+                </div>
+                <div class="calendar-weekdays-grid">
+                  <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                </div>
+                <div class="calendar-days-grid" id="adminCalDaysGrid"></div>
+              </div>
+
+              <div class="schedule-day-events-panel">
+                <div class="schedule-day-events-header">
+                  <div>
+                    <span class="schedule-day-eyebrow">Events Scheduled For</span>
+                    <h4 id="adminCalSelectedDateTitle">Select a Date</h4>
+                  </div>
+                  <span class="schedule-events-badge" id="adminCalEventsCountBadge">0 Events</span>
+                </div>
+                <div class="schedule-day-events-list" id="adminCalEventsList">
+                  <!-- Populated via js/admin.js -->
+                </div>
+              </div>
+            </div>
+          </section>
+
         </section>
 
         <!-- ======================================================================
@@ -828,6 +871,21 @@
           </div>
 
           <div class="form-group" style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <label for="attrFormMapEmbed" style="margin-bottom: 0;">Google Maps Embed (Optional)</label>
+              <button type="button" class="btn-secondary btn-sm" id="attrTestMapEmbedBtn" style="padding: 0.25rem 0.65rem; font-size: 0.76rem;">Preview Map</button>
+            </div>
+            <input type="text" id="attrFormMapEmbed" class="form-control"
+              placeholder="Paste Google Maps &lt;iframe&gt;, embed link, Google Maps URL, or exact place address">
+            <p style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.35rem; margin-bottom: 0;">
+              Accepts an &lt;iframe&gt; snippet from Google Maps "Share &rarr; Embed a map", a Maps link, or a place name (defaults automatically from title &amp; location if blank).
+            </p>
+            <div id="attrMapEmbedPreviewWrap" style="display: none; margin-top: 0.65rem; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border); background: var(--bg-subtle);">
+              <iframe id="attrMapEmbedPreviewIframe" title="Google Maps Preview" style="width: 100%; height: 170px; border: 0; display: block;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
               <label style="font-weight: 700; margin-bottom: 0;">Attraction Photo (1 Picture)</label>
               <span id="attrPhotoCountBadge" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">0 / 1 picture</span>
@@ -890,20 +948,26 @@
 
           <div class="form-row-2">
             <div class="form-group">
-              <label for="eventFormSchedule">Event Date & Time *</label>
-              <input type="text" id="eventFormSchedule" class="form-control" placeholder="e.g. Nov 20, 05:00 PM - 08:00 PM"
+              <label for="eventFormDate">Event Date *</label>
+              <input type="date" id="eventFormDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="eventFormSchedule">Event Time / Schedule *</label>
+              <input type="text" id="eventFormSchedule" class="form-control" placeholder="e.g. 05:00 PM - 08:00 PM"
                 required>
             </div>
+          </div>
+
+          <div class="form-row-2">
             <div class="form-group">
               <label for="eventFormAdmission">Admission / Fee Label *</label>
               <input type="text" id="eventFormAdmission" class="form-control" placeholder="e.g. Free / Event Pass ₱100"
                 required>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label for="eventFormCapacity">Event Capacity Cap *</label>
-            <input type="number" id="eventFormCapacity" class="form-control" placeholder="100" min="10" value="100" required>
+            <div class="form-group">
+              <label for="eventFormCapacity">Event Capacity Cap *</label>
+              <input type="number" id="eventFormCapacity" class="form-control" placeholder="100" min="10" value="100" required>
+            </div>
           </div>
 
           <div class="form-group">

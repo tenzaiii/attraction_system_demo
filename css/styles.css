@@ -775,18 +775,20 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-subtle, #f8fafc);
-  border: 1px solid var(--border, #e2e8f0);
-  color: var(--text-main, #475569) !important;
+  background: linear-gradient(135deg, #0284c7 0%, #1d70f5 100%);
+  border: 1px solid #0284c7;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
   text-decoration: none;
   transition: var(--transition);
   flex-shrink: 0;
 }
 
 .nav-admin-dashboard-btn:hover {
-  background: var(--primary-light, #e0f2fe);
-  border-color: var(--primary, #0284c7);
-  color: var(--primary, #0284c7) !important;
+  background: linear-gradient(135deg, #0369a1 0%, #1a62d8 100%);
+  border-color: #0369a1;
+  color: #ffffff !important;
+  box-shadow: 0 6px 14px rgba(2, 132, 199, 0.42);
   transform: translateY(-1px);
 }
 
@@ -2575,6 +2577,23 @@ img {
   color: #ffffff;
 }
 
+/* Dedicated Blue Hover Theme for Admin Dashboard Action in Sidebar */
+.sidebar-menu-link[data-nav="admin-dashboard"] {
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-menu-link[data-nav="admin-dashboard"]:hover {
+  background: linear-gradient(135deg, #0284c7 0%, #1d70f5 100%) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(29, 112, 245, 0.42);
+}
+
+.sidebar-menu-link[data-nav="admin-dashboard"]:hover .sidebar-item-icon svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
 /* Notification Red Dot Badge */
 .sidebar-item-badge-dot {
   width: 8px;
@@ -2756,13 +2775,20 @@ img {
   transform: translateX(-3px);
 }
 
-/* Two-Column Grid: Carousel (Left) & Description (Right) */
+/* Two-Column Grid: Carousel + Map (Left) & Description (Right) */
 .details-hero-grid {
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   gap: 2.25rem;
   align-items: start;
   margin-bottom: 3.5rem;
+}
+
+.details-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
 }
 
 @media (max-width: 960px) {
@@ -3430,6 +3456,56 @@ img {
   background: var(--primary);
   border-color: var(--primary);
   color: #ffffff;
+}
+
+/* ==========================================================================
+   Attraction Details: Location & Interactive Google Map Section
+   ========================================================================== */
+.details-map-section {
+  width: 100%;
+}
+
+.details-map-card {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--radius-lg, 14px);
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+.details-map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.details-map-iframe-wrap {
+  width: 100%;
+  height: 250px;
+  border-radius: var(--radius-md, 10px);
+  overflow: hidden;
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--bg-subtle, #f8fafc);
+}
+
+.details-map-iframe-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .details-map-card {
+    padding: 1.1rem;
+  }
+
+  .details-map-iframe-wrap {
+    height: 270px;
+  }
 }
 
 

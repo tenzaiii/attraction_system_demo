@@ -601,12 +601,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    const numericPrice = (window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function')
+      ? TourismHubStore.parseNumericPriceFromLabel(attraction.admission || attraction.priceLabel || '', attraction.price)
+      : (typeof attraction.price === 'number' ? attraction.price : 0);
     if (modalTitle) modalTitle.textContent = `Reserve Pass: ${attraction.title}`;
     if (modalImg) {
       modalImg.src = (attraction.image && !String(attraction.image).includes('images.unsplash.com/photo-')) ? attraction.image : 'assets/no-image.svg';
       modalImg.onerror = function() { this.src = 'assets/no-image.svg'; };
     }
-    if (modalPrice) modalPrice.textContent = `₱${attraction.price || 20}`;
+    if (modalPrice) modalPrice.textContent = attraction.admission || attraction.priceLabel || (numericPrice > 0 ? `₱${numericPrice}` : 'Free (₱0)');
     if (bookingAttractionInput) bookingAttractionInput.value = attraction.id;
 
     recalcTotal();
@@ -631,14 +634,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const visitorCountInput = document.getElementById('visitorCount');
   const totalPriceDisplay = document.getElementById('bookingTotalPrice');
 
+  function getResolvedAttractionPrice(attr) {
+    if (!attr) return 0;
+    if (window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function') {
+      return TourismHubStore.parseNumericPriceFromLabel(attr.admission || attr.priceLabel || '', attr.price);
+    }
+    return (typeof attr.price === 'number' && !isNaN(attr.price)) ? attr.price : 0;
+  }
+
   function recalcTotal() {
     if (!visitorCountInput || !totalPriceDisplay) return;
     const attractionId = document.getElementById('bookingAttractionId')?.value;
     const attraction = (window.TourismHubStore ? TourismHubStore.getCatalog() : attractionsData).find(a => a.id === attractionId) || attractionsData[0];
     const count = parseInt(visitorCountInput.value, 10) || 1;
-    const unitPrice = attraction.price || 20;
+    const unitPrice = getResolvedAttractionPrice(attraction);
     const total = unitPrice * count;
-    totalPriceDisplay.textContent = `₱${total}`;
+    totalPriceDisplay.textContent = total > 0 ? `₱${total}` : '₱0';
   }
 
   if (visitorCountInput) {
@@ -661,6 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const codeSuffix = (attraction.type || 'VIS').substring(0, 3).toUpperCase();
       const passCode = `PASS-${randDigits}-${codeSuffix}`;
       const activeUser = (window.TourismHubStore && (TourismHubStore.getClientAuth() || TourismHubStore.getAdminAuth())) || null;
+      const unitPrice = getResolvedAttractionPrice(attraction);
 
       if (window.TourismHubStore) {
         TourismHubStore.addPass({
@@ -676,7 +688,7 @@ document.addEventListener('DOMContentLoaded', () => {
           slot: '09:00 AM - 12:00 PM',
           passType: 'Standard Tourist Pass',
           status: 'valid',
-          amount: `₱${(attraction.price || 20) * count}.00`,
+          amount: `₱${unitPrice * count}.00`,
           validDate: visitDate
         });
       }
