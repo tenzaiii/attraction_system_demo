@@ -224,14 +224,7 @@
                 </div>
               </div>
             </td>
-            <td><span class="portal-pill-badge ${pillClass}">${typeLabel}</span></td>
             <td>${dateStr}</td>
-            <td><span class="portal-pill-badge green">Sent</span></td>
-            <td style="text-align: right;">
-              <button class="action-arrow-btn" style="margin-left: auto;" onclick="openAnnouncementDetail('${ann.title.replace(/'/g, "\\'")}', '${(ann.text || '').replace(/'/g, "\\'")}', '${typeLabel}', '${dateStr}', '${(ann.target || 'All Visitors').replace(/'/g, "\\'")}')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </td>
           </tr>
         `;
       }).join('');

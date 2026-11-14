@@ -31,6 +31,6 @@ This document defines persistent rules, workspace conventions, and operating gui
 6. **Pre-Completion Code Validation**:
    - Always run Node.js syntax verification on modified scripts before reporting completion:
      ```powershell
-     node -c js/store.js js/app.js js/login.js js/admin.js js/admin-login.js js/sidebar.js js/portal-sync.js js/profile-dropdown.js js/supabase-client.js js/supabase-config.js
+     node -c js/store.js js/app.js js/login.js js/admin.js js/scanner.js js/sidebar.js js/portal-sync.js js/profile-dropdown.js js/supabase-client.js js/supabase-config.js
      ```
 

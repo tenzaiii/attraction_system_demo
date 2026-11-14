@@ -37,7 +37,7 @@ attraction_system_demo/
 ├── .gitignore                # Git ignore rules
 ├── index.html                # Public Tourist Portal (Hero, category search, featured catalog, booking modal)
 ├── login.html                # Primary Landing & Authentication Portal (Tourist & Operator login/registration)
-├── admin-login.html          # Legacy operator login page (auto-redirects to login.html)
+├── admin-login.html          # Legacy operator login redirect stub (auto-redirects to login.html)
 ├── admin.html                # Operator Admin Dashboard (Catalog CRUD, capacity sliders, gate scanner, analytics)
 ├── attraction-details.html   # Dedicated Attraction Details Page (Gallery carousel, capacity, booking, favorites, related)
 ├── attractions.html          # Public Sub-Page: Attractions & Events Catalog Browser + Modal
@@ -50,6 +50,7 @@ attraction_system_demo/
 ├── todo.txt                  # Operational task log and implementation notes
 ├── assets/
 │   ├── hero-banner.jpg       # Hero showcase banner
+│   ├── no-image.svg          # Default placeholder image when attraction photos are absent
 │   ├── pahiyas-festival.jpg  # Lucban Pahiyas Festival media asset
 │   ├── qc-memorial-circle.jpg# Quezon Memorial Circle media asset
 │   ├── rizal-monument.jpg    # Rizal Monument & Luneta Park media asset
@@ -58,18 +59,18 @@ attraction_system_demo/
 │   ├── styles.css            # Main portal styling, CSS custom properties, dark mode tokens, modal & pass styles
 │   ├── login.css             # Split-screen responsive authentication UI styling
 │   ├── admin.css             # Operator Admin console styling (dark navy rail, analytics widgets)
-│   ├── admin-login.css       # Security terminal styling (legacy admin login)
+│   ├── dark-overrides.css    # Explicit dark-mode token and contrast overrides
 │   └── portal-pages.css      # Shared styling for sub-pages (top bar, tables, stat cards, scanner reticle, dark mode)
 ├── database/
 │   ├── supabase_schema.sql   # PostgreSQL / Supabase schema (UUIDs, RLS policies, seed profiles, catalog, passes)
 │   └── schema.sql            # MySQL / MariaDB relational reference schema
 └── js/
     ├── admin.js              # Operator console logic (tab routing, catalog CRUD, capacity sliders, logs)
-    ├── admin-login.js        # Legacy admin terminal login script
     ├── app.js                # Main tourist portal controller (catalog filters, booking gate, toast engine)
     ├── login.js              # Unified authentication, session handling, 1-click demo quick-fill, validations
     ├── portal-sync.js        # Multi-tab bidirectional sync engine for standalone portal pages
     ├── profile-dropdown.js   # Universal profile navigation controller & dark mode bootstrapper
+    ├── scanner.js            # Standalone entry pass QR scanner and manual verification logic
     ├── sidebar.js            # Universal responsive sidebar drawer controller (single source of truth)
     ├── store.js              # State store (CRUD, Supabase-first auth, temporary cache, storage listeners)
     ├── supabase-client.js    # Supabase client bridge (query helpers for profiles, catalog, passes, announcements)
@@ -212,7 +213,7 @@ npx serve . -p 3000
 ### Validating JavaScript Syntax
 Verify all JavaScript files with Node before committing changes:
 ```powershell
-node -c js/store.js js/app.js js/login.js js/admin.js js/admin-login.js js/sidebar.js js/portal-sync.js js/profile-dropdown.js js/supabase-client.js js/supabase-config.js
+node -c js/store.js js/app.js js/login.js js/admin.js js/scanner.js js/sidebar.js js/portal-sync.js js/profile-dropdown.js js/supabase-client.js js/supabase-config.js
 ```
 
 ---

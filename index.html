@@ -210,14 +210,6 @@
 
       <!-- Nav Action Buttons & Profile (Matching Screenshot) -->
       <div class="nav-actions">
-        <!-- Search Trigger -->
-        <button class="nav-icon-btn" aria-label="Search" onclick="document.getElementById('heroSearchInput')?.focus()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </button>
 
         <!-- Admin Dashboard Quick Button (Admin Only) -->
         <a href="admin.html" class="nav-admin-dashboard-btn admin-only-feature" style="display: none;" title="Admin Operator Dashboard">
@@ -227,7 +219,6 @@
             <rect x="14" y="12" width="7" height="9"></rect>
             <rect x="3" y="16" width="7" height="5"></rect>
           </svg>
-          <span>Admin Dashboard</span>
         </a>
 
         <!-- Dark / Light Mode Toggle Button -->
@@ -306,81 +297,12 @@
             </button>
           </form>
 
-          <div class="search-tags">
-            <span>Popular:</span>
-            <span class="search-tag-pill" onclick="filterByQuickAction('events')">Pahiyas Festival</span>
-            <span class="search-tag-pill"
-              onclick="document.getElementById('heroSearchInput').value='White Beach'; document.getElementById('heroSearchInput').dispatchEvent(new Event('input'));">White
-              Beach</span>
-            <span class="search-tag-pill"
-              onclick="document.getElementById('heroSearchInput').value='Rizal Monument'; document.getElementById('heroSearchInput').dispatchEvent(new Event('input'));">Rizal
-              Monument</span>
-          </div>
+        
         </div>
       </div>
     </section>
 
-    <!-- ==========================================================================
-         Quick Category Action Icons (Exact Match from Screenshot)
-         ========================================================================== -->
-    <section class="quick-categories-section" aria-label="Quick Action Navigation">
-      <div class="container">
-        <div class="quick-categories-grid">
-
-          <!-- Category 1: Attractions -->
-          <button class="category-action-card" onclick="filterByQuickAction('attractions')">
-            <div class="category-circle-icon">
-              <!-- Location Pin SVG -->
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-              </svg>
-            </div>
-            <span class="category-label">Attractions</span>
-          </button>
-
-          <!-- Category 2: Events -->
-          <button class="category-action-card" onclick="filterByQuickAction('events')">
-            <div class="category-circle-icon">
-              <!-- Calendar SVG -->
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" />
-              </svg>
-            </div>
-            <span class="category-label">Events</span>
-          </button>
-
-          <!-- Category 3: Capacity & Schedule -->
-          <button class="category-action-card" onclick="location.href='capacity.html'">
-            <div class="category-circle-icon">
-              <!-- Calendar Clock SVG -->
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-            </div>
-            <span class="category-label">Capacity</span>
-          </button>
-
-          <!-- Category 4: Notifications -->
-          <button class="category-action-card" onclick="filterByQuickAction('notifications')">
-            <div class="category-circle-icon">
-              <!-- Bell SVG -->
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
-              </svg>
-            </div>
-            <span class="category-label">Notifications</span>
-          </button>
-
-        </div>
-      </div>
-    </section>
+    
 
     <!-- ==========================================================================
          Featured Attractions Section (Exact Match from Screenshot)
