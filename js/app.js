@@ -305,15 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  if (seeAllBtn) {
-    seeAllBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      showAll = !showAll;
-      seeAllBtn.textContent = showAll ? 'Show Less <' : 'See All >';
-      renderAttractions();
-    });
-  }
-
   // Quick Action Buttons (Under Hero)
   window.filterByQuickAction = function (type) {
     if (type === 'attractions') {
@@ -762,17 +753,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // --- 13. Profile Navigation & User Profile Header Synchronization ---
-  window.toggleProfileDropdown = function (event) {
-    if (event) event.stopPropagation();
-    const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;
-    const adminAuth = TourismHubStore.getAdminAuth ? TourismHubStore.getAdminAuth() : null;
-
-    if (!clientAuth && !adminAuth) {
-      window.location.href = 'login.html?redirect=profile.html';
-      return;
-    }
-    window.location.href = 'profile.html';
-  };
+  // Managed by js/profile-dropdown.js for unified navbar dropdown menu behavior
 
   window.switchDropdownTab = function (tabName) {
     const tabPasses = document.getElementById('dropdownTabPasses');
@@ -937,7 +918,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (profileBtn) {
         profileBtn.style.display = 'flex';
         profileBtn.style.cursor = 'pointer';
-        profileBtn.title = `Profile: ${activeUser.name} (Go to Profile)`;
+        profileBtn.title = 'Account & Profile Menu';
       }
     } else {
       // Show Sign In button when not signed in

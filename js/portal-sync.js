@@ -471,14 +471,17 @@
           } else if (imgEl && adminAuth.avatar) {
             imgEl.src = adminAuth.avatar;
           }
-          widget.onclick = function (e) {
-            if (window.navigateToProfilePage) {
-              window.navigateToProfilePage(e);
-            } else {
+          if (widget.dataset.profileDropdownBound !== 'true') {
+            widget.onclick = function (e) {
+              if (window.toggleProfileDropdown) {
+                return window.toggleProfileDropdown(e, widget);
+              }
               location.href = 'profile.html';
-            }
-          };
-          widget.title = 'Operator: ' + adminAuth.name + ' (Go to Profile)';
+            };
+          } else {
+            widget.onclick = null;
+          }
+          widget.title = 'Account & Profile Menu';
         } else if (isClientLoggedIn) {
           widget.style.display = 'flex';
           widget.style.cursor = 'pointer';
@@ -488,14 +491,17 @@
           } else if (imgEl && clientAuth.avatar) {
             imgEl.src = clientAuth.avatar;
           }
-          widget.onclick = function (e) {
-            if (window.navigateToProfilePage) {
-              window.navigateToProfilePage(e);
-            } else {
+          if (widget.dataset.profileDropdownBound !== 'true') {
+            widget.onclick = function (e) {
+              if (window.toggleProfileDropdown) {
+                return window.toggleProfileDropdown(e, widget);
+              }
               location.href = 'profile.html';
-            }
-          };
-          widget.title = 'Logged in as ' + clientAuth.name + ' (Go to Profile)';
+            };
+          } else {
+            widget.onclick = null;
+          }
+          widget.title = 'Account & Profile Menu';
         } else {
           // Hide tourist name and profile icon completely when exploring as guest
           widget.style.display = 'none';
