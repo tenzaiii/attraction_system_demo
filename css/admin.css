@@ -2768,3 +2768,46 @@ textarea.form-control {
   }
 }
 
+/* Compact Changelog Density */
+.changelog-version-banner {
+  padding: 0.9rem 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.changelog-legend-bar {
+  padding: 0.45rem 0.85rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.76rem;
+  gap: 0.5rem 1rem;
+}
+
+.changelog-filter-bar {
+  margin-bottom: 0.75rem;
+  gap: 0.4rem;
+}
+
+.changelog-filter-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.76rem;
+}
+
+.changelog-release-card {
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.changelog-release-header {
+  margin-bottom: 0.55rem;
+  padding-bottom: 0.45rem;
+}
+
+.changelog-items-list {
+  gap: 0.3rem;
+}
+
+.changelog-item-row {
+  padding: 0.28rem 0.5rem;
+  font-size: 0.8rem;
+  gap: 0.5rem;
+}
+

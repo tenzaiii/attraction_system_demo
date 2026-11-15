@@ -636,6 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById('attrFormHours').value = item.operatingHours;
     document.getElementById('attrFormPrice').value = item.admission || item.priceLabel || '';
+    if (typeof populateFeeTiers === 'function') populateFeeTiers('attrFeeTiersContainer', item.feeTiers);
     document.getElementById('attrFormCapacity').value = item.capacityPerSlot;
     document.getElementById('attrFormStatus').value = item.status;
     document.getElementById('attrFormDesc').value = item.description;
@@ -656,6 +657,41 @@ document.addEventListener('DOMContentLoaded', () => {
     attractionModal?.classList.add('active');
   };
 
+  window.addFeeTierRow = function (containerId, label = '', price = '') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const row = document.createElement('div');
+    row.className = 'fee-tier-row';
+    row.style.cssText = 'display: grid; grid-template-columns: 1fr 120px auto; gap: 0.5rem; align-items: center;';
+    row.innerHTML = `
+      <input type="text" class="form-control fee-tier-label" placeholder="Tier name (e.g. Regular, VIP)" value="${String(label || '').replace(/"/g, '&quot;')}">
+      <input type="number" class="form-control fee-tier-price" placeholder="₱ Price" min="0" step="1" value="${price !== '' && price !== undefined ? price : ''}">
+      <button type="button" class="btn-secondary btn-sm" onclick="this.parentElement.remove()" aria-label="Remove fee tier" style="padding: 0.45rem 0.65rem;">&times;</button>
+    `;
+    container.appendChild(row);
+  };
+
+  function populateFeeTiers(containerId, tiers) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    if (Array.isArray(tiers) && tiers.length > 0) {
+      tiers.forEach(t => window.addFeeTierRow(containerId, t.label || '', t.price != null ? t.price : ''));
+    }
+  }
+
+  function collectFeeTiers(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return [];
+    const rows = Array.from(container.querySelectorAll('.fee-tier-row'));
+    return rows.map(row => {
+      const label = row.querySelector('.fee-tier-label')?.value.trim() || '';
+      const priceVal = parseFloat(row.querySelector('.fee-tier-price')?.value || '0');
+      const price = Number.isFinite(priceVal) && priceVal >= 0 ? priceVal : 0;
+      return label ? { label, price } : null;
+    }).filter(Boolean);
+  }
+
   // Save / Update attraction (Uploads 1 photo to Supabase Storage bucket 'attractions')
   attractionForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -671,9 +707,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const desc = document.getElementById('attrFormDesc')?.value.trim();
     const rawMapEmbed = document.getElementById('attrFormMapEmbed')?.value.trim() || '';
 
-    const numericPrice = (window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function')
-      ? TourismHubStore.parseNumericPriceFromLabel(priceStr, 0)
-      : (parseFloat(String(priceStr || '').replace(/[^0-9.]/g, '')) || 0);
+    const feeTiers = collectFeeTiers('attrFeeTiersContainer');
+    const numericPrice = feeTiers.length > 0
+      ? feeTiers[0].price
+      : ((window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function')
+        ? TourismHubStore.parseNumericPriceFromLabel(priceStr, 0)
+        : (parseFloat(String(priceStr || '').replace(/[^0-9.]/g, '')) || 0));
     const resolvedMapEmbed = (window.TourismHubStore && typeof TourismHubStore.normalizeMapEmbedUrl === 'function')
       ? TourismHubStore.normalizeMapEmbedUrl(rawMapEmbed, title, location)
       : `https://maps.google.com/maps?q=${encodeURIComponent(rawMapEmbed || `${title}, ${location}, Philippines`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
@@ -693,6 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
         operatingHours: hours,
         admission: priceStr,
         priceLabel: priceStr,
+        feeTiers,
         price: numericPrice,
         capacityPerSlot: capacity,
         status,
@@ -721,6 +761,7 @@ document.addEventListener('DOMContentLoaded', () => {
         operatingHours: hours,
         admission: priceStr,
         priceLabel: priceStr,
+        feeTiers,
         price: numericPrice,
         capacityPerSlot: capacity,
         status,
@@ -891,8 +932,29 @@ document.addEventListener('DOMContentLoaded', () => {
       dateInput.value = extractedDate || '';
     }
     const rawHours = String(ev.operatingHours || '').replace(/^(?:[A-Z][a-z]{2}\s+\d{1,2},\s+\d{4}|\d{4}-\d{2}-\d{2})\s*·\s*/i, '').trim();
-    document.getElementById('eventFormSchedule').value = rawHours || ev.operatingHours || '';
-    document.getElementById('eventFormAdmission').value = ev.admission || 'Free';
+    const schedSelect = document.getElementById('eventFormSchedule');
+    const customSchedInput = document.getElementById('eventFormCustomSchedule');
+    if (schedSelect) {
+      schedSelect.onchange = function () {
+        if (customSchedInput) {
+          customSchedInput.style.display = this.value === 'custom' ? 'block' : 'none';
+          customSchedInput.required = this.value === 'custom';
+        }
+      };
+      const targetTime = rawHours || ev.operatingHours || '09:00 AM - 05:00 PM';
+      const hasPreset = Array.from(schedSelect.options).some(opt => opt.value === targetTime && opt.value !== 'custom');
+      if (hasPreset) {
+        schedSelect.value = targetTime;
+        if (customSchedInput) { customSchedInput.style.display = 'none'; customSchedInput.required = false; customSchedInput.value = ''; }
+      } else {
+        schedSelect.value = 'custom';
+        if (customSchedInput) { customSchedInput.style.display = 'block'; customSchedInput.required = true; customSchedInput.value = targetTime; }
+      }
+    }
+    const existingTiers = (Array.isArray(ev.feeTiers) && ev.feeTiers.length > 0)
+      ? ev.feeTiers
+      : [{ label: ev.admission || 'General Admission', price: Number(ev.price) || 0 }];
+    if (typeof populateFeeTiers === 'function') populateFeeTiers('eventFeeTiersContainer', existingTiers);
     document.getElementById('eventFormCapacity').value = ev.capacityPerSlot || 100;
     document.getElementById('eventFormDesc').value = ev.description || '';
 
@@ -911,8 +973,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const parentAttractionId = document.getElementById('eventFormAttractionId')?.value;
     const title = document.getElementById('eventFormTitle')?.value.trim();
     const eventDate = document.getElementById('eventFormDate')?.value.trim() || '';
-    const scheduleInput = document.getElementById('eventFormSchedule')?.value.trim();
-    const admission = document.getElementById('eventFormAdmission')?.value.trim();
+    const rawSchedSelect = document.getElementById('eventFormSchedule')?.value.trim();
+    const scheduleInput = rawSchedSelect === 'custom'
+      ? (document.getElementById('eventFormCustomSchedule')?.value.trim() || 'TBA')
+      : rawSchedSelect;
+    const feeTiers = collectFeeTiers('eventFeeTiersContainer');
+    const admission = feeTiers.length > 0
+      ? feeTiers.map(t => t.price > 0 ? `${t.label} ₱${t.price}` : `${t.label} (Free)`).join(' / ')
+      : 'Free';
     const capacity = parseInt(document.getElementById('eventFormCapacity')?.value) || 100;
     const desc = document.getElementById('eventFormDesc')?.value.trim();
 
@@ -920,9 +988,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const operatingHours = (datePrefix && scheduleInput && !scheduleInput.startsWith(datePrefix))
       ? `${datePrefix} · ${scheduleInput}`
       : (scheduleInput || datePrefix || 'TBA');
-    const numericEventPrice = (window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function')
-      ? TourismHubStore.parseNumericPriceFromLabel(admission, 0)
-      : (parseFloat(String(admission || '').replace(/[^0-9.]/g, '')) || 0);
+    const numericEventPrice = feeTiers.length > 0 ? feeTiers[0].price : 0;
 
     const parentAttr = catalogData.find(a => a.id === parentAttractionId);
     const parentTitle = parentAttr ? parentAttr.title : 'Attraction Event';
@@ -943,6 +1009,7 @@ document.addEventListener('DOMContentLoaded', () => {
       badge: parentAttractionId,
       location,
       eventDate,
+      feeTiers,
       priceLabel: eventDate,
       operatingHours,
       admission,

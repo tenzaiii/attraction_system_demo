@@ -294,8 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="rating-count">(${item.reviews || 'New'})</span>
             </div>
             <div class="card-price-cta" style="display: flex; gap: 0.4rem; align-items: center;">
-              <a href="attraction-details.html?id=${item.id}" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none; padding: 0.35rem 0.6rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card);">Details</a>
-              <button class="btn-book-card" onclick="openBookingModal('${item.id}')">Book Pass</button>
+              <a href="attraction-details.html?id=${item.id}" class="btn-book-card" style="text-align: center; text-decoration: none;">View Details</a>
             </div>
           </div>
         </div>

@@ -10,6 +10,7 @@
     PASSES: 'tourismhub_temp_passes_v1',
     LOGS: 'tourismhub_temp_logs_v1',
     MAP_EMBEDS: 'tourismhub_temp_map_embeds_v1',
+    FEE_TIERS: 'tourismhub_temp_fee_tiers_v1',
     ADMIN_AUTH: 'tourismhub_temp_admin_auth_v1',
     ADMIN_PASSWORDS: 'tourismhub_temp_admin_passwords_v1',
     CLIENT_AUTH: 'tourismhub_temp_client_auth_v1',
@@ -188,6 +189,16 @@
       : String(item.mapEmbed || item.map_embed || (localMapEntry && (localMapEntry.raw || localMapEntry.embed)) || '').trim();
     const resolvedMapEmbed = normalizeMapEmbedUrl(rawMapInput, item.title || '', normalizedLocation);
 
+    const localFeeTiers = getItem(KEYS.FEE_TIERS, {});
+    const resolvedFeeTiers = (Array.isArray(item.feeTiers) && item.feeTiers.length > 0)
+      ? item.feeTiers
+      : ((item.id && localFeeTiers && Array.isArray(localFeeTiers[item.id])) ? localFeeTiers[item.id] : []);
+    if (item.id && Array.isArray(item.feeTiers) && item.feeTiers.length > 0) {
+      const nextTiers = (localFeeTiers && typeof localFeeTiers === 'object') ? { ...localFeeTiers } : {};
+      nextTiers[item.id] = item.feeTiers;
+      setItem(KEYS.FEE_TIERS, nextTiers);
+    }
+
     return {
       ...item,
       category: normalizedCategory,
@@ -198,6 +209,7 @@
       price: numericPrice,
       priceLabel: syncedAdmission,
       admission: syncedAdmission,
+      feeTiers: resolvedFeeTiers,
       rawMapEmbed: rawMapInput,
       mapEmbed: resolvedMapEmbed
     };
@@ -227,12 +239,23 @@
     const syncedAdmission = rawAdmissionInput.replace(/\$(\d+)/g, '₱$1');
     const numericPrice = parseNumericPriceFromLabel(syncedAdmission, item.price);
 
+    const localFeeTiers = getItem(KEYS.FEE_TIERS, {});
+    const resolvedFeeTiers = (Array.isArray(item.feeTiers) && item.feeTiers.length > 0)
+      ? item.feeTiers
+      : ((item.id && localFeeTiers && Array.isArray(localFeeTiers[item.id])) ? localFeeTiers[item.id] : []);
+    if (item.id && Array.isArray(item.feeTiers) && item.feeTiers.length > 0) {
+      const nextTiers = (localFeeTiers && typeof localFeeTiers === 'object') ? { ...localFeeTiers } : {};
+      nextTiers[item.id] = item.feeTiers;
+      setItem(KEYS.FEE_TIERS, nextTiers);
+    }
+
     return {
       ...item,
       type: 'event',
       parentAttractionId: item.parentAttractionId || item.badge || '',
       attractionTitle: item.attractionTitle || item.category || 'Attraction Event',
       category: item.attractionTitle || item.category || 'Attraction Event',
+      feeTiers: resolvedFeeTiers,
       badge: item.parentAttractionId || item.badge || '',
       location: normalizeLocation(item.location),
       eventDate,
