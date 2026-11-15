@@ -1495,6 +1495,209 @@
       }
     },
 
+    // =========================================================================
+    // SYSTEM VERSION & CHANGELOG METADATA (Synced with todo.txt)
+    // =========================================================================
+    getSystemVersion() {
+      return {
+        version: 'v1.5.0',
+        build: 'Build 2026.11.15',
+        fullLabel: 'v1.5.0 (Build 2026.11.15)',
+        releaseDate: 'November 15, 2026',
+        channel: 'Production Stable'
+      };
+    },
+
+    parseTodoTxtChangelog(rawText) {
+      if (!rawText || typeof rawText !== 'string') {
+        return this.getChangelogData();
+      }
+      const versionByDate = {
+        '11/15/26': { version: 'v1.5.0', title: 'Carousels, Maps, Events Calendar & Portal Polish' },
+        '11/14/26': { version: 'v1.4.0', title: 'Attraction Details, Storage Bucket & Portal Navigation' },
+        '11/11/26': { version: 'v1.3.0', title: 'QR Ownership, Photo Cropper & Notifications' },
+        '11/10/26': { version: 'v1.2.0', title: 'Supabase Synchronization, Peso Currency & Profile UI' },
+        '11/07/26': { version: 'v1.1.0', title: 'Analytics Dashboard, Dark Mode & Admin Controls' }
+      };
+
+      const lines = rawText.split(/\r?\n/);
+      const todoItems = [];
+      const releasesMap = new Map();
+      let inTodoSection = false;
+      let currentRelease = null;
+      let currentAuthor = '';
+
+      for (const rawLine of lines) {
+        const trimmed = rawLine.trim();
+        if (!trimmed) continue;
+        if (trimmed.startsWith('------LEGEND')) {
+          inTodoSection = false;
+          continue;
+        }
+        if (trimmed === '#############################') {
+          inTodoSection = false;
+          continue;
+        }
+        if (/^TO-DO:/i.test(trimmed)) {
+          inTodoSection = true;
+          continue;
+        }
+
+        const doneMatch = trimmed.match(/^DONE\s+([0-9/]+)\s*-\s*(.+)$/i);
+        if (doneMatch) {
+          inTodoSection = false;
+          const dateStr = doneMatch[1].trim();
+          currentAuthor = doneMatch[2].trim();
+          if (!releasesMap.has(dateStr)) {
+            const meta = versionByDate[dateStr] || { version: 'v1.0.0', title: `Release ${dateStr}` };
+            releasesMap.set(dateStr, {
+              version: meta.version,
+              date: dateStr,
+              title: meta.title,
+              authors: [currentAuthor],
+              items: []
+            });
+          } else {
+            const existing = releasesMap.get(dateStr);
+            if (!existing.authors.includes(currentAuthor)) {
+              existing.authors.push(currentAuthor);
+            }
+          }
+          currentRelease = releasesMap.get(dateStr);
+          continue;
+        }
+
+        const kindChar = trimmed[0];
+        if (kindChar === '+' || kindChar === '-' || kindChar === '*') {
+          const text = trimmed.slice(1).trim();
+          if (!text) continue;
+          const kind = kindChar === '+' ? 'add' : (kindChar === '-' ? 'remove' : 'change');
+          if (inTodoSection) {
+            todoItems.push({ kind, text });
+          } else if (currentRelease) {
+            currentRelease.items.push({ kind, text, author: currentAuthor });
+          }
+        }
+      }
+
+      const releases = Array.from(releasesMap.values());
+      if (releases.length === 0) {
+        return this.getChangelogData();
+      }
+      return {
+        versionInfo: this.getSystemVersion(),
+        todoItems,
+        releases
+      };
+    },
+
+    getChangelogData() {
+      return {
+        versionInfo: this.getSystemVersion(),
+        todoItems: [
+          { kind: 'add', text: 'NEW LOGO AND THEME' },
+          { kind: 'add', text: 'QR PASSES (SUBJECT FOR INTEGRATION)' },
+          { kind: 'add', text: 'USER PROFILE DATA (SUBJECT FOR INTEGRATION)' },
+          { kind: 'add', text: 'MOBILE UI FRIENDLY' },
+          { kind: 'change', text: 'FORGOT PASSWORD FIX' }
+        ],
+        releases: [
+          {
+            version: 'v1.5.0',
+            date: '11/15/26',
+            title: 'Carousels, Maps, Events Calendar & Portal Polish',
+            authors: ['JACOB'],
+            items: [
+              { kind: 'add', text: 'ADMIN EVENT MANAGEMENT FOR EACH ATTRACTION', author: 'JACOB' },
+              { kind: 'add', text: 'ADDED FEATURED EVENTS BANNER CAROUSEL AT TOP OF FEATURED ATTRACTIONS', author: 'JACOB' },
+              { kind: 'add', text: 'ABOUT PAGE WITH OFFICIAL LOGO, PURPOSE, FEATURES & TEAM CREDITS', author: 'JACOB' },
+              { kind: 'add', text: 'PROFILE NAVBAR DROPDOWN MENU WITH CLICKABLE AVATAR ICON', author: 'JACOB' },
+              { kind: 'add', text: 'NOTIFICATIONS POPOVER DROPDOWN ACROSS ALL PAGES', author: 'JACOB' },
+              { kind: 'add', text: 'TOURISMHUB BRAND & LOGO IMPLEMENTED ON NAVIGATION BAR OF ALL PAGES', author: 'JACOB' },
+              { kind: 'add', text: 'GOOGLE MAPS EMBED ATTACHMENT IN ADMIN & LEFT-COLUMN INTERACTIVE MAP ON ATTRACTION DETAILS PAGE', author: 'JACOB' },
+              { kind: 'add', text: 'INTERACTIVE MONTHLY EVENTS CALENDAR & DAILY SCHEDULE IN CAPACITY & SCHEDULE MANAGEMENT (PORTAL & ADMIN)', author: 'JACOB' },
+              { kind: 'add', text: 'AUTOMATIC FEATURED LOCATIONS HERO CAROUSEL ON MAIN PAGE', author: 'JACOB' },
+              { kind: 'add', text: 'ADMIN DASHBOARD CHANGELOG VIEW SYNCED WITH todo.txt & SYSTEM VERSION IN SETTINGS', author: 'JACOB' },
+              { kind: 'remove', text: 'REMOVED PORTAL USER ROLE DISPLAYS ACROSS PORTAL HEADERS, DROPDOWNS & PROFILE PAGE', author: 'JACOB' },
+              { kind: 'remove', text: 'REMOVED CALENDAR DROPDOWN FROM CAPACITY & SCHEDULE MANAGEMENT HEADER', author: 'JACOB' },
+              { kind: 'remove', text: 'REMOVED USER NAME LABEL BESIDE NAVBAR PROFILE ICON ACROSS ALL PAGES', author: 'JACOB' },
+              { kind: 'remove', text: 'REMOVED BADGE NUMBERS ON ADMIN NAVIGATION (ATTRACTION CATALOG, DISPATCH & ALERTS, HEADER BELL)', author: 'JACOB' },
+              { kind: 'remove', text: 'CLEARED MOCK UPCOMING EVENTS & MOCK PORTAL CARDS; RENDERED LIVE EVENTS', author: 'JACOB' },
+              { kind: 'change', text: 'SEPARATED ATTRACTIONS FROM EVENTS IN STORE & SUPABASE CATALOG', author: 'JACOB' },
+              { kind: 'change', text: 'STANDARDIZED LOCATIONS TO MANILA OR QUEZON CITY & COMBINED CATEGORY FIELD', author: 'JACOB' },
+              { kind: 'change', text: 'ENFORCED 1 PICTURE LIMIT PER ATTRACTION/EVENT', author: 'JACOB' },
+              { kind: 'change', text: 'RENAMED DASHBOARD TO HOME IN ALL PORTAL SIDEBARS', author: 'JACOB' },
+              { kind: 'change', text: 'FIXED ADMIN DASHBOARD BUTTONS IN DARK MODE & APPLIED BLUE HOVER THEME', author: 'JACOB' },
+              { kind: 'change', text: 'ALIGNED NEW ANNOUNCEMENT BUTTON WITH ANNOUNCEMENTS & NOTIFICATIONS HEADER', author: 'JACOB' },
+              { kind: 'change', text: 'SYNCED ATTRACTION DETAILS ADMISSION RATES & BOOKING MODAL FEES WITH ADMIN ADMISSION LABEL', author: 'JACOB' },
+              { kind: 'change', text: 'CHANGED CAPACITY PAGE ADD SCHEDULE BUTTON & MODAL TO ADD EVENT', author: 'JACOB' },
+              { kind: 'change', text: 'MOVED CAPACITY PAGE SORT DROPDOWN BESIDE FILTER TAB BUTTONS', author: 'JACOB' },
+              { kind: 'change', text: 'LINKED CAPACITY VIEW MODAL BOOK TOURIST PASS BUTTON DIRECTLY TO ATTRACTION DETAILS PAGE', author: 'JACOB' }
+            ]
+          },
+          {
+            version: 'v1.4.0',
+            date: '11/14/26',
+            title: 'Attraction Details, Storage Bucket & Portal Navigation',
+            authors: ['JACOB'],
+            items: [
+              { kind: 'add', text: 'ADD NO-IMAGE DEFAULT PICTURE', author: 'JACOB' },
+              { kind: 'add', text: 'ADMIN FUNCTIONALITY TO UPLOAD IMAGES FOR LOCATIONS STORED AT SUPABASE', author: 'JACOB' },
+              { kind: 'remove', text: 'REMOVED UNUSED LEGACY ADMIN-LOGIN ASSETS & MOCK UNSPLASH PICTURES', author: 'JACOB' },
+              { kind: 'remove', text: 'REMOVED ACTIONS COLUMN IN ANNOUNCEMENTS AND NOTIFICATIONS', author: 'JACOB' },
+              { kind: 'change', text: 'ATTRACTIONS CAROUSEL SUPABASE STORAGE BUCKET INTEGRATION', author: 'JACOB' },
+              { kind: 'change', text: 'MADE ATTRACTION CARDS CLICKABLE TO VIEW DETAILS', author: 'JACOB' }
+            ]
+          },
+          {
+            version: 'v1.3.0',
+            date: '11/11/26',
+            title: 'QR Ownership, Photo Cropper & Notifications',
+            authors: ['REPAS', 'JACOB'],
+            items: [
+              { kind: 'add', text: 'QR SCANNER SYSTEM', author: 'REPAS' },
+              { kind: 'add', text: 'PROFILE PHOTO UPLOAD WITH INTERACTIVE CROPPER & 5MB LIMIT', author: 'JACOB' },
+              { kind: 'add', text: 'DEFAULT INITIALS AVATAR BASED ON USER FIRST AND LAST NAME', author: 'JACOB' },
+              { kind: 'add', text: 'SUPABASE PROFILES TABLE AVATAR SYNCHRONIZATION', author: 'JACOB' },
+              { kind: 'add', text: 'EVENT BACKGROUND PHOTO UPLOAD FUNCTION WITH 5MB LIMIT & LIVE PREVIEW', author: 'JACOB' },
+              { kind: 'change', text: 'FIXED QR PASS BEING DISPLAYED ON ALL USERS (OWNER-SCOPED)', author: 'JACOB' },
+              { kind: 'change', text: 'LIMITED RECENT NOTIFICATIONS TO 4 WITH SEE MORE BUTTON TO NOTIFICATIONS PAGE', author: 'JACOB' }
+            ]
+          },
+          {
+            version: 'v1.2.0',
+            date: '11/10/26',
+            title: 'Supabase Synchronization, Peso Currency & Profile UI',
+            authors: ['KELSEY', 'JACOB'],
+            items: [
+              { kind: 'add', text: 'CALENDAR SORT AND FILTER', author: 'KELSEY' },
+              { kind: 'add', text: 'CLICKING PROFILE ICON AND NAME DIRECTS TO PROFILE PAGE', author: 'JACOB' },
+              { kind: 'add', text: 'MORE SUPABASE INTEGRATIONS (CATALOG, ANNOUNCEMENTS)', author: 'JACOB' },
+              { kind: 'add', text: 'CHANGE PASSWORD FUNCTION IN ACCOUNT AND SECURITY', author: 'JACOB' },
+              { kind: 'remove', text: 'REMOVED MOCK ACCOUNTS, MOCK LOCATIONS & DISPLAY CURRENCY (PESO ONLY)', author: 'JACOB' },
+              { kind: 'remove', text: 'REMOVED TURNSTILE INTEGRATION IN THE SYSTEM (NOT IN SCOPE)', author: 'JACOB' },
+              { kind: 'change', text: 'FIXED FAQ DROPDOWN NOT WORKING & UPDATED PROFILE PAGE UI', author: 'JACOB' }
+            ]
+          },
+          {
+            version: 'v1.1.0',
+            date: '11/07/26',
+            title: 'Analytics Dashboard, Dark Mode & Admin Controls',
+            authors: ['JACOB', 'REPAS'],
+            items: [
+              { kind: 'add', text: 'SIDEBAR IN PROFILE PAGE & PROFILE ICON IN HOMEPAGE', author: 'JACOB' },
+              { kind: 'add', text: 'NEW BACKGROUND FOR LANDING PAGE', author: 'JACOB' },
+              { kind: 'add', text: 'ADMIN DASHBOARD BUTTON & FAVORITES TAB IN PROFILE PAGE', author: 'REPAS' },
+              { kind: 'add', text: 'WORKING ANALYTICS DASHBOARD (LIVE FIGURES, BREAKDOWN, CSV EXPORT)', author: 'REPAS' },
+              { kind: 'add', text: 'TOP-RIGHT DARK MODE & LIGHT MODE TOGGLE BUTTON ACROSS PORTAL & ADMIN HEADERS', author: 'REPAS' },
+              { kind: 'change', text: 'SUPABASE SYNCHRONIZATION FOR ANNOUNCEMENTS & CATALOG ITEMS', author: 'REPAS' },
+              { kind: 'change', text: 'DARK MODE CONTRAST, INPUTS, MODALS & TABLE POLISH', author: 'REPAS' }
+            ]
+          }
+        ]
+      };
+    },
+
     // Reset to initial seed state
     resetAll() {
       setItem(KEYS.CATALOG, DEFAULT_CATALOG);

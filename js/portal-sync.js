@@ -343,24 +343,34 @@
     window.openSettingsModal = function () {
       let modal = document.getElementById('settingsModal');
       if (!modal) {
+        const versionInfo = (window.TourismHubStore && typeof TourismHubStore.getSystemVersion === 'function')
+          ? TourismHubStore.getSystemVersion()
+          : { fullLabel: 'v1.5.0 (Build 2026.11.15)', channel: 'Production Stable' };
         const modalHtml = `
           <div class="modal-overlay active" id="settingsModal" role="dialog" aria-modal="true" style="display: flex;">
-            <div class="modal-window" style="max-width: 480px; background: #ffffff; border-radius: 16px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 90%; margin: auto;">
+            <div class="modal-window" style="max-width: 480px; background: var(--bg-card, #ffffff); border: 1px solid var(--border, #e2e8f0); border-radius: 16px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 90%; margin: auto;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 0;">Portal Preferences & Settings</h3>
-                <button onclick="document.getElementById('settingsModal').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main, #0f172a); margin: 0;">Portal Preferences & Settings</h3>
+                <button onclick="document.getElementById('settingsModal').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted, #64748b);">&times;</button>
               </div>
               <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
                 <div>
-                  <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 0.4rem;">Audio Chimes on Pass Scan</label>
-                  <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: #475569; cursor: pointer;">
+                  <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main, #334155); margin-bottom: 0.4rem;">Audio Chimes on Pass Scan</label>
+                  <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: var(--text-muted, #475569); cursor: pointer;">
                     <input type="checkbox" id="settingSound" checked>
                     <span>Play acoustic confirmation chime on gate entry</span>
                   </label>
                 </div>
                 <div>
-                  <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 0.4rem;">Real-Time Refresh Frequency</label>
-                  <span style="font-size: 0.84rem; color: #10b981; font-weight: 600;">✓ Instantaneous multi-tab cloud sync enabled</span>
+                  <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main, #334155); margin-bottom: 0.4rem;">Real-Time Refresh Frequency</label>
+                  <span style="font-size: 0.84rem; color: var(--primary, #10b981); font-weight: 600;">✓ Instantaneous multi-tab cloud sync enabled</span>
+                </div>
+                <div style="padding-top: 0.75rem; border-top: 1px solid var(--border, #e2e8f0); display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
+                  <div>
+                    <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main, #334155); margin-bottom: 0.15rem;">System Version</label>
+                    <span style="font-size: 0.76rem; color: var(--text-muted, #64748b);">${versionInfo.channel || 'Production Stable'} &bull; Supabase Cloud Sync</span>
+                  </div>
+                  <span id="settingsModalSystemVersion" style="display: inline-flex; align-items: center; padding: 0.3rem 0.7rem; border-radius: 9999px; font-size: 0.76rem; font-weight: 700; background: rgba(16, 185, 129, 0.12); color: var(--primary, #10b981); border: 1px solid rgba(16, 185, 129, 0.28); white-space: nowrap;">${versionInfo.fullLabel}</span>
                 </div>
               </div>
               <button onclick="document.getElementById('settingsModal').remove(); if(window.showPortalToast) showPortalToast('Preferences saved successfully!');" style="width: 100%; padding: 0.75rem; background: #10b981; color: #ffffff; font-weight: 700; border-radius: 8px; border: none; cursor: pointer;">Save Preferences</button>

@@ -274,14 +274,17 @@
 
   <main>
     <!-- ==========================================================================
-         Hero Banner Section (Matching Screenshot)
+         Hero Banner Section (Automatic Featured Locations Carousel)
          ========================================================================== -->
     <section class="hero-section" id="hero">
+      <div class="hero-carousel-slides" id="heroLocationCarousel" aria-hidden="true"></div>
+      <div class="hero-carousel-overlay" aria-hidden="true"></div>
+
       <div class="hero-content">
         <h1 class="hero-title">Explore. Discover. Experience.</h1>
         <p class="hero-subtitle">Your gateway to amazing attractions and events.</p>
 
-        <!-- Floating Search Capsule (Matching Screenshot) -->
+        <!-- Floating Search Capsule -->
         <div class="hero-search-wrapper">
           <form class="hero-search-capsule" role="search" onsubmit="event.preventDefault();">
             <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
@@ -311,8 +314,29 @@
               </svg>
             </button>
           </form>
+        </div>
+      </div>
 
-        
+      <!-- Featured Location Carousel Caption Badge & Slide Indicators -->
+      <div class="hero-location-meta-bar" id="heroLocationMetaBar" aria-live="polite">
+        <a href="attraction-details.html?id=qc-memorial-circle" class="hero-location-caption-pill" id="heroLocationCaptionLink" title="View Featured Location Details">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span id="heroLocationCaptionText">Quezon Memorial Circle &amp; Park &bull; Quezon City</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+        <div class="hero-location-controls">
+          <button type="button" class="hero-loc-arrow-btn" onclick="changeHeroLocationSlide(-1)" aria-label="Previous Featured Location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <div class="hero-location-dots" id="heroLocationDots" role="tablist" aria-label="Featured Locations Slides"></div>
+          <button type="button" class="hero-loc-arrow-btn" onclick="changeHeroLocationSlide(1)" aria-label="Next Featured Location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
         </div>
       </div>
     </section>

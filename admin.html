@@ -110,6 +110,17 @@
           </svg>
           <span>Dispatch & Alerts</span>
         </a>
+
+        <!-- 7. System Changelog -->
+        <a href="#changelog" class="sidebar-link" data-tab="changelog">
+          <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          <span>System Changelog</span>
+        </a>
       </nav>
 
       <!-- Sidebar Footer User Profile -->
@@ -161,12 +172,6 @@
         </div>
 
         <div class="header-right">
-          <!-- System Status Pill -->
-          <div class="header-status-pill">
-            <span class="status-dot-pulse"></span>
-            <span>Digital Gates & Cloud Sync Active</span>
-          </div>
-
           <!-- Dark / Light Mode Toggle Button -->
           <button class="header-action-btn topbar-theme-toggle-btn" id="globalDarkModeBtn" onclick="toggleAdminTheme()" aria-label="Toggle Theme" title="Toggle Theme">
             <svg class="theme-btn-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -353,6 +358,23 @@
             </div>
             <div class="peak-hours-chart-wrap" id="peakHoursOverviewPreview">
               <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Recent System Changelog Preview in Overview (Synced from todo.txt) -->
+          <div class="chart-card" id="adminOverviewChangelogCard" style="margin-top: 1.5rem;">
+            <div class="chart-card-header">
+              <div class="chart-title-box">
+                <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                  <h3>Recent System Changelog</h3>
+                  <span class="changelog-version-pill" id="adminOverviewVersionBadge">v1.5.0 &bull; Build 2026.11.15</span>
+                </div>
+                <p>Latest system additions, UI improvements, and fixes tracked in <code>todo.txt</code>.</p>
+              </div>
+              <button type="button" class="btn-secondary btn-sm" onclick="switchTab('changelog')">View Full Changelog →</button>
+            </div>
+            <div id="adminOverviewChangelogPreview">
+              <!-- Populated via js/admin.js -->
             </div>
           </div>
 
@@ -780,6 +802,43 @@
               </div>
             </div>
 
+          </div>
+
+        </section>
+
+        <!-- ======================================================================
+             TAB 7: System Changelog & Release Notes (from todo.txt)
+             ====================================================================== -->
+        <section class="tab-pane" id="tab-changelog">
+
+          <div class="changelog-version-banner">
+            <div>
+              <div class="changelog-banner-kicker">Release History &amp; Engineering Log (todo.txt)</div>
+              <div class="changelog-banner-title-row">
+                <h2>TourismHub System Changelog</h2>
+                <span class="changelog-version-pill large" id="changelogCurrentVersionBadge">v1.5.0 (Build 2026.11.15)</span>
+              </div>
+              <p class="changelog-banner-sub">Tracks every platform release, feature addition (<code>+</code>), removal (<code>-</code>), and bug fix / refinement (<code>*</code>) across versions.</p>
+            </div>
+          </div>
+
+          <div class="changelog-legend-bar" aria-label="Changelog symbol legend">
+            <span class="changelog-legend-title">Legend:</span>
+            <span class="changelog-legend-item"><span class="changelog-badge add">+</span> Added</span>
+            <span class="changelog-legend-item"><span class="changelog-badge remove">-</span> Removed</span>
+            <span class="changelog-legend-item"><span class="changelog-badge change">*</span> Changed / Fixed</span>
+          </div>
+
+          <div class="changelog-filter-bar" role="toolbar" aria-label="Filter changelog items">
+            <button type="button" class="changelog-filter-btn active" data-filter="all" onclick="filterAdminChangelog('all')">All Updates</button>
+            <button type="button" class="changelog-filter-btn" data-filter="add" onclick="filterAdminChangelog('add')">+ Additions</button>
+            <button type="button" class="changelog-filter-btn" data-filter="change" onclick="filterAdminChangelog('change')">* Fixes &amp; Changes</button>
+            <button type="button" class="changelog-filter-btn" data-filter="remove" onclick="filterAdminChangelog('remove')">- Removals</button>
+            <button type="button" class="changelog-filter-btn" data-filter="todo" onclick="filterAdminChangelog('todo')">Upcoming TO-DO</button>
+          </div>
+
+          <div id="adminChangelogContainer">
+            <!-- Populated dynamically via js/admin.js from todo.txt / TourismHubStore -->
           </div>
 
         </section>

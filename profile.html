@@ -785,10 +785,16 @@
               </div>
             </div>
 
-           
-
+            <!-- System & Version Information -->
+            <div class="settings-group-card">
+              <div class="settings-row">
+                <div>
+                  <strong style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">System &amp; Version Information</strong>     
+                </div>
+                  <span id="settingsSystemVersionBadge" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; background: rgba(16, 185, 129, 0.12); color: var(--primary, #10b981); border: 1px solid rgba(16, 185, 129, 0.28); white-space: nowrap;">v1.5.0 (Build 2026.11.15)</span>
+              </div>
+            </div>
           </section>
-
         </div>
       </div>
 
@@ -1250,6 +1256,13 @@
       document.getElementById('accEmail').textContent = user.email || '';
       document.getElementById('accCountry').textContent = user.country || 'Philippines';
       document.getElementById('accPhone').textContent = user.phone || 'None provided';
+
+      // Populate System Version in Settings Tab
+      const versionBadgeEl = document.getElementById('settingsSystemVersionBadge');
+      if (versionBadgeEl && typeof TourismHubStore.getSystemVersion === 'function') {
+        const versionInfo = TourismHubStore.getSystemVersion();
+        versionBadgeEl.textContent = versionInfo.fullLabel || 'v1.5.0 (Build 2026.11.15)';
+      }
 
       // Initialize Favorites & Listeners
       renderProfileFavorites();

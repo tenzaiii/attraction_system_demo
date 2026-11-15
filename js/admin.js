@@ -272,6 +272,10 @@ document.addEventListener('DOMContentLoaded', () => {
     dispatch: {
       title: 'Announcement & Notification Dispatch',
       sub: 'Broadcast weather advisories, schedule changes, and alerts to tourists.'
+    },
+    changelog: {
+      title: 'System Changelog & Release History',
+      sub: 'Version history, feature additions, removals, and fixes tracked in todo.txt.'
     }
   };
 
@@ -290,6 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Refresh specific tab renders
+    if (tabId === 'overview') {
+      updateOverviewStats();
+      renderAdminChangelog();
+    }
     if (tabId === 'catalog') renderCatalog();
     if (tabId === 'capacity') {
       renderCapacitySlots();
@@ -298,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabId === 'scanner') renderRecentScans();
     if (tabId === 'analytics') renderAnalyticsView();
     if (tabId === 'dispatch') renderAnnouncementsFeed();
+    if (tabId === 'changelog') renderAdminChangelog();
 
     // Close mobile sidebar if open
     document.getElementById('adminSidebar')?.classList.remove('open');
@@ -2033,6 +2042,202 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
+  //  9b. System Changelog Renderer (Overview Card & Changelog Tab from todo.txt)
+  // ==========================================================================
+  let currentChangelogFilter = 'all';
+  let cachedChangelogData = null;
+  let changelogTodoFetched = false;
+
+  function escChangelogHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderChangelogMarkup(data) {
+    if (!data) return;
+    const versionInfo = data.versionInfo || {
+      version: 'v1.5.0',
+      build: 'Build 2026.11.15',
+      fullLabel: 'v1.5.0 (Build 2026.11.15)'
+    };
+
+    const overviewBadge = document.getElementById('adminOverviewVersionBadge');
+    const tabBadge = document.getElementById('changelogCurrentVersionBadge');
+    if (overviewBadge) overviewBadge.textContent = `${versionInfo.version} • ${versionInfo.build}`;
+    if (tabBadge) tabBadge.textContent = versionInfo.fullLabel;
+
+    // 1. Overview Preview Card (#adminOverviewChangelogPreview)
+    const previewEl = document.getElementById('adminOverviewChangelogPreview');
+    if (previewEl) {
+      const latestRelease = Array.isArray(data.releases) && data.releases[0] ? data.releases[0] : null;
+      if (!latestRelease) {
+        previewEl.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">No release history found.</p>';
+      } else {
+        const adds = latestRelease.items.filter(i => i.kind === 'add').length;
+        const changes = latestRelease.items.filter(i => i.kind === 'change').length;
+        const removes = latestRelease.items.filter(i => i.kind === 'remove').length;
+        const topItems = latestRelease.items.slice(0, 6);
+
+        previewEl.innerHTML = `
+          <div class="changelog-overview-summary">
+            <span class="changelog-meta-chip">${escChangelogHtml(latestRelease.version)} • ${escChangelogHtml(latestRelease.date)}</span>
+            <span class="changelog-badge add">+ ${adds} Additions</span>
+            <span class="changelog-badge change">* ${changes} Fixes &amp; Changes</span>
+            <span class="changelog-badge remove">- ${removes} Removals</span>
+          </div>
+          <div class="changelog-items-list compact">
+            ${topItems.map(item => `
+              <div class="changelog-item-row">
+                <span class="changelog-badge ${item.kind}">${item.kind === 'add' ? '+ Add' : item.kind === 'remove' ? '- Remove' : '* Change'}</span>
+                <span class="changelog-item-text">${escChangelogHtml(item.text)}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+
+    // 2. Full Changelog Tab Container (#adminChangelogContainer)
+    const fullContainer = document.getElementById('adminChangelogContainer');
+    if (!fullContainer) return;
+
+    const filter = currentChangelogFilter;
+    let html = '';
+
+    // Upcoming TO-DO section (when filter is 'all' or 'todo')
+    if ((filter === 'all' || filter === 'todo') && Array.isArray(data.todoItems) && data.todoItems.length > 0) {
+      html += `
+        <article class="changelog-release-card changelog-todo-card">
+          <div class="changelog-release-header">
+            <div>
+              <div class="changelog-release-title-row">
+                <span class="changelog-version-tag todo">ROADMAP • TO-DO</span>
+                <h3>Planned Tasks &amp; Pending Integrations</h3>
+              </div>
+              <p class="changelog-release-subtitle">Open items tracked at the top of todo.txt</p>
+            </div>
+            <span class="changelog-count-tag">${data.todoItems.length} item${data.todoItems.length === 1 ? '' : 's'}</span>
+          </div>
+          <div class="changelog-items-list">
+            ${data.todoItems.map(item => `
+              <div class="changelog-item-row">
+                <span class="changelog-badge ${item.kind}">${item.kind === 'add' ? '+ Planned' : item.kind === 'remove' ? '- Remove' : '* Pending Fix'}</span>
+                <span class="changelog-item-text">${escChangelogHtml(item.text)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </article>
+      `;
+    }
+
+    if (filter !== 'todo' && Array.isArray(data.releases)) {
+      data.releases.forEach((rel, idx) => {
+        const items = filter === 'all'
+          ? rel.items
+          : rel.items.filter(i => i.kind === filter);
+        if (items.length === 0) return;
+
+        const authorsList = Array.isArray(rel.authors) && rel.authors.length > 0
+          ? rel.authors.join(' & ')
+          : 'Development Team';
+
+        html += `
+          <article class="changelog-release-card ${idx === 0 ? 'latest' : ''}">
+            <div class="changelog-release-header">
+              <div>
+                <div class="changelog-release-title-row">
+                  <span class="changelog-version-tag">${escChangelogHtml(rel.version)}</span>
+                  <h3>${escChangelogHtml(rel.title || `Release ${rel.date}`)}</h3>
+                  ${idx === 0 ? '<span class="changelog-latest-pill">Latest Release</span>' : ''}
+                </div>
+                <p class="changelog-release-subtitle">
+                  Released on <strong>${escChangelogHtml(rel.date)}</strong> &bull; Contributors:
+                  ${rel.authors.map(a => `<span class="changelog-author-pill">${escChangelogHtml(a)}</span>`).join(' ')}
+                </p>
+              </div>
+              <span class="changelog-count-tag">${items.length} change${items.length === 1 ? '' : 's'}</span>
+            </div>
+            <div class="changelog-items-list">
+              ${items.map(item => `
+                <div class="changelog-item-row">
+                  <span class="changelog-badge ${item.kind}">${item.kind === 'add' ? '+ Add' : item.kind === 'remove' ? '- Remove' : '* Change'}</span>
+                  <span class="changelog-item-text">${escChangelogHtml(item.text)}</span>
+                  ${item.author && authorsList.includes('&') ? `<span class="changelog-item-author">${escChangelogHtml(item.author)}</span>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </article>
+        `;
+      });
+    }
+
+    if (!html) {
+      html = `
+        <div class="changelog-release-card" style="text-align: center; padding: 2.25rem; color: var(--text-muted);">
+          No changelog entries match the selected filter.
+        </div>
+      `;
+    }
+
+    fullContainer.innerHTML = html;
+  }
+
+  window.filterAdminChangelog = function (filterType) {
+    currentChangelogFilter = filterType || 'all';
+    document.querySelectorAll('.changelog-filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.filter === currentChangelogFilter);
+    });
+    const baseData = cachedChangelogData || (window.TourismHubStore && typeof TourismHubStore.getChangelogData === 'function' ? TourismHubStore.getChangelogData() : null);
+    renderChangelogMarkup(baseData);
+  };
+
+  let lastChangelogSignature = '';
+
+  window.renderAdminChangelog = async function (forceReload = false) {
+    const storeFallback = (window.TourismHubStore && typeof TourismHubStore.getChangelogData === 'function')
+      ? TourismHubStore.getChangelogData()
+      : null;
+
+    if (!cachedChangelogData && storeFallback) {
+      cachedChangelogData = storeFallback;
+      lastChangelogSignature = JSON.stringify(cachedChangelogData);
+      renderChangelogMarkup(cachedChangelogData);
+    }
+
+    // Dynamically sync raw todo.txt over HTTP when available
+    if ((!changelogTodoFetched || forceReload) && typeof fetch === 'function') {
+      changelogTodoFetched = true;
+      try {
+        const res = await fetch(`todo.txt?t=${Date.now()}`, { cache: 'no-store' });
+        if (res && res.ok) {
+          const text = await res.text();
+          if (text && window.TourismHubStore && typeof TourismHubStore.parseTodoTxtChangelog === 'function') {
+            const parsed = TourismHubStore.parseTodoTxtChangelog(text);
+            const nextSig = JSON.stringify(parsed);
+            if (nextSig !== lastChangelogSignature) {
+              cachedChangelogData = parsed;
+              lastChangelogSignature = nextSig;
+              renderChangelogMarkup(cachedChangelogData);
+            }
+            return;
+          }
+        }
+      } catch (_) {
+        // file:// or offline environment cleanly uses built-in TourismHubStore changelog snapshot
+      }
+    }
+  };
+
+  if (!window.__tourismHubChangelogAutoSync) {
+    window.__tourismHubChangelogAutoSync = setInterval(() => {
+      renderAdminChangelog(true);
+    }, 5000);
+  }
+
+  // ==========================================================================
   //  10. Initial Execution
   // ==========================================================================
   renderCatalog();
@@ -2042,6 +2247,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderRecentScans();
   renderAnalyticsView();
   renderAnnouncementsFeed();
+  renderAdminChangelog();
   updateOverviewStats();
 
 });

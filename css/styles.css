@@ -877,7 +877,7 @@ img {
 }
 
 /* ==========================================================================
-   Hero Section with Panoramic Tropical Cove
+   Hero Section with Automatic Featured Locations Carousel
    ========================================================================== */
 .hero-section {
   position: relative;
@@ -886,13 +886,147 @@ img {
   align-items: center;
   justify-content: center;
   background-color: #0b2239;
-  background-image: linear-gradient(180deg, rgba(8, 25, 45, 0.25) 0%, rgba(8, 25, 45, 0.65) 100%), url('/assets/qc-memorial-circle.jpg');
+  background-image: linear-gradient(180deg, rgba(8, 25, 45, 0.25) 0%, rgba(8, 25, 45, 0.65) 100%), url('../assets/qc-memorial-circle.jpg');
   background-size: cover;
   background-position: center 38%;
   background-repeat: no-repeat;
   color: #ffffff;
   text-align: center;
-  padding: 5rem 1.25rem 4rem;
+  padding: 5rem 1.25rem 3.5rem;
+  overflow: hidden;
+}
+
+.hero-carousel-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-location-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 38%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 0.9s ease-in-out, transform 6s ease-out;
+  will-change: opacity, transform;
+}
+
+.hero-location-slide.active {
+  opacity: 1;
+  transform: scale(1.045);
+}
+
+.hero-carousel-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(8, 25, 45, 0.34) 0%, rgba(8, 25, 45, 0.68) 100%);
+  pointer-events: none;
+}
+
+.hero-location-meta-bar {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0 1.5rem;
+  margin: 0 auto;
+}
+
+.hero-location-caption-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  background: rgba(15, 23, 42, 0.68);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--radius-full);
+  color: #ffffff;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.hero-location-caption-pill:hover {
+  background: rgba(2, 132, 199, 0.88);
+  border-color: rgba(125, 211, 252, 0.65);
+  transform: translateY(-1px);
+  color: #ffffff;
+}
+
+.hero-loc-badge-tag {
+  background: rgba(16, 185, 129, 0.92);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+.hero-location-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.32rem 0.55rem;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+}
+
+.hero-loc-arrow-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.hero-loc-arrow-btn:hover {
+  background: rgba(2, 132, 199, 0.9);
+}
+
+.hero-location-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hero-location-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.42);
+  cursor: pointer;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+.hero-location-dot.active {
+  width: 22px;
+  background: #38bdf8;
 }
 
 @media (min-width: 768px) {

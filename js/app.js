@@ -83,6 +83,119 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // --- 2b. Automatic Hero Featured Locations Background Carousel ---
+  const heroLocationCarousel = document.getElementById('heroLocationCarousel');
+  const heroLocationDots = document.getElementById('heroLocationDots');
+  const heroLocationCaptionText = document.getElementById('heroLocationCaptionText');
+  const heroLocationCaptionLink = document.getElementById('heroLocationCaptionLink');
+  const heroLocationMetaBar = document.getElementById('heroLocationMetaBar');
+  const HERO_FALLBACK_PHOTOS = [
+    'assets/qc-memorial-circle.jpg',
+    'assets/rizal-monument.jpg',
+    'assets/hero-banner.jpg',
+    'assets/white-beach.jpg'
+  ];
+  let heroLocationSlidesData = [];
+  let currentHeroLocationIdx = 0;
+  let heroLocationTimer = null;
+
+  function applyHeroLocationSlide(index) {
+    if (!heroLocationCarousel || heroLocationSlidesData.length === 0) return;
+    const slides = heroLocationCarousel.querySelectorAll('.hero-location-slide');
+    const dots = heroLocationDots ? heroLocationDots.querySelectorAll('.hero-location-dot') : [];
+    if (slides.length === 0) return;
+
+    currentHeroLocationIdx = ((index % slides.length) + slides.length) % slides.length;
+    const activeItem = heroLocationSlidesData[currentHeroLocationIdx];
+
+    slides.forEach((slide, idx) => {
+      slide.classList.toggle('active', idx === currentHeroLocationIdx);
+    });
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === currentHeroLocationIdx);
+      dot.setAttribute('aria-pressed', idx === currentHeroLocationIdx ? 'true' : 'false');
+    });
+
+    if (activeItem && heroLocationCaptionText) {
+      heroLocationCaptionText.textContent = `${activeItem.title} \u2022 ${activeItem.location || 'Metro Manila'}`;
+    }
+    if (activeItem && heroLocationCaptionLink) {
+      heroLocationCaptionLink.href = `attraction-details.html?id=${encodeURIComponent(activeItem.id)}`;
+    }
+  }
+
+  function stopHeroLocationAutoPlay() {
+    if (heroLocationTimer) {
+      clearInterval(heroLocationTimer);
+      heroLocationTimer = null;
+    }
+  }
+
+  function startHeroLocationAutoPlay() {
+    stopHeroLocationAutoPlay();
+    if (heroLocationSlidesData.length <= 1) return;
+    heroLocationTimer = setInterval(() => {
+      applyHeroLocationSlide(currentHeroLocationIdx + 1);
+    }, 4500);
+  }
+
+  window.changeHeroLocationSlide = function (delta) {
+    applyHeroLocationSlide(currentHeroLocationIdx + delta);
+    startHeroLocationAutoPlay();
+  };
+
+  window.goToHeroLocationSlide = function (idx) {
+    applyHeroLocationSlide(idx);
+    startHeroLocationAutoPlay();
+  };
+
+  function renderHeroLocationsCarousel() {
+    if (!heroLocationCarousel) return;
+
+    const catalog = (window.TourismHubStore && typeof TourismHubStore.getCatalog === 'function')
+      ? TourismHubStore.getCatalog()
+      : attractionsData;
+
+    const featured = Array.isArray(catalog) && catalog.length > 0
+      ? catalog.filter(item => item.status !== 'closed')
+      : [];
+    heroLocationSlidesData = featured.length > 0 ? featured : (Array.isArray(catalog) ? catalog : []);
+
+    if (heroLocationSlidesData.length === 0) {
+      heroLocationSlidesData = [
+        { id: 'qc-memorial-circle', title: 'Quezon Memorial Circle & Park', location: 'Quezon City', image: 'assets/qc-memorial-circle.jpg' },
+        { id: 'rizal-monument', title: 'Rizal Monument & Luneta Park', location: 'Manila', image: 'assets/rizal-monument.jpg' }
+      ];
+    }
+
+    if (currentHeroLocationIdx >= heroLocationSlidesData.length) {
+      currentHeroLocationIdx = 0;
+    }
+
+    heroLocationCarousel.innerHTML = heroLocationSlidesData.map((item, idx) => {
+      const candidateImg = (Array.isArray(item.images) && item.images[0]) || item.image || '';
+      const hasCustomPhoto = candidateImg && !String(candidateImg).includes('images.unsplash.com/photo-') && !String(candidateImg).includes('no-image.svg');
+      const resolvedBg = hasCustomPhoto ? candidateImg : HERO_FALLBACK_PHOTOS[idx % HERO_FALLBACK_PHOTOS.length];
+      return `<div class="hero-location-slide ${idx === currentHeroLocationIdx ? 'active' : ''}" style="background-image: url('${String(resolvedBg).replace(/'/g, '%27')}');"></div>`;
+    }).join('');
+
+    if (heroLocationDots) {
+      heroLocationDots.innerHTML = heroLocationSlidesData.map((item, idx) => {
+        const safeTitle = String(item.title || 'Featured Location').replace(/"/g, '&quot;');
+        return `<button type="button" class="hero-location-dot ${idx === currentHeroLocationIdx ? 'active' : ''}" onclick="goToHeroLocationSlide(${idx})" aria-label="Show ${safeTitle}" aria-pressed="${idx === currentHeroLocationIdx ? 'true' : 'false'}"></button>`;
+      }).join('');
+    }
+
+    if (heroLocationMetaBar && heroLocationMetaBar.dataset.heroHoverBound !== 'true') {
+      heroLocationMetaBar.dataset.heroHoverBound = 'true';
+      heroLocationMetaBar.addEventListener('mouseenter', stopHeroLocationAutoPlay);
+      heroLocationMetaBar.addEventListener('mouseleave', startHeroLocationAutoPlay);
+    }
+
+    applyHeroLocationSlide(currentHeroLocationIdx);
+    startHeroLocationAutoPlay();
+  }
+
   // --- 3. Render Attractions Grid ---
   let showAll = false;
   let currentFilter = 'all';
@@ -1132,6 +1245,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
     TourismHubStore.onSync((key) => {
       syncUserProfileHeader();
+      renderHeroLocationsCarousel();
       renderAttractions();
       renderFeaturedEvents();
       renderNotifications();
@@ -1152,6 +1266,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Live Supabase sync listener
   window.addEventListener('supabaseSyncComplete', () => {
     syncUserProfileHeader();
+    renderHeroLocationsCarousel();
     renderAttractions();
     renderFeaturedEvents();
     renderNotifications();
@@ -1159,6 +1274,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 15. Initial Render ---
   syncUserProfileHeader();
+  renderHeroLocationsCarousel();
   renderAttractions();
   renderFeaturedEvents();
   renderNotifications();
