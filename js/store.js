@@ -694,12 +694,14 @@
     const remoteEvents = validRows.filter(item => item.type === 'event').map(normalizeEventItem);
 
     if (remoteAttractionsRaw.length > 0) {
-      const localCatalog = getItem(KEYS.CATALOG, DEFAULT_CATALOG)
+      const localCatalog = getItem(KEYS.CATALOG, [])
         .filter(item => item && item.id && item.type !== 'event' && item.type !== 'festival' && !LEGACY_REMOVED_IDS.has(item.id));
+      const localMapById = new Map();
+      localCatalog.forEach(item => localMapById.set(item.id, normalizeAttractionItem(item)));
+
       const catalogMap = new Map();
-      localCatalog.forEach(item => catalogMap.set(item.id, normalizeAttractionItem(item)));
       remoteAttractionsRaw.forEach(rawRemote => {
-        const existingLocal = catalogMap.get(rawRemote.id);
+        const existingLocal = localMapById.get(rawRemote.id);
         const mergedRaw = {
           ...(existingLocal || {}),
           ...rawRemote

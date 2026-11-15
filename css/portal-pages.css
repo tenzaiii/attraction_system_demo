@@ -985,25 +985,33 @@
 .portal-filter-tabs {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .portal-filter-tab {
-  padding: 0.5rem 1.2rem;
+  padding: 0.5rem 1.15rem;
   border-radius: var(--radius-full);
   font-family: var(--font-heading);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 600;
-  color: #64748b;
-  background: #f1f5f9;
-  border: 1px solid transparent;
+  color: var(--text-muted, #64748b);
+  background: var(--bg-subtle, #f1f5f9);
+  border: 1px solid var(--border, transparent);
   transition: var(--transition);
   cursor: pointer;
+  white-space: nowrap;
+}
+
+.portal-filter-tab:hover {
+  color: var(--text-main, #0f172a);
+  border-color: rgba(29, 112, 245, 0.35);
 }
 
 .portal-filter-tab.active {
   background: #1d70f5;
   color: #ffffff;
+  border-color: #1d70f5;
   box-shadow: 0 2px 8px rgba(29, 112, 245, 0.3);
 }
 
@@ -1705,6 +1713,15 @@
   z-index: 2;
   display: none;
   background: #000000;
+  overflow: hidden;
+}
+
+.scanner-live-reader video,
+.scanner-live-reader canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block;
 }
 
 .scanner-reticle-box {
@@ -3202,6 +3219,50 @@
 @media (max-width: 900px) {
   .schedule-calendar-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .portal-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .portal-filter-tabs {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .portal-filter-tab {
+    flex-shrink: 0;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.82rem;
+  }
+
+  .portal-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  .scanner-kiosk-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scanner-camera-frame {
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scanner-camera-frame {
+    height: 260px;
   }
 }
 

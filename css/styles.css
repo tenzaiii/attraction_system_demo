@@ -943,6 +943,19 @@ img {
   margin: 0 auto;
 }
 
+@media (max-width: 640px) {
+  .hero-location-meta-bar {
+    bottom: 0.85rem;
+    gap: 0.5rem;
+    padding: 0 0.75rem;
+  }
+  .hero-location-caption-pill {
+    font-size: 0.78rem;
+    padding: 0.38rem 0.8rem;
+    max-width: 100%;
+  }
+}
+
 .hero-location-caption-pill {
   display: inline-flex;
   align-items: center;
