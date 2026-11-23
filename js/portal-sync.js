@@ -93,8 +93,8 @@
 
           return `
             <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'spot'}" data-category="${item.category || 'Tourist Spot'}" data-area="${locationStr}" data-title="${item.title}" data-capacity="${capSortVal}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
-              <div class="portal-item-media" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
-                <img src="${fallbackImg}" alt="${item.title}" loading="lazy" decoding="async" onerror="this.src='assets/no-image.svg'">
+              <div class="portal-item-media image-preload-wrapper" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
+                <img src="${fallbackImg}" alt="${item.title}" class="is-preloading" loading="lazy" onload="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded');" onerror="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded'); this.src='assets/no-image.svg';">
                 <button class="portal-card-wishlist-btn ${isFav ? 'saved' : ''}" 
                         title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
                         onclick="event.stopPropagation(); togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">

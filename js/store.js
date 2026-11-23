@@ -615,6 +615,23 @@
   // In-memory fallback cache for when localStorage quota is exceeded (e.g. large base64 images)
   const memoryCache = new Map();
 
+  // Persistent image cache for storing large Supabase base64 image strings across reloads
+  const IMAGE_CACHE_PREFIX = 'tourismhub_img_';
+  function saveCachedImage(id, dataUrl) {
+    if (!id || !dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:')) return;
+    try {
+      sessionStorage.setItem(IMAGE_CACHE_PREFIX + id, dataUrl);
+    } catch (_) {}
+  }
+  function getCachedImage(id) {
+    if (!id) return null;
+    try {
+      return sessionStorage.getItem(IMAGE_CACHE_PREFIX + id);
+    } catch (_) {
+      return null;
+    }
+  }
+
   // Helper Functions for Safe LocalStorage
   function getItem(key, defaultVal) {
     if (memoryCache.has(key)) {
@@ -622,7 +639,20 @@
     }
     try {
       const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : defaultVal;
+      const parsed = data ? JSON.parse(data) : defaultVal;
+      // Re-hydrate any stripped base64 images from sessionStorage
+      if (key === KEYS.CATALOG && Array.isArray(parsed)) {
+        return parsed.map(item => {
+          if (item && item.id && (!item.image || item.image === 'assets/no-image.svg')) {
+            const cached = getCachedImage(item.id);
+            if (cached) {
+              return { ...item, image: cached, images: [cached] };
+            }
+          }
+          return item;
+        });
+      }
+      return parsed;
     } catch (e) {
       console.warn('TourismHubStore: Failed to read from localStorage', e);
       return defaultVal;
@@ -631,6 +661,16 @@
 
   function setItem(key, val) {
     memoryCache.set(key, val);
+
+    // If saving catalog with base64 images, save full image strings to sessionStorage first
+    if (key === KEYS.CATALOG && Array.isArray(val)) {
+      val.forEach(item => {
+        if (item && item.id && item.image && item.image.startsWith('data:')) {
+          saveCachedImage(item.id, item.image);
+        }
+      });
+    }
+
     try {
       localStorage.setItem(key, JSON.stringify(val));
     } catch (e) {
@@ -707,7 +747,7 @@
         const cleanedCatalog = rawCatalog
           .filter(item => item && item.id && item.type !== 'event' && item.type !== 'festival' && !LEGACY_REMOVED_IDS.has(item.id))
           .map(normalizeAttractionItem);
-        localStorage.setItem(KEYS.CATALOG, JSON.stringify(cleanedCatalog));
+        setItem(KEYS.CATALOG, cleanedCatalog);
       }
 
       const rawEvents = getItem(KEYS.EVENTS, null);
@@ -715,7 +755,7 @@
         const cleanedEvents = rawEvents
           .filter(item => item && item.id && !LEGACY_REMOVED_IDS.has(item.id) && (item.parentAttractionId || item.badge))
           .map(normalizeEventItem);
-        localStorage.setItem(KEYS.EVENTS, JSON.stringify(cleanedEvents));
+        setItem(KEYS.EVENTS, cleanedEvents);
       }
 
       const rawPasses = getItem(KEYS.PASSES, null);
@@ -767,9 +807,45 @@
       });
       const mergedCatalog = Array.from(catalogMap.values());
       setItem(KEYS.CATALOG, mergedCatalog);
+      preloadAttractionImages(mergedCatalog);
     }
 
     setItem(KEYS.EVENTS, remoteEvents);
+    preloadAttractionImages(remoteEvents);
+  }
+
+  // Preload image assets into browser cache to prevent layout jumps & sluggish rendering
+  const preloadedImageUrls = new Set();
+  function preloadImages(urls) {
+    if (typeof window === 'undefined' || !Array.isArray(urls)) return;
+    urls.forEach(url => {
+      if (!url || typeof url !== 'string' || preloadedImageUrls.has(url)) return;
+      preloadedImageUrls.add(url);
+      try {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = url;
+      } catch (_) {}
+    });
+  }
+
+  function preloadAttractionImages(items) {
+    if (!Array.isArray(items)) return;
+    const urls = [];
+    items.forEach(item => {
+      if (!item) return;
+      if (item.image && typeof item.image === 'string' && !item.image.includes('images.unsplash.com/photo-')) {
+        urls.push(item.image);
+      }
+      if (Array.isArray(item.images)) {
+        item.images.forEach(img => {
+          if (img && typeof img === 'string' && !img.includes('images.unsplash.com/photo-')) {
+            urls.push(img);
+          }
+        });
+      }
+    });
+    preloadImages(urls);
   }
 
   // Public Store API
@@ -873,6 +949,8 @@
     parseNumericPriceFromLabel,
     normalizeMapEmbedUrl,
     extractEventDateKey,
+    preloadImages,
+    preloadAttractionImages,
     saveEvents(events) {
       setItem(KEYS.EVENTS, events);
     },
@@ -1836,14 +1914,27 @@
 
   window.TourismHubStore = TourismHubStore;
 
-  // Auto-initialize Supabase sync on load
+  // Auto-initialize Supabase sync and preload initial cached images on load
   if (typeof document !== 'undefined') {
+    const triggerInitialPreload = () => {
+      try {
+        const cachedCatalog = TourismHubStore.getCatalog();
+        const cachedEvents = TourismHubStore.getEvents();
+        preloadAttractionImages(cachedCatalog);
+        preloadAttractionImages(cachedEvents);
+      } catch (_) {}
+    };
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
+        triggerInitialPreload();
         TourismHubStore.initOnlineSync();
       });
     } else {
-      setTimeout(() => TourismHubStore.initOnlineSync(), 0);
+      setTimeout(() => {
+        triggerInitialPreload();
+        TourismHubStore.initOnlineSync();
+      }, 0);
     }
   }
 
