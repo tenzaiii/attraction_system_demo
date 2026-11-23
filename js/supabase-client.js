@@ -119,6 +119,8 @@
           role: roleKey,
           roleKey: roleKey,
           city: profile.city || 'Manila',
+          favorites: Array.isArray(profile.favorites) ? profile.favorites : undefined,
+          itinerary: Array.isArray(profile.itinerary) ? profile.itinerary : undefined,
           avatar: rawAvatar,
           authenticatedAt: new Date().toISOString()
         };
@@ -129,6 +131,57 @@
           success: false, 
           message: 'Database authentication error: ' + (err.message || 'Network failure') 
         };
+      }
+    },
+
+    async cancelPass(code) {
+      if (!supabaseClient || !code) return { success: false };
+      try {
+        const { error } = await supabaseClient
+          .from('passes')
+          .update({ status: 'cancelled' })
+          .eq('code', String(code).toUpperCase().trim());
+        return { success: !error, message: error ? error.message : 'Pass cancelled.' };
+      } catch (e) {
+        return { success: false, message: e.message };
+      }
+    },
+
+    async updateUserLists(userId, lists) {
+      if (!supabaseClient || !userId || !lists) return { success: false };
+      try {
+        const payload = {};
+        if (Array.isArray(lists.favorites)) payload.favorites = lists.favorites;
+        if (Array.isArray(lists.itinerary)) payload.itinerary = lists.itinerary;
+        if (Object.keys(payload).length === 0) return { success: true };
+        const { error } = await supabaseClient
+          .from('profiles')
+          .update(payload)
+          .eq('id', userId);
+        return { success: !error };
+      } catch (_) {
+        return { success: false };
+      }
+    },
+
+    async resetPasswordByEmail(email, city, newPassword) {
+      if (!supabaseClient) return { success: false, message: 'Offline mode: cannot verify cloud account.' };
+      try {
+        const cleanEmail = String(email || '').trim().toLowerCase();
+        const cleanCity = String(city || '').trim().toLowerCase();
+        const profile = await this.getProfileByEmail(cleanEmail);
+        if (!profile) return { success: false, message: 'No account found with that email address.' };
+        if (profile.city && cleanCity && String(profile.city).trim().toLowerCase() !== cleanCity) {
+          return { success: false, message: 'City does not match our records for this account.' };
+        }
+        const { error } = await supabaseClient
+          .from('profiles')
+          .update({ password_hash: newPassword })
+          .eq('id', profile.id);
+        if (error) return { success: false, message: error.message };
+        return { success: true, message: 'Password reset successfully! You can now sign in.' };
+      } catch (e) {
+        return { success: false, message: e.message || 'Password reset failed.' };
       }
     },
 

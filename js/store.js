@@ -1545,7 +1545,24 @@
 
       allItin[userKey] = userItin;
       setItem(KEYS.ITINERARY, allItin);
+      if (activeUser && activeUser.id && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.updateUserLists(activeUser.id, { itinerary: userItin }).catch(() => {});
+      }
       return { inItinerary, itinerary: userItin };
+    },
+
+    cancelPass(code) {
+      const cleanCode = String(code || '').toUpperCase().trim();
+      if (!cleanCode) return { success: false, message: 'Invalid pass code.' };
+      const passes = this.getPasses();
+      const target = passes.find(p => String(p.code || '').toUpperCase().trim() === cleanCode);
+      if (!target) return { success: false, message: 'Pass not found.' };
+      target.status = 'cancelled';
+      setItem(KEYS.PASSES, passes);
+      if (window.TourismHubSupabase && TourismHubSupabase.isReady() && typeof TourismHubSupabase.cancelPass === 'function') {
+        TourismHubSupabase.cancelPass(cleanCode).catch(() => {});
+      }
+      return { success: true, pass: target };
     },
 
     removeFromItinerary(attractionId) {

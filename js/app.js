@@ -539,29 +539,77 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 4. Search and Filter Event Listeners ---
+  // --- 4. Hero Live Search Dropdown ---
+  const heroSearchDropdown = document.getElementById('heroSearchDropdown');
+
+  function closeHeroSearchDropdown() {
+    if (heroSearchDropdown) heroSearchDropdown.classList.remove('open');
+  }
+
+  function renderHeroSearchDropdown() {
+    if (!heroSearchDropdown) return;
+    const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+    const filterVal = searchFilter ? searchFilter.value : 'all';
+
+    if (!query && filterVal === 'all') {
+      closeHeroSearchDropdown();
+      return;
+    }
+
+    const catalog = (window.TourismHubStore && typeof TourismHubStore.getCatalog === 'function')
+      ? TourismHubStore.getCatalog()
+      : attractionsData;
+    const events = (window.TourismHubStore && typeof TourismHubStore.getEvents === 'function')
+      ? TourismHubStore.getEvents()
+      : [];
+
+    const combined = [
+      ...catalog.map(item => ({ ...item, _kind: 'Attraction', _targetId: item.id })),
+      ...events.map(ev => ({ ...ev, _kind: 'Event', _targetId: ev.parentAttractionId || ev.id }))
+    ];
+
+    const matches = combined.filter(item => {
+      const hay = `${item.title || ''} ${item.category || ''} ${item.location || ''} ${item.description || ''}`.toLowerCase();
+      const matchesQuery = !query || hay.includes(query);
+      let matchesFilter = true;
+      if (filterVal !== 'all') {
+        if (filterVal === 'Manila' || filterVal === 'Quezon City') {
+          matchesFilter = String(item.location || '').toLowerCase() === filterVal.toLowerCase();
+        } else {
+          matchesFilter = String(item.type || '').toLowerCase() === filterVal.toLowerCase();
+        }
+      }
+      return matchesQuery && matchesFilter;
+    }).slice(0, 8);
+
+    if (matches.length === 0) {
+      heroSearchDropdown.innerHTML = '<div style="padding: 0.9rem 1rem; text-align: center; font-size: 0.85rem; color: var(--text-muted);">No matching attractions or events found.</div>';
+    } else {
+      heroSearchDropdown.innerHTML = matches.map(item => {
+        const img = (item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg';
+        return `
+          <a href="attraction-details.html?id=${encodeURIComponent(item._targetId)}" class="hero-search-result-item" role="option">
+            <img src="${img}" alt="${item.title}" class="hero-search-result-thumb" onerror="this.src='assets/no-image.svg'">
+            <div style="min-width: 0;">
+              <div style="font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</div>
+              <div class="hero-search-result-meta">${item.location || 'Manila'} &bull; ${item.category || item._kind}</div>
+            </div>
+            <span class="hero-search-result-badge">${item._kind}</span>
+          </a>
+        `;
+      }).join('');
+    }
+    heroSearchDropdown.classList.add('open');
+  }
+
   if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      renderAttractions();
-      renderFeaturedEvents();
-    });
+    searchInput.addEventListener('input', renderHeroSearchDropdown);
+    searchInput.addEventListener('focus', renderHeroSearchDropdown);
   }
-
-  if (searchFilter) {
-    searchFilter.addEventListener('change', () => {
-      renderAttractions();
-      renderFeaturedEvents();
-    });
-  }
-
-  if (searchBtn) {
-    searchBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      renderAttractions();
-      renderFeaturedEvents();
-      document.getElementById('featuredAttractions')?.scrollIntoView({ behavior: 'smooth' });
-    });
-  }
+  if (searchFilter) searchFilter.addEventListener('change', renderHeroSearchDropdown);
+  if (searchBtn) searchBtn.addEventListener('click', (ev) => { ev.preventDefault(); renderHeroSearchDropdown(); });
+  document.addEventListener('click', (ev) => { if (!ev.target.closest('.hero-search-wrapper')) closeHeroSearchDropdown(); });
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeHeroSearchDropdown(); });
 
   filterTabs.forEach(tab => {
     tab.addEventListener('click', () => {

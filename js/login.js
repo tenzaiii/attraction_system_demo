@@ -193,6 +193,42 @@ async function submitClientRegister(name, email, password, passwordConfirm, city
   }
 }
 
+window.openForgotPasswordModal = function () {
+  const modal = document.getElementById('forgotPasswordModal');
+  const msg = document.getElementById('forgotStatusMsg');
+  if (msg) { msg.style.display = 'none'; msg.textContent = ''; }
+  if (modal) modal.style.display = 'flex';
+};
+
+window.submitForgotPassword = async function (e) {
+  e.preventDefault();
+  const email = document.getElementById('forgotEmail')?.value.trim();
+  const city = document.getElementById('forgotCity')?.value;
+  const newPwd = document.getElementById('forgotNewPassword')?.value;
+  const msgEl = document.getElementById('forgotStatusMsg');
+  const btn = document.getElementById('forgotSubmitBtn');
+  if (!email || !newPwd || newPwd.length < 6) return;
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Resetting...'; }
+  let res = { success: false, message: 'Password reset service unavailable.' };
+  if (window.TourismHubSupabase && typeof TourismHubSupabase.resetPasswordByEmail === 'function') {
+    res = await TourismHubSupabase.resetPasswordByEmail(email, city, newPwd);
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'Reset Password'; }
+  if (msgEl) {
+    msgEl.style.display = 'block';
+    msgEl.style.color = res.success ? '#10b981' : '#ef4444';
+    msgEl.textContent = res.message || (res.success ? 'Password updated!' : 'Reset failed.');
+  }
+  if (res.success) {
+    setTimeout(() => {
+      const modal = document.getElementById('forgotPasswordModal');
+      if (modal) modal.style.display = 'none';
+      if (typeof showNotice === 'function') showNotice(res.message, 'success');
+    }, 1200);
+  }
+};
+
 // Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
   const formSignIn = document.getElementById('formSignIn');

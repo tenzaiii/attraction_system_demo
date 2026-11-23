@@ -638,8 +638,6 @@ document.addEventListener('DOMContentLoaded', () => {
       locSelect.value = normalizeAdminLocation(item.location);
     }
     document.getElementById('attrFormHours').value = item.operatingHours;
-    document.getElementById('attrFormPrice').value = item.admission || item.priceLabel || '';
-    if (typeof populateFeeTiers === 'function') populateFeeTiers('attrFeeTiersContainer', item.feeTiers);
     document.getElementById('attrFormCapacity').value = item.capacityPerSlot;
     document.getElementById('attrFormStatus').value = item.status;
     document.getElementById('attrFormDesc').value = item.description;
@@ -704,18 +702,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const type = mapCategoryToType(category);
     const location = document.getElementById('attrFormLocation')?.value || 'Manila';
     const hours = document.getElementById('attrFormHours')?.value.trim();
-    const priceStr = document.getElementById('attrFormPrice')?.value.trim();
+    const priceStr = 'Free';
     const capacity = parseInt(document.getElementById('attrFormCapacity')?.value) || 100;
     const status = document.getElementById('attrFormStatus')?.value || 'active';
     const desc = document.getElementById('attrFormDesc')?.value.trim();
     const rawMapEmbed = document.getElementById('attrFormMapEmbed')?.value.trim() || '';
 
-    const feeTiers = collectFeeTiers('attrFeeTiersContainer');
-    const numericPrice = feeTiers.length > 0
-      ? feeTiers[0].price
-      : ((window.TourismHubStore && typeof TourismHubStore.parseNumericPriceFromLabel === 'function')
-        ? TourismHubStore.parseNumericPriceFromLabel(priceStr, 0)
-        : (parseFloat(String(priceStr || '').replace(/[^0-9.]/g, '')) || 0));
+    const feeTiers = [];
+    const numericPrice = 0;
     const resolvedMapEmbed = (window.TourismHubStore && typeof TourismHubStore.normalizeMapEmbedUrl === 'function')
       ? TourismHubStore.normalizeMapEmbedUrl(rawMapEmbed, title, location)
       : `https://maps.google.com/maps?q=${encodeURIComponent(rawMapEmbed || `${title}, ${location}, Philippines`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
