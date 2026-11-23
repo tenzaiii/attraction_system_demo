@@ -95,7 +95,6 @@
             <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'spot'}" data-category="${item.category || 'Tourist Spot'}" data-area="${locationStr}" data-title="${item.title}" data-capacity="${capSortVal}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
               <div class="portal-item-media" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
                 <img src="${fallbackImg}" alt="${item.title}" loading="lazy" onerror="this.src='assets/no-image.svg'">
-                <span class="portal-badge-tag attraction">${badgeLabel}</span>
                 <button class="portal-card-wishlist-btn ${isFav ? 'saved' : ''}" 
                         title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
                         onclick="event.stopPropagation(); togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
@@ -103,6 +102,7 @@
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                   </svg>
                 </button>
+                <span class="portal-badge-tag attraction">${badgeLabel}</span>
               </div>
               <div class="portal-item-body">
                 <h3 class="portal-item-title" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View details">${item.title}</h3>

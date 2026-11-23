@@ -3286,4 +3286,37 @@
   }
 }
 
+/* Attractions Page Sidebar KPI 1-Column Grid, Larger Cards & Top-Left Favorites */
+.attractions-sidebar-col .portal-metrics-row.sidebar-kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+.attractions-sidebar-col .portal-metrics-row.sidebar-kpi-grid .portal-stat-card {
+  padding: 0.7rem 0.9rem;
+}
+
+.portal-cards-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 1.5rem !important;
+}
+
+.portal-item-media {
+  height: 205px !important;
+}
+
+.portal-item-media .portal-card-wishlist-btn {
+  top: 10px !important;
+  left: 10px !important;
+  right: auto !important;
+}
+
+.portal-item-media .portal-badge-tag {
+  top: 10px !important;
+  right: 10px !important;
+  left: auto !important;
+}
+
 
