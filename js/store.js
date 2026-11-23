@@ -194,9 +194,12 @@
       ? item.feeTiers
       : ((item.id && localFeeTiers && Array.isArray(localFeeTiers[item.id])) ? localFeeTiers[item.id] : []);
     if (item.id && Array.isArray(item.feeTiers) && item.feeTiers.length > 0) {
-      const nextTiers = (localFeeTiers && typeof localFeeTiers === 'object') ? { ...localFeeTiers } : {};
-      nextTiers[item.id] = item.feeTiers;
-      setItem(KEYS.FEE_TIERS, nextTiers);
+      const currentStored = localFeeTiers && localFeeTiers[item.id];
+      if (JSON.stringify(currentStored) !== JSON.stringify(item.feeTiers)) {
+        const nextTiers = (localFeeTiers && typeof localFeeTiers === 'object') ? { ...localFeeTiers } : {};
+        nextTiers[item.id] = item.feeTiers;
+        setItem(KEYS.FEE_TIERS, nextTiers);
+      }
     }
 
     return {
@@ -244,9 +247,12 @@
       ? item.feeTiers
       : ((item.id && localFeeTiers && Array.isArray(localFeeTiers[item.id])) ? localFeeTiers[item.id] : []);
     if (item.id && Array.isArray(item.feeTiers) && item.feeTiers.length > 0) {
-      const nextTiers = (localFeeTiers && typeof localFeeTiers === 'object') ? { ...localFeeTiers } : {};
-      nextTiers[item.id] = item.feeTiers;
-      setItem(KEYS.FEE_TIERS, nextTiers);
+      const currentStored = localFeeTiers && localFeeTiers[item.id];
+      if (JSON.stringify(currentStored) !== JSON.stringify(item.feeTiers)) {
+        const nextTiers = (localFeeTiers && typeof localFeeTiers === 'object') ? { ...localFeeTiers } : {};
+        nextTiers[item.id] = item.feeTiers;
+        setItem(KEYS.FEE_TIERS, nextTiers);
+      }
     }
 
     return {
@@ -605,8 +611,14 @@
     { time: '10:15 AM', pass: 'PASS-8448-BEA', visitor: 'Maria Santos', attraction: 'Big Lagoon Marine Sanctuary', party: '1 pax', result: 'Approved' }
   ];
 
+  // In-memory fallback cache for when localStorage quota is exceeded (e.g. large base64 images)
+  const memoryCache = new Map();
+
   // Helper Functions for Safe LocalStorage
   function getItem(key, defaultVal) {
+    if (memoryCache.has(key)) {
+      return memoryCache.get(key);
+    }
     try {
       const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : defaultVal;
@@ -617,13 +629,27 @@
   }
 
   function setItem(key, val) {
+    memoryCache.set(key, val);
     try {
       localStorage.setItem(key, JSON.stringify(val));
-      // Dispatch a synthetic storage event for same-window listeners
-      window.dispatchEvent(new CustomEvent('tourismhub:sync', { detail: { key, val } }));
     } catch (e) {
-      console.warn('TourismHubStore: Failed to write to localStorage', e);
+      console.warn('TourismHubStore: Failed to write to localStorage (relying on memory cache):', e);
+      // Try stripped storage if catalog exceeds quota: store without large data URLs
+      if (key === KEYS.CATALOG && Array.isArray(val)) {
+        try {
+          const stripped = val.map(item => ({
+            ...item,
+            image: (item.image && item.image.startsWith('data:')) ? 'assets/no-image.svg' : item.image,
+            images: (Array.isArray(item.images))
+              ? item.images.map(img => (img && img.startsWith('data:')) ? 'assets/no-image.svg' : img)
+              : ['assets/no-image.svg']
+          }));
+          localStorage.setItem(key, JSON.stringify(stripped));
+        } catch (_) {}
+      }
     }
+    // Dispatch a synthetic storage event for same-window listeners
+    window.dispatchEvent(new CustomEvent('tourismhub:sync', { detail: { key, val } }));
   }
 
   // Initialize store if keys don't exist
