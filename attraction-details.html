@@ -751,8 +751,11 @@
         }
         renderOtherLocations(catalog);
         const itinTxtEl = document.getElementById('detailsItineraryBtnText');
+        const itinBtnEl = document.getElementById('detailsItineraryBtn');
         if (itinTxtEl && window.TourismHubStore && typeof TourismHubStore.isInItinerary === 'function') {
-          itinTxtEl.textContent = TourismHubStore.isInItinerary(currentAttraction.id) ? 'In My Itinerary ✓' : 'Add to Itinerary';
+          const inItin = TourismHubStore.isInItinerary(currentAttraction.id);
+          itinTxtEl.textContent = inItin ? 'In My Itinerary ✓' : 'Add to Itinerary';
+          if (itinBtnEl) itinBtnEl.style.background = inItin ? '#10b981' : 'var(--primary, #0284c7)';
         }
 
         // 10. Fetch latest pictures & details directly from Supabase Storage bucket & catalog
@@ -1144,8 +1147,12 @@
         if (!currentAttraction || !window.TourismHubStore || typeof TourismHubStore.toggleItinerary !== 'function') return;
         const res = TourismHubStore.toggleItinerary(currentAttraction.id);
         const txtEl = document.getElementById('detailsItineraryBtnText');
+        const btnEl = document.getElementById('detailsItineraryBtn');
         if (txtEl) {
           txtEl.textContent = res.inItinerary ? 'In My Itinerary ✓' : 'Add to Itinerary';
+        }
+        if (btnEl) {
+          btnEl.style.background = res.inItinerary ? '#10b981' : 'var(--primary, #0284c7)';
         }
         if (typeof window.showItineraryBriefModal === 'function') {
           window.showItineraryBriefModal(currentAttraction.title, res.inItinerary);

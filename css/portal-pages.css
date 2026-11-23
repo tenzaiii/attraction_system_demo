@@ -3522,6 +3522,19 @@
   }
 }
 
+.itinerary-tracker-split {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .itinerary-tracker-split {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Image Preload Skeleton & Shimmer Styles */
 .image-preload-wrapper {
   position: relative;

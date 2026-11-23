@@ -1596,6 +1596,58 @@
       return userItin;
     },
 
+    reorderItinerary(fromIdx, toIdx) {
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allItin = getItem(KEYS.ITINERARY) || {};
+      let userItin = Array.isArray(allItin[userKey]) ? [...allItin[userKey]] : [];
+      if (fromIdx < 0 || toIdx < 0 || fromIdx >= userItin.length || toIdx >= userItin.length || fromIdx === toIdx) return userItin;
+      const [moved] = userItin.splice(fromIdx, 1);
+      userItin.splice(toIdx, 0, moved);
+      allItin[userKey] = userItin;
+      setItem(KEYS.ITINERARY, allItin);
+      if (activeUser && activeUser.id && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.updateUserLists(activeUser.id, { itinerary: userItin }).catch(() => {});
+      }
+      return userItin;
+    },
+
+    clearItinerary() {
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allItin = getItem(KEYS.ITINERARY) || {};
+      allItin[userKey] = [];
+      setItem(KEYS.ITINERARY, allItin);
+      const allVisited = getItem('tourismhub_temp_itinerary_visited_v1') || {};
+      allVisited[userKey] = [];
+      setItem('tourismhub_temp_itinerary_visited_v1', allVisited);
+      if (activeUser && activeUser.id && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.updateUserLists(activeUser.id, { itinerary: [] }).catch(() => {});
+      }
+      return [];
+    },
+
+    getVisitedItinerary() {
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allVisited = getItem('tourismhub_temp_itinerary_visited_v1') || {};
+      return Array.isArray(allVisited[userKey]) ? allVisited[userKey] : [];
+    },
+
+    toggleItineraryVisited(attractionId) {
+      if (!attractionId) return [];
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allVisited = getItem('tourismhub_temp_itinerary_visited_v1') || {};
+      let list = Array.isArray(allVisited[userKey]) ? [...allVisited[userKey]] : [];
+      const idx = list.indexOf(attractionId);
+      if (idx > -1) list.splice(idx, 1);
+      else list.push(attractionId);
+      allVisited[userKey] = list;
+      setItem('tourismhub_temp_itinerary_visited_v1', allVisited);
+      return list;
+    },
+
     // =========================================================================
     // FAVORITES / WISHLIST MANAGEMENT
     // =========================================================================
