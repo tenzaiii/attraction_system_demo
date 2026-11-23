@@ -123,7 +123,7 @@
                 </div>
               </div>
               <div class="portal-item-footer" style="display: flex; align-items: center; gap: 0.5rem;">
-                <button type="button" class="portal-view-details-btn" style="flex: 0 0 auto; padding: 0.55rem 0.75rem; background: var(--bg-subtle, #f1f5f9); color: var(--text-main, #0f172a); border: 1px solid var(--border, #e2e8f0);" onclick="event.stopPropagation(); togglePortalItinerary('${item.id}', '${item.title.replace(/'/g, "\\'")}', this)">
+                <button type="button" class="portal-view-details-btn" style="flex: 0 0 auto; padding: 0.55rem 0.85rem; background: ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '#10b981' : 'rgba(2, 132, 199, 0.12)'}; color: ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '#ffffff' : 'var(--primary, #0284c7)'}; border: 1px solid ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '#10b981' : 'rgba(2, 132, 199, 0.35)'}; font-weight: 700;" onclick="event.stopPropagation(); togglePortalItinerary('${item.id}', '${item.title.replace(/'/g, "\\'")}', this)">
                   ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '✓ Itinerary' : '+ Itinerary'}
                 </button>
                 <a href="attraction-details.html?id=${item.id}" class="portal-view-details-btn" style="flex: 1; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">View Details &gt;</a>
@@ -502,7 +502,7 @@
             </div>
             <h4 style="margin: 0 0 0.35rem; font-size: 1.05rem; font-weight: 800; color: var(--text-main, #0f172a);">${added ? 'Added to Your Itinerary!' : 'Removed from Itinerary'}</h4>
             <p style="margin: 0 0 1rem; font-size: 0.86rem; color: var(--text-muted, #64748b);">${title}</p>
-            <a href="profile.html#itinerary" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.55rem 1.1rem; border-radius: 8px; background: var(--primary, #0284c7); color: #ffffff; font-size: 0.82rem; font-weight: 700; text-decoration: none;">View My Itinerary</a>
+            <a href="capacity.html" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.55rem 1.1rem; border-radius: 8px; background: var(--primary, #0284c7); color: #ffffff; font-size: 0.82rem; font-weight: 700; text-decoration: none;">View My Itinerary</a>
           </div>
         </div>
       `;

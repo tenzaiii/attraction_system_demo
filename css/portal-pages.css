@@ -115,7 +115,7 @@
 [data-theme="dark"] select,
 [data-theme="dark"] textarea,
 [data-theme="dark"] .portal-select {
-  background-color: #0f172a !important;
+  
   border-color: #334155 !important;
   color: #f8fafc !important;
 }
