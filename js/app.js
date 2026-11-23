@@ -271,8 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     attractionsGrid.innerHTML = displayList.map(item => `
       <article class="attraction-card" data-id="${item.id}">
-        <div class="card-media-wrapper" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
-          <img src="${(item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg'}" alt="${item.title}" class="card-image" loading="lazy" onerror="this.src='assets/no-image.svg'">
+        <div class="card-media-wrapper image-preload-wrapper" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
+          <img src="${(item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg'}" alt="${item.title}" class="card-image is-preloading" loading="lazy" onload="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded');" onerror="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded'); this.src='assets/no-image.svg';">
           <span class="card-badge-floating">${item.badge || 'Featured'}</span>
           <button class="card-wishlist-btn ${savedAttractions.has(item.id) ? 'saved' : ''}" 
                   aria-label="Save ${item.title}" 
@@ -424,15 +424,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const slidesHtml = filteredEvents.map((ev, idx) => {
       const targetAttractionId = ev.parentAttractionId || ev.id;
-      const imgUrl = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'assets/no-image.svg';
-      const safeImg = String(imgUrl).includes('images.unsplash.com/photo-') ? 'assets/no-image.svg' : imgUrl;
+      const rawImgUrl = (Array.isArray(ev.images) && ev.images[0]) || ev.image || '';
+      const isNoImage = !rawImgUrl || String(rawImgUrl).includes('no-image.svg') || String(rawImgUrl).includes('images.unsplash.com/photo-');
+      // If event has no image, try to use the parent attraction's image
+      let safeImg = rawImgUrl;
+      if (isNoImage && targetAttractionId) {
+        const parentAttr = attractionsData.find(a => a.id === targetAttractionId);
+        if (parentAttr && parentAttr.image && !String(parentAttr.image).includes('no-image.svg') && !String(parentAttr.image).includes('images.unsplash.com/photo-')) {
+          safeImg = parentAttr.image;
+        } else {
+          safeImg = '';
+        }
+      }
+      const hasImage = safeImg && !String(safeImg).includes('no-image.svg');
       const detailsHref = `attraction-details.html?id=${encodeURIComponent(targetAttractionId)}`;
       const dateText = formatBannerEventDate(ev);
       const isActive = idx === currentEventSlideIndex;
 
       return `
-        <article class="event-banner-slide ${isActive ? 'active' : ''}" data-slide-index="${idx}" data-event-id="${esc(ev.id)}" aria-hidden="${isActive ? 'false' : 'true'}">
-          <img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="event-banner-bg" onerror="this.src='assets/no-image.svg'">
+        <article class="event-banner-slide ${isActive ? 'active' : ''}${hasImage ? '' : ' no-banner-image'}" data-slide-index="${idx}" data-event-id="${esc(ev.id)}" aria-hidden="${isActive ? 'false' : 'true'}">
+          ${hasImage ? `<img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="event-banner-bg" loading="eager" onerror="this.style.display='none'; this.parentElement.classList.add('no-banner-image');">` : ''}
           <div class="event-banner-overlay"></div>
           <div class="event-banner-content">
             <div class="event-banner-meta-row">

@@ -587,5 +587,13 @@
   color: #7dd3fc !important;
 }
 
+[data-theme="dark"] .image-preload-wrapper {
+  background-color: var(--dm-bg-subtle) !important;
+}
+
+[data-theme="dark"] .image-preload-wrapper::before {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%) !important;
+}
+
 
 

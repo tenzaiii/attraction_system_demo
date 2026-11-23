@@ -3665,6 +3665,7 @@ img {
 .events-banner-carousel {
   position: relative;
   width: 100%;
+  height: 380px;
   min-height: 380px;
   border-radius: var(--radius-lg, 18px);
   overflow: hidden;
@@ -3676,27 +3677,45 @@ img {
 .events-banner-track {
   position: relative;
   width: 100%;
-  min-height: 380px;
+  height: 100%;
+  overflow: hidden;
 }
 
 .event-banner-slide {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.45s ease, visibility 0.45s ease;
   display: flex;
   align-items: center;
-  min-height: 380px;
   pointer-events: none;
 }
 
 .event-banner-slide.active {
-  position: relative;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 1;
   visibility: visible;
   z-index: 2;
   pointer-events: auto;
+}
+
+.event-banner-slide.no-banner-image {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0ea5e9 100%);
+}
+
+.event-banner-slide.no-banner-image .event-banner-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.85) 0%,
+    rgba(15, 23, 42, 0.55) 60%,
+    rgba(15, 23, 42, 0.25) 100%
+  );
 }
 
 .event-banner-bg {
@@ -3915,9 +3934,8 @@ img {
 }
 
 @media (max-width: 768px) {
-  .events-banner-carousel,
-  .events-banner-track,
-  .event-banner-slide {
+  .events-banner-carousel {
+    height: 340px;
     min-height: 340px;
   }
 
@@ -3979,6 +3997,45 @@ body {
 .profile-dropdown-menu,
 .notifications-dropdown-menu {
   max-width: calc(100vw - 1.5rem);
+}
+
+/* Image Preload Skeleton & Shimmer Styles */
+.image-preload-wrapper {
+  position: relative;
+  background-color: #e2e8f0;
+  overflow: hidden;
+}
+
+.image-preload-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: imgSkeletonShimmer 1.5s infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.image-preload-wrapper.img-loaded::before {
+  display: none !important;
+}
+
+@keyframes imgSkeletonShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.card-image.is-preloading,
+.portal-item-media img.is-preloading {
+  opacity: 0;
+  transition: opacity 0.35s ease-in-out;
+}
+
+.card-image.is-loaded,
+.portal-item-media img.is-loaded {
+  opacity: 1;
 }
 
 @media (max-width: 520px) {
