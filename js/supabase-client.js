@@ -110,20 +110,16 @@
           };
         }
 
-        const roleKey = profile.role_key || profile.role || 'tourist';
+        const roleKey = profile.role || 'tourist';
         const rawAvatar = profile.avatar && !String(profile.avatar).includes('images.unsplash.com/photo-') ? profile.avatar : '';
         const sessionUser = {
           id: profile.id,
           name: profile.name,
           email: profile.email,
-          role: profile.role || 'tourist',
+          role: roleKey,
           roleKey: roleKey,
-          department: profile.department || '',
-          badge: profile.badge || (roleKey === 'admin' ? 'Chief Operator' : roleKey === 'officer' ? 'Field Security' : 'Verified Tourist'),
-          country: profile.country || 'Philippines',
-          phone: profile.phone || '',
+          city: profile.city || 'Manila',
           avatar: rawAvatar,
-          terminal: profile.terminal || null,
           authenticatedAt: new Date().toISOString()
         };
 
@@ -163,10 +159,7 @@
           email: cleanEmail,
           password_hash: password,
           role: 'tourist',
-          role_key: 'tourist',
-          country: country || 'Philippines',
-          phone: phone || '',
-          badge: 'New Tourist Member',
+          city: city || 'Manila',
           avatar: ''
         };
 
@@ -186,10 +179,8 @@
           name: data.name,
           email: data.email,
           role: data.role || 'tourist',
-          roleKey: data.role_key || 'tourist',
-          country: data.country,
-          phone: data.phone,
-          badge: data.badge || 'Verified Tourist',
+          roleKey: data.role || 'tourist',
+          city: data.city || city || 'Manila',
           avatar: data.avatar,
           authenticatedAt: new Date().toISOString()
         };

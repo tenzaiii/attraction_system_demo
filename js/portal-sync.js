@@ -190,57 +190,7 @@
 
     // --- 3. Capacity & Schedule Page (capacity.html) ---
     function syncCapacityPage() {
-      const tbody = document.getElementById('capacityTableBody');
-      if (!tbody) return;
-
-      const catalog = TourismHubStore.getCatalog();
-      const capacityData = TourismHubStore.getCapacityData();
-
-      tbody.innerHTML = catalog.map(item => {
-        const slots = capacityData[item.id] || [];
-        let cap = item.capacityPerSlot || 100;
-        let booked = 0;
-
-        if (slots.length > 0) {
-          cap = slots.reduce((acc, s) => acc + (s.max || 0), 0);
-          booked = slots.reduce((acc, s) => acc + (s.booked || 0), 0);
-        }
-
-        const available = Math.max(0, cap - booked);
-        const isEvent = item.type === 'festival' || item.type === 'event';
-        const typeBadge = isEvent ? 'purple' : 'blue';
-        const typeLabel = isEvent ? 'Event' : 'Attraction';
-
-        const safeThumb = (item.image && !String(item.image).includes('images.unsplash.com/photo-'))
-          ? item.image
-          : 'assets/no-image.svg';
-
-        return `
-          <tr data-type="${item.type || 'attraction'}">
-            <td>
-              <div class="attraction-cell-content">
-                <img src="${safeThumb}" alt="${item.title}" class="attraction-cell-thumb" onerror="this.src='assets/no-image.svg'">
-                <div class="attraction-cell-info">
-                  <span class="attraction-cell-title">${item.title}</span>
-                  <div class="attraction-cell-meta">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
-                    <span>${item.location || 'Resort Grounds'}</span>
-                  </div>
-                  <div class="attraction-cell-meta" style="color: #94a3b8;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span>${item.operatingHours || '08:00 AM – 08:00 PM'}</span>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td><span class="portal-pill-badge ${typeBadge}">${typeLabel}</span></td>
-            <td><strong>${cap}</strong></td>
-            <td>${booked}</td>
-            <td><span class="${available > 0 ? 'avail-count-green' : 'avail-count-red'}">${available}</span></td>
-            <td><button class="table-action-btn" onclick="openCapacityDetails('${item.title.replace(/'/g, "\\'")}', ${cap}, ${booked}, ${available}, '${String(item.id).replace(/'/g, "\\'")}')">View</button></td>
-          </tr>
-        `;
-      }).join('');
+      // Capacity table removed in favor of Itinerary & Schedule Management
     }
 
     // --- 4. Announcements & Notifications Page (notifications.html) ---
@@ -423,13 +373,8 @@
               <span>•</span>
               <span>Audience: <strong>${target || 'All Visitors'}</strong></span>
             </div>
-            <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; color: var(--text-main); line-height: 1.6; font-size: 0.92rem; margin-bottom: 1.5rem;">
+            <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; color: var(--text-main); line-height: 1.6; font-size: 0.92rem;">
               ${text || 'No additional details provided for this bulletin.'}
-            </div>
-            <div style="display: flex; gap: 0.75rem;">
-              <button onclick="document.getElementById('announcementDetailModal').remove(); if(window.showPortalToast) showPortalToast('Advisory acknowledged');" style="flex: 1; padding: 0.75rem; background: #0284c7; color: #ffffff; font-weight: 700; border-radius: 8px; border: none; cursor: pointer;">
-                Acknowledge Notice
-              </button>
             </div>
           </div>
         </div>
@@ -542,15 +487,38 @@
     }
 
     // Interactive favorite toggle for portal cards
+    window.showItineraryBriefModal = function (title, added) {
+      const existing = document.getElementById('itineraryBriefModal');
+      if (existing) existing.remove();
+      if (window.__itineraryModalTimer) clearTimeout(window.__itineraryModalTimer);
+
+      const modalHtml = `
+        <div class="modal-overlay active" id="itineraryBriefModal" role="status" aria-live="polite" style="display: flex; z-index: 2500;" onclick="if (event.target === this) this.remove();">
+          <div class="modal-dialog" style="max-width: 380px; width: 90%; padding: 1.4rem; background: var(--bg-card, #ffffff); border: 1px solid var(--border, #e2e8f0); border-radius: 16px; text-align: center; box-shadow: 0 20px 45px rgba(0,0,0,0.22);">
+            <div style="width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 0.85rem; display: flex; align-items: center; justify-content: center; background: ${added ? 'rgba(16, 185, 129, 0.14)' : 'rgba(100, 116, 139, 0.14)'}; color: ${added ? '#10b981' : '#64748b'};">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                ${added ? '<polyline points="20 6 9 17 4 12"></polyline>' : '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>'}
+              </svg>
+            </div>
+            <h4 style="margin: 0 0 0.35rem; font-size: 1.05rem; font-weight: 800; color: var(--text-main, #0f172a);">${added ? 'Added to Your Itinerary!' : 'Removed from Itinerary'}</h4>
+            <p style="margin: 0 0 1rem; font-size: 0.86rem; color: var(--text-muted, #64748b);">${title}</p>
+            <a href="profile.html#itinerary" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.55rem 1.1rem; border-radius: 8px; background: var(--primary, #0284c7); color: #ffffff; font-size: 0.82rem; font-weight: 700; text-decoration: none;">View My Itinerary</a>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      window.__itineraryModalTimer = setTimeout(() => {
+        document.getElementById('itineraryBriefModal')?.remove();
+      }, 2200);
+    };
+
     window.togglePortalItinerary = function (id, title, btn) {
       if (!window.TourismHubStore || typeof TourismHubStore.toggleItinerary !== 'function') return;
       const res = TourismHubStore.toggleItinerary(id);
       if (btn) {
         btn.textContent = res.inItinerary ? '✓ Itinerary' : '+ Itinerary';
       }
-      if (typeof window.showPortalToast === 'function') {
-        window.showPortalToast(res.inItinerary ? `Added "${title}" to your itinerary!` : `Removed "${title}" from your itinerary.`);
-      }
+      window.showItineraryBriefModal(title, res.inItinerary);
     };
 
     window.togglePortalFavorite = function (id, title, btn, evt) {

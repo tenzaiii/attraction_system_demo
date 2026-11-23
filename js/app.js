@@ -762,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ticketsBody = document.getElementById('myTicketsModalBody');
     if (!ticketsBody || !window.TourismHubStore) return;
     const activeUser = (TourismHubStore.getClientAuth && TourismHubStore.getClientAuth()) ||
-                       (TourismHubStore.getAdminAuth && TourismHubStore.getAdminAuth());
+      (TourismHubStore.getAdminAuth && TourismHubStore.getAdminAuth());
 
     if (!activeUser) {
       ticketsBody.innerHTML = `
@@ -903,7 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalTitle) modalTitle.textContent = `Reserve Pass: ${attraction.title}`;
     if (modalImg) {
       modalImg.src = (itemImg && !String(itemImg).includes('images.unsplash.com/photo-')) ? itemImg : 'assets/no-image.svg';
-      modalImg.onerror = function() { this.src = 'assets/no-image.svg'; };
+      modalImg.onerror = function () { this.src = 'assets/no-image.svg'; };
     }
     if (modalPrice) modalPrice.textContent = attraction.admission || attraction.priceLabel || (numericPrice > 0 ? `₱${numericPrice}` : 'Free (₱0)');
     if (bookingAttractionInput) bookingAttractionInput.value = attraction.id;
@@ -1053,11 +1053,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('qrScannerModal')?.classList.add('active');
   };
 
-  window.openAnalyticsModal = function () {
+  if (!window.openAnalyticsModal) window.openAnalyticsModal = function () {
     document.getElementById('analyticsModal')?.classList.add('active');
   };
 
-  window.openSettingsModal = function () {
+  if (!window.openSettingsModal) window.openSettingsModal = function () {
     showToast('Settings & preferences opened.');
   };
 

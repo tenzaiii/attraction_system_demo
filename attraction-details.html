@@ -77,9 +77,9 @@
           </a>
         </li>
 
-        <!-- 3. Capacity & Schedule -->
+        <!-- 3. Itinerary & Schedule -->
         <li class="sidebar-menu-item">
-          <a href="capacity.html" class="sidebar-menu-link" data-nav="capacity" title="Capacity & Schedule">
+          <a href="capacity.html" class="sidebar-menu-link" data-nav="capacity" title="Itinerary & Schedule">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
                 stroke-linejoin="round">
@@ -89,7 +89,7 @@
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
             </span>
-            <span class="sidebar-item-text">Capacity & Schedule</span>
+            <span class="sidebar-item-text">Itinerary & Schedule</span>
           </a>
         </li>
 
@@ -378,34 +378,6 @@
               <span class="details-meta-label">Operating Hours:</span>
               <span class="details-meta-value" id="detailsHours">08:00 AM – 06:00 PM</span>
             </div>
-
-            <!-- Admission Fee / Rate -->
-            <div class="details-meta-row">
-              <span class="details-meta-icon" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <rect x="2" y="6" width="20" height="12" rx="2"></rect>
-                  <circle cx="12" cy="12" r="2"></circle>
-                  <path d="M6 12h.01M18 12h.01"></path>
-                </svg>
-              </span>
-              <span class="details-meta-label">Admission Pricing:</span>
-              <span class="details-meta-value" id="detailsPrice" style="color: var(--primary);">Pass from ₱15</span>
-            </div>
-          </div>
-
-          <!-- Real-Time Capacity (Clean progress bar, no grey box) -->
-          <div class="details-capacity-card">
-            <div class="details-capacity-header">
-              <span>Real-Time Visitor Capacity</span>
-              <span id="detailsCapacityPercent">0%</span>
-            </div>
-            <div class="details-capacity-meter-wrap">
-              <div class="details-capacity-meter-fill normal" id="detailsCapacityFill" style="width: 0%;"></div>
-            </div>
-            <div class="details-capacity-stats">
-              <span>Allocated Visitors: <strong id="detailsCapacityBooked">0</strong></span>
-              <span>Allowable Limit: <strong id="detailsCapacityMax">100</strong> Pax</span>
-            </div>
           </div>
 
           <!-- Add to Itinerary Button -->
@@ -462,7 +434,7 @@
           </a>
         </div>
 
-        <div class="other-locations-grid" id="otherLocationsGrid">
+        <div class="other-locations-grid" id="otherLocationsGrid" style="display: flex; overflow-x: auto; gap: 1rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 0.5rem;">
           <!-- Populated dynamically via script -->
         </div>
       </section>
@@ -1087,8 +1059,8 @@
         const grid = document.getElementById('otherLocationsGrid');
         if (!grid || !catalog) return;
 
-        // Exclude current attraction and display strictly 4 locations
-        const others = catalog.filter(a => a.id !== currentAttraction.id).slice(0, 4);
+        // Exclude current attraction and display up to 6 locations
+        const others = catalog.filter(a => a.id !== currentAttraction.id).slice(0, 6);
         if (others.length === 0) {
           grid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1;">No additional locations available at this moment.</p>';
           return;
@@ -1112,7 +1084,7 @@
             : 'assets/no-image.svg';
 
           return `
-            <article class="other-loc-card" data-id="${item.id}" style="cursor: pointer;" onclick="if (!event.target.closest('button')) window.location.href='attraction-details.html?id=${item.id}'">
+            <article class="other-loc-card" data-id="${item.id}" style="cursor: pointer; flex: 0 0 260px; scroll-snap-align: start;" onclick="if (!event.target.closest('button')) window.location.href='attraction-details.html?id=${item.id}'">
               <div class="other-loc-media">
                 <img src="${safeImg}" alt="${item.title}" class="other-loc-img" loading="lazy" onerror="this.src='assets/no-image.svg'">
                 <span class="other-loc-badge">${item.badge || item.category || 'Featured'}</span>
@@ -1181,7 +1153,9 @@
         if (txtEl) {
           txtEl.textContent = res.inItinerary ? 'In My Itinerary ✓' : 'Add to Itinerary';
         }
-        if (typeof window.showPortalToast === 'function') {
+        if (typeof window.showItineraryBriefModal === 'function') {
+          window.showItineraryBriefModal(currentAttraction.title, res.inItinerary);
+        } else if (typeof window.showPortalToast === 'function') {
           window.showPortalToast(res.inItinerary ? `Added "${currentAttraction.title}" to your itinerary!` : `Removed "${currentAttraction.title}" from your itinerary.`);
         }
       };

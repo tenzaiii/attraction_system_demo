@@ -285,11 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const name = document.getElementById('regName')?.value;
       const email = document.getElementById('regEmail')?.value;
-      const country = document.getElementById('regCountry')?.value;
-      const phone = document.getElementById('regPhone')?.value;
+      const city = document.getElementById('regCity')?.value || 'Manila';
       const pwd = document.getElementById('regPassword')?.value;
       const pwdConfirm = document.getElementById('regPasswordConfirm')?.value;
-      submitClientRegister(name, email, pwd, pwdConfirm, country, phone);
+      submitClientRegister(name, email, pwd, pwdConfirm, city);
     });
   }
 });

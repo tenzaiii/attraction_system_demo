@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
-    content="TourismHub Capacity & Schedule Management - Manage attraction and event capacities, schedules, and availability in real-time.">
-  <title>Capacity & Schedule Management — TourismHub Portal</title>
+    content="TourismHub Itinerary & Schedule Management - Manage attraction and event capacities, schedules, and availability in real-time.">
+  <title>Itinerary & Schedule Management — TourismHub Portal</title>
 
   <!-- Favicon SVG -->
   <link rel="icon" type="image/svg+xml"
@@ -76,9 +76,9 @@
           </a>
         </li>
 
-        <!-- 3. Capacity & Schedule (ACTIVE) -->
+        <!-- 3. Itinerary & Schedule (ACTIVE) -->
         <li class="sidebar-menu-item">
-          <a href="capacity.html" class="sidebar-menu-link active" data-nav="capacity" title="Capacity & Schedule">
+          <a href="capacity.html" class="sidebar-menu-link active" data-nav="capacity" title="Itinerary & Schedule">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
                 stroke-linejoin="round">
@@ -88,7 +88,7 @@
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
             </span>
-            <span class="sidebar-item-text">Capacity & Schedule</span>
+            <span class="sidebar-item-text">Itinerary & Schedule</span>
           </a>
         </li>
 
@@ -251,7 +251,7 @@
           </svg>
         </div>
         <div>
-          <h1 class="portal-page-heading">Capacity & Schedule Management</h1>
+          <h1 class="portal-page-heading">Itinerary & Schedule Management</h1>
           <p class="portal-page-subtext">Manage attraction and event capacities, schedules, and availability in
             real-time.</p>
         </div>
@@ -269,7 +269,19 @@
       </div>
     </div>
 
-    <!-- Capacity & Schedule: Interactive Monthly Calendar & Daily Upcoming Events -->
+    <!-- Itinerary Tracker Section (Top) -->
+    <section class="schedule-calendar-section" id="capacityItineraryTrackerSection" aria-label="My Itinerary Tracker" style="margin-bottom: 1.5rem;">
+      <div class="schedule-calendar-section-head" style="margin-bottom: 0.85rem;">
+        <div>
+          <h2 class="schedule-section-heading">My Itinerary Tracker</h2>
+          <p class="schedule-section-sub">Track and organize your planned attraction stops in order.</p>
+        </div>
+        <a href="attractions.html" class="btn-outline-sm" style="text-decoration: none; background: var(--primary, #0284c7); color: #ffffff; border-color: var(--primary, #0284c7);">+ Add Attractions</a>
+      </div>
+      <div id="capacityItineraryList" style="display: flex; flex-direction: column; gap: 0.65rem;"></div>
+    </section>
+
+    <!-- Itinerary & Schedule: Interactive Monthly Calendar & Daily Upcoming Events -->
     <section class="schedule-calendar-section" id="capacityEventsCalendarSection" aria-label="Upcoming Events Calendar">
       <div class="schedule-calendar-section-head">
         <div>
@@ -312,242 +324,7 @@
       </div>
     </section>
 
-    <!-- Filter Tabs & Sort Dropdown -->
-    <div class="portal-filter-bar" style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
-      <div class="portal-filter-tabs">
-        <button class="portal-filter-tab active" data-filter="all">All</button>
-        <button class="portal-filter-tab" data-filter="historical">Historical Site</button>
-        <button class="portal-filter-tab" data-filter="spot">Tourist Spot</button>
-        <button class="portal-filter-tab" data-filter="park">Park &amp; Nature</button>
-        <button class="portal-filter-tab" data-filter="museum">Museum &amp; Gallery</button>
-      </div>
-      <select class="portal-select" id="capacitySortSelect" aria-label="Sort capacity schedule" style="min-width: 210px;">
-        <option value="default">Sort by: Default Order</option>
-        <option value="name-asc">Sort by: Name (Ascending)</option>
-        <option value="name-desc">Sort by: Name (Descending)</option>
-        <option value="capacity-desc">Sort by: Capacity (High to Low)</option>
-        <option value="capacity-asc">Sort by: Capacity (Low to High)</option>
-        <option value="booked-desc">Sort by: Most Booked</option>
-        <option value="available-desc">Sort by: Most Available</option>
-      </select>
-    </div>
-
-    <!-- Data Table Container (Exact Match from Image 3) -->
-    <div class="portal-table-container">
-      <table class="portal-data-table" id="capacityTable">
-        <thead>
-          <tr>
-            <th>Attraction / Event</th>
-            <th>Type</th>
-            <th>Capacity</th>
-            <th>Booked</th>
-            <th>Available</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="capacityTableBody">
-
-          <!-- Row 1: Resort Pool -->
-          <tr data-type="attraction">
-            <td>
-              <div class="attraction-cell-content">
-                <img src="assets/white-beach.jpg"
-                  alt="Resort Pool" class="attraction-cell-thumb" onerror="this.src='assets/no-image.svg'">
-                <div class="attraction-cell-info">
-                  <span class="attraction-cell-title">Resort Pool</span>
-                  <div class="attraction-cell-meta">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                    </svg>
-                    <span>Main Wing • Pool Area</span>
-                  </div>
-                  <div class="attraction-cell-meta" style="color: #94a3b8;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <span>8:00 AM – 10:00 PM</span>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td><span class="portal-pill-badge blue">Attraction</span></td>
-            <td><strong>120</strong></td>
-            <td>80</td>
-            <td><span class="avail-count-green">40</span></td>
-            <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Resort Pool', 120, 80, 40)">View</button></td>
-          </tr>
-
-          <!-- Row 2: Wellness Spa -->
-          <tr data-type="attraction">
-            <td>
-              <div class="attraction-cell-content">
-                <img src="assets/qc-memorial-circle.jpg"
-                  alt="Wellness Spa" class="attraction-cell-thumb" onerror="this.src='assets/no-image.svg'">
-                <div class="attraction-cell-info">
-                  <span class="attraction-cell-title">Wellness Spa</span>
-                  <div class="attraction-cell-meta">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                    </svg>
-                    <span>Main Wing • Spa Center</span>
-                  </div>
-                  <div class="attraction-cell-meta" style="color: #94a3b8;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <span>9:00 AM – 9:00 PM</span>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td><span class="portal-pill-badge blue">Attraction</span></td>
-            <td><strong>100</strong></td>
-            <td>100</td>
-            <td><span class="avail-count-red">0</span></td>
-            <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Wellness Spa', 100, 100, 0)">View</button></td>
-          </tr>
-
-          <!-- Row 3: Riverside Restaurant -->
-          <tr data-type="attraction">
-            <td>
-              <div class="attraction-cell-content">
-                <img src="assets/rizal-monument.jpg"
-                  alt="Riverside Restaurant" class="attraction-cell-thumb" onerror="this.src='assets/no-image.svg'">
-                <div class="attraction-cell-info">
-                  <span class="attraction-cell-title">Riverside Restaurant</span>
-                  <div class="attraction-cell-meta">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                    </svg>
-                    <span>Main Wing • Ground Floor</span>
-                  </div>
-                  <div class="attraction-cell-meta" style="color: #94a3b8;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <span>6:00 AM – 11:00 PM</span>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td><span class="portal-pill-badge blue">Attraction</span></td>
-            <td><strong>200</strong></td>
-            <td>150</td>
-            <td><span class="avail-count-green">50</span></td>
-            <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Riverside Restaurant', 200, 150, 50)">View</button></td>
-          </tr>
-
-          <!-- Row 4: Kids Club -->
-          <tr data-type="event">
-            <td>
-              <div class="attraction-cell-content">
-                <img src="assets/pahiyas-festival.jpg"
-                  alt="Kids Club" class="attraction-cell-thumb" onerror="this.src='assets/no-image.svg'">
-                <div class="attraction-cell-info">
-                  <span class="attraction-cell-title">Kids Club</span>
-                  <div class="attraction-cell-meta">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                    </svg>
-                    <span>Family Wing • 2nd Floor</span>
-                  </div>
-                  <div class="attraction-cell-meta" style="color: #94a3b8;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <span>8:00 AM – 8:00 PM</span>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td><span class="portal-pill-badge purple">Event</span></td>
-            <td><strong>50</strong></td>
-            <td>50</td>
-            <td><span class="avail-count-red">0</span></td>
-            <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Kids Club', 50, 50, 0)">View</button></td>
-          </tr>
-
-          <!-- Row 5: Beach Festival -->
-          <tr data-type="event festival">
-            <td>
-              <div class="attraction-cell-content">
-                <img src="assets/hero-banner.jpg"
-                  alt="Beach Festival" class="attraction-cell-thumb" onerror="this.src='assets/no-image.svg'">
-                <div class="attraction-cell-info">
-                  <span class="attraction-cell-title">Beach Festival</span>
-                  <div class="attraction-cell-meta">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                    </svg>
-                    <span>Beach Area</span>
-                  </div>
-                  <div class="attraction-cell-meta" style="color: #94a3b8;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <span>4:00 PM – 11:00 PM</span>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td><span class="portal-pill-badge purple">Event</span></td>
-            <td><strong>500</strong></td>
-            <td>320</td>
-            <td><span class="avail-count-green">180</span></td>
-            <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Beach Festival', 500, 320, 180)">View</button></td>
-          </tr>
-
-          <!-- Row 6: Nature Trail -->
-          <tr data-type="attraction workshop">
-            <td>
-              <div class="attraction-cell-content">
-                <img src="assets/no-image.svg"
-                  alt="Nature Trail" class="attraction-cell-thumb">
-                <div class="attraction-cell-info">
-                  <span class="attraction-cell-title">Nature Trail</span>
-                  <div class="attraction-cell-meta">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                    </svg>
-                    <span>Eco Park</span>
-                  </div>
-                  <div class="attraction-cell-meta" style="color: #94a3b8;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <span>7:00 AM – 5:00 PM</span>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td><span class="portal-pill-badge blue">Attraction</span></td>
-            <td><strong>80</strong></td>
-            <td>60</td>
-            <td><span class="avail-count-green">20</span></td>
-            <td><button class="table-action-btn"
-                onclick="openCapacityDetails('Nature Trail', 80, 60, 20)">View</button></td>
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
+    
 
   </main>
 
@@ -780,7 +557,41 @@
           const pickedKey = btn.getAttribute('data-date');
           pageSelectedDateKey = pickedKey;
           pageCalShowAll = false;
-          renderEmbeddedEventsCalendar();
+          function renderCapacityItineraryTracker() {
+      const listEl = document.getElementById('capacityItineraryList');
+      if (!listEl || !window.TourismHubStore) return;
+      const itinIds = (typeof TourismHubStore.getItinerary === 'function') ? TourismHubStore.getItinerary() : [];
+      if (itinIds.length === 0) {
+        listEl.innerHTML = '<div class="schedule-day-empty" style="padding: 1.25rem;"><p style="margin: 0;">Your itinerary is empty. Browse attractions and click <strong>+ Itinerary</strong> to plan your trip.</p></div>';
+        return;
+      }
+      const catalog = (typeof TourismHubStore.getCatalog === 'function') ? TourismHubStore.getCatalog() : [];
+      listEl.innerHTML = itinIds.map((id, idx) => {
+        const item = catalog.find(a => a.id === id);
+        if (!item) return '';
+        const img = item.image || 'assets/no-image.svg';
+        return `
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.85rem; padding: 0.75rem 0.9rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 200px;">
+              <span style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary, #0284c7); color: #fff; font-size: 0.78rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">${idx + 1}</span>
+              <img src="${img}" alt="${item.title}" onerror="this.src='assets/no-image.svg'" style="width: 52px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0;">
+              <div>
+                <a href="attraction-details.html?id=${item.id}" style="font-weight: 700; color: var(--text-main); text-decoration: none; font-size: 0.92rem;">${item.title}</a>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">${item.location || 'Manila'} &bull; ${item.operatingHours || 'Open Daily'}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <button type="button" class="btn-outline-sm" onclick="TourismHubStore.moveItineraryItem('${item.id}', 'up'); renderCapacityItineraryTracker();" ${idx === 0 ? 'disabled' : ''} title="Move Up">&uarr;</button>
+              <button type="button" class="btn-outline-sm" onclick="TourismHubStore.moveItineraryItem('${item.id}', 'down'); renderCapacityItineraryTracker();" ${idx === itinIds.length - 1 ? 'disabled' : ''} title="Move Down">&darr;</button>
+              <button type="button" class="btn-outline-sm" onclick="TourismHubStore.removeFromItinerary('${item.id}'); renderCapacityItineraryTracker();" style="color: #ef4444;" title="Remove">&times;</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    window.renderCapacityItineraryTracker = renderCapacityItineraryTracker;
+    renderCapacityItineraryTracker();
+    renderEmbeddedEventsCalendar();
         });
       });
 
@@ -802,20 +613,10 @@
 
       if (selectedTitleEl) selectedTitleEl.textContent = headingText;
       if (countBadgeEl) {
-        countBadgeEl.textContent = `${displayEvents.length} Event${displayEvents.length === 1 ? '' : 's'}`;
+        countBadgeEl.textContent = `${allEvents.length} Total`;
       }
 
-      if (displayEvents.length === 0) {
-        eventsListEl.innerHTML = `
-          <div class="schedule-day-empty">
-            <p>No upcoming events scheduled for <strong>${escapeCalHtml(headingText)}</strong>.</p>
-            <button type="button" class="btn-outline-sm" onclick="document.getElementById('pageCalAllEventsBtn')?.click()">View All Scheduled Events (${allEvents.length})</button>
-          </div>
-        `;
-        return;
-      }
-
-      eventsListEl.innerHTML = displayEvents.map(ev => {
+      const renderCalEventCard = (ev) => {
         const targetId = ev.parentAttractionId || ev.id;
         const venueName = ev.attractionTitle || ev.category || 'Metro Manila Attraction';
         const thumb = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'assets/no-image.svg';
@@ -836,16 +637,32 @@
             </div>
           </article>
         `;
-      }).join('');
+      };
+
+      const selectedDayEvents = eventsByDate.get(pageSelectedDateKey) || [];
+      let combinedHtml = `<div style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--primary, #0284c7); margin-bottom: 0.4rem;">Events for ${escapeCalHtml(headingText)}</div>`;
+      if (selectedDayEvents.length > 0) {
+        combinedHtml += selectedDayEvents.map(renderCalEventCard).join('');
+      } else {
+        combinedHtml += `<div class="schedule-day-empty" style="padding: 0.85rem; margin-bottom: 0.75rem;"><p style="margin: 0;">No events scheduled for <strong>${escapeCalHtml(headingText)}</strong>.</p></div>`;
+      }
+
+      combinedHtml += `<div style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin: 0.9rem 0 0.45rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">All Upcoming Events (${allEvents.length})</div>`;
+      if (allEvents.length > 0) {
+        combinedHtml += allEvents.map(renderCalEventCard).join('');
+      } else {
+        combinedHtml += `<div class="schedule-day-empty" style="padding: 0.85rem;"><p style="margin: 0;">No upcoming events scheduled.</p></div>`;
+      }
+      eventsListEl.innerHTML = combinedHtml;
     }
 
     document.getElementById('pageCalPrevBtn')?.addEventListener('click', () => {
       pageCalViewDate = new Date(pageCalViewDate.getFullYear(), pageCalViewDate.getMonth() - 1, 1);
-      renderEmbeddedEventsCalendar();
+    renderEmbeddedEventsCalendar();
     });
     document.getElementById('pageCalNextBtn')?.addEventListener('click', () => {
       pageCalViewDate = new Date(pageCalViewDate.getFullYear(), pageCalViewDate.getMonth() + 1, 1);
-      renderEmbeddedEventsCalendar();
+    renderEmbeddedEventsCalendar();
     });
     document.getElementById('pageCalTodayBtn')?.addEventListener('click', () => {
       const now = new Date();
@@ -855,13 +672,12 @@
       pageSelectedDateKey = (window.TourismHubStore && typeof TourismHubStore.formatLocalDateKey === 'function')
         ? TourismHubStore.formatLocalDateKey(now)
         : `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-      renderEmbeddedEventsCalendar();
+    renderEmbeddedEventsCalendar();
     });
     document.getElementById('pageCalAllEventsBtn')?.addEventListener('click', () => {
       pageCalShowAll = !pageCalShowAll;
-      renderEmbeddedEventsCalendar();
+    renderEmbeddedEventsCalendar();
     });
-
     renderEmbeddedEventsCalendar();
     if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
       TourismHubStore.onSync(() => renderEmbeddedEventsCalendar());
@@ -1080,7 +896,7 @@
         pageSelectedDateKey = dateVal;
         pageCalShowAll = false;
       }
-      renderEmbeddedEventsCalendar();
+    renderEmbeddedEventsCalendar();
       if (typeof window.syncCapacityPage === 'function') {
         window.syncCapacityPage();
       }
