@@ -1319,34 +1319,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Live Supabase sync listener
   window.addEventListener('supabaseSyncComplete', () => {
     syncUserProfileHeader();
-    function bindCarouselSwipe(el, onNext, onPrev) {
-    if (!el || el.dataset.swipeBound === 'true') return;
-    el.dataset.swipeBound = 'true';
-    el.style.cursor = 'grab';
-    let startX = null;
-    el.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button, a, input, select')) return;
-      startX = e.clientX;
-      el.style.cursor = 'grabbing';
-    });
-    el.addEventListener('pointerup', (e) => {
-      if (startX === null) return;
-      const dx = e.clientX - startX;
-      startX = null;
-      el.style.cursor = 'grab';
-      if (Math.abs(dx) >= 40) {
-        if (dx < 0) onNext();
-        else onPrev();
-      }
-    });
-    el.addEventListener('pointerleave', () => {
-      startX = null;
-      el.style.cursor = 'grab';
-    });
-  }
-
-  bindCarouselSwipe(document.getElementById('hero'), () => window.changeHeroLocationSlide(1), () => window.changeHeroLocationSlide(-1));
-  bindCarouselSwipe(document.getElementById('featuredEvents'), () => window.changeEventBannerSlide && window.changeEventBannerSlide(1), () => window.changeEventBannerSlide && window.changeEventBannerSlide(-1));
 
   renderHeroLocationsCarousel();
     renderAttractions();
@@ -1356,34 +1328,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 15. Initial Render ---
   syncUserProfileHeader();
-  function bindCarouselSwipe(el, onNext, onPrev) {
-    if (!el || el.dataset.swipeBound === 'true') return;
-    el.dataset.swipeBound = 'true';
-    el.style.cursor = 'grab';
-    let startX = null;
-    el.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button, a, input, select')) return;
-      startX = e.clientX;
-      el.style.cursor = 'grabbing';
-    });
-    el.addEventListener('pointerup', (e) => {
-      if (startX === null) return;
-      const dx = e.clientX - startX;
-      startX = null;
-      el.style.cursor = 'grab';
-      if (Math.abs(dx) >= 40) {
-        if (dx < 0) onNext();
-        else onPrev();
-      }
-    });
-    el.addEventListener('pointerleave', () => {
-      startX = null;
-      el.style.cursor = 'grab';
-    });
-  }
-
-  bindCarouselSwipe(document.getElementById('hero'), () => window.changeHeroLocationSlide(1), () => window.changeHeroLocationSlide(-1));
-  bindCarouselSwipe(document.getElementById('featuredEvents'), () => window.changeEventBannerSlide && window.changeEventBannerSlide(1), () => window.changeEventBannerSlide && window.changeEventBannerSlide(-1));
 
   renderHeroLocationsCarousel();
   renderAttractions();

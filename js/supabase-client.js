@@ -135,7 +135,7 @@
     /**
      * Register new tourist user in Supabase `profiles` table
      */
-    async registerTourist(name, email, password, country, phone) {
+    async registerTourist(name, email, password, city) {
       if (!supabaseClient) {
         return null; // Return null to fall back to local demo registration
       }

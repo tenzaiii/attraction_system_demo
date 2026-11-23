@@ -307,6 +307,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabId === 'analytics') renderAnalyticsView();
     if (tabId === 'dispatch') renderAnnouncementsFeed();
     if (tabId === 'changelog') renderAdminChangelog();
+    if (window.innerWidth <= 900) {
+      document.querySelector('.admin-sidebar')?.classList.remove('open', 'active');
+    }
 
     // Close mobile sidebar if open
     document.getElementById('adminSidebar')?.classList.remove('open');
@@ -2300,6 +2303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!window.__tourismHubChangelogAutoSync) {
     window.__tourismHubChangelogAutoSync = setInterval(() => {
+      if (document.hidden || !document.getElementById('tab-changelog')?.classList.contains('active')) return;
       renderAdminChangelog(true);
     }, 5000);
   }

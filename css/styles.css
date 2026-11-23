@@ -4131,6 +4131,63 @@ body {
     border-top: 1px solid var(--border);
     padding: 0.45rem 0.25rem 0.15rem;
   }
+
+  .attractions-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .attraction-card {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .attraction-card .card-media-wrapper,
+  .attraction-card .card-image {
+    height: 185px !important;
+  }
+
+  .attraction-card .card-body {
+    padding: 0.9rem 1rem !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .details-hero-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+  }
+
+  .details-left-column {
+    display: contents !important;
+  }
+
+  .details-left-column .carousel-wrapper {
+    order: 1;
+  }
+
+  .details-info-panel {
+    order: 2;
+  }
+
+  #attractionMapSection {
+    order: 3;
+    margin-top: 0.25rem;
+  }
+}
+
+.mobile-bottom-nav {
+  transform: translateY(110%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.mobile-bottom-nav.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 

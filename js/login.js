@@ -139,7 +139,7 @@ async function submitUnifiedLogin(email, password) {
   }
 }
 
-async function submitClientRegister(name, email, password, passwordConfirm, country, phone) {
+async function submitClientRegister(name, email, password, passwordConfirm, city) {
   const btn = document.getElementById('btnRegisterSubmit');
   clearAlerts();
 
@@ -177,7 +177,7 @@ async function submitClientRegister(name, email, password, passwordConfirm, coun
       return;
     }
 
-    const res = await TourismHubStore.clientRegister(cleanName, cleanEmail, cleanPassword, cleanCountry, cleanPhone);
+    const res = await TourismHubStore.clientRegister(cleanName, cleanEmail, cleanPassword, (city || 'Manila').trim());
     setLoading(btn, false);
     if (res && res.success) {
       showNotice(`Account registered successfully! Welcome, ${res.user.name}. Redirecting to Tourist Portal...`, 'success');

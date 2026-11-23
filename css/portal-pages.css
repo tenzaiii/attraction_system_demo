@@ -1051,6 +1051,30 @@
   }
 }
 
+@media (max-width: 768px) {
+  .attractions-portal-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .attractions-main-col,
+  .attractions-sidebar-col,
+  .attractions-simple-search-bar,
+  .portal-hero-search {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .portal-hero-search input {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}
+
 @media (max-width: 600px) {
   .portal-cards-grid {
     grid-template-columns: 1fr;
@@ -3421,6 +3445,80 @@
     width: 100%;
     display: flex;
     justify-content: flex-end;
+  }
+}
+
+@media (max-width: 768px) {
+  .attractions-portal-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .attractions-main-col,
+  .attractions-sidebar-col,
+  .attractions-simple-search-bar,
+  .portal-hero-search {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .portal-hero-search input {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .attractions-split-layout,
+  .portal-main-layout {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+
+  .attractions-sidebar-col {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .portal-dropdown-group {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .portal-select {
+    width: 100% !important;
+  }
+
+  .portal-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .portal-item-card {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .portal-item-media {
+    height: 180px !important;
+  }
+
+  .portal-item-body {
+    padding: 0.9rem 1rem !important;
+  }
+
+  .portal-item-title {
+    font-size: 1rem !important;
+  }
+
+  .upcoming-event-item {
+    gap: 0.65rem !important;
   }
 }
 

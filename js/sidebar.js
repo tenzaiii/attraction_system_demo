@@ -41,7 +41,14 @@
         } else {
           openSidebar();
         }
-      });
+        // Show mobile bottom nav only after scrolling down
+  window.addEventListener('scroll', () => {
+    const bottomNav = document.querySelector('.mobile-bottom-nav');
+    if (bottomNav) {
+      bottomNav.classList.toggle('visible', window.scrollY > 120);
+    }
+  }, { passive: true });
+});
     }
 
     // Backdrop click closes sidebar
@@ -49,7 +56,7 @@
       sidebarBackdrop.addEventListener('click', (e) => {
         e.preventDefault();
         closeSidebar();
-      });
+});
     }
 
     // Close button / Collapse button inside sidebar header
@@ -59,7 +66,7 @@
         e.preventDefault();
         e.stopPropagation();
         closeSidebar();
-      });
+});
     }
 
     // Auto-close sidebar on ANY link selection
@@ -74,15 +81,15 @@
           sidebarLinks.forEach(l => l.classList.remove('active'));
           link.classList.add('active');
         }
-      });
-    });
+});
+});
 
     // Close on Escape key press
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && sideNav.classList.contains('active')) {
         closeSidebar();
       }
-    });
+});
 
     // Highlight active link based on current page URL
     const currentPath = window.location.pathname.toLowerCase();
@@ -109,7 +116,7 @@
         sidebarLinks.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
       }
-    });
+});
 
     // Modal helpers for standalone pages
     window.openPortalModal = function(modalId) {

@@ -642,7 +642,7 @@
       const parsed = data ? JSON.parse(data) : defaultVal;
       // Re-hydrate any stripped base64 images from sessionStorage
       if (key === KEYS.CATALOG && Array.isArray(parsed)) {
-        return parsed.map(item => {
+        const hydrated = parsed.map(item => {
           if (item && item.id && (!item.image || item.image === 'assets/no-image.svg')) {
             const cached = getCachedImage(item.id);
             if (cached) {
@@ -651,7 +651,10 @@
           }
           return item;
         });
+        if (data) memoryCache.set(key, hydrated);
+        return hydrated;
       }
+      if (data) memoryCache.set(key, parsed);
       return parsed;
     } catch (e) {
       console.warn('TourismHubStore: Failed to read from localStorage', e);

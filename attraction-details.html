@@ -750,6 +750,10 @@
           window.renderAttractionEvents(currentAttraction.id);
         }
         renderOtherLocations(catalog);
+        const itinTxtEl = document.getElementById('detailsItineraryBtnText');
+        if (itinTxtEl && window.TourismHubStore && typeof TourismHubStore.isInItinerary === 'function') {
+          itinTxtEl.textContent = TourismHubStore.isInItinerary(currentAttraction.id) ? 'In My Itinerary ✓' : 'Add to Itinerary';
+        }
 
         // 10. Fetch latest pictures & details directly from Supabase Storage bucket & catalog
         syncAttractionFromSupabase();
