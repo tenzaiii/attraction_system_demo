@@ -4038,10 +4038,80 @@ body {
   opacity: 1;
 }
 
-@media (max-width: 520px) {
-  .nav-admin-dashboard-btn {
-    padding: 0.45rem 0.55rem !important;
+@media (max-width: 600px) {
+  .site-header .nav-container,
+  .navbar .nav-container {
+    gap: 0.45rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    min-height: 58px !important;
+  }
+
+  .site-header .sidebar-toggle-btn {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    margin-right: 0.25rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .site-header .brand-logo,
+  .brand-logo {
+    font-size: 0.95rem !important;
+    gap: 0.35rem !important;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .site-header .brand-icon-svg {
+    width: 24px !important;
+    height: 20px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .site-header .nav-actions {
+    gap: 0.4rem !important;
+    flex-shrink: 0 !important;
+    align-items: center !important;
+  }
+
+  .site-header .nav-admin-dashboard-btn,
+  .site-header .nav-icon-btn,
+  .site-header .topbar-theme-toggle-btn,
+  .site-header .nav-profile-btn,
+  .nav-admin-dashboard-btn,
+  .theme-toggle-btn,
+  .nav-notif-btn,
+  .nav-icon-btn {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    padding: 0 !important;
     gap: 0 !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .site-header .nav-profile-btn img,
+  .site-header .nav-avatar {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+
+  .site-header .nav-actions svg {
+    width: 17px !important;
+    height: 17px !important;
+    flex-shrink: 0 !important;
   }
 
   .nav-admin-dashboard-btn span {

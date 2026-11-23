@@ -267,28 +267,21 @@
       <!-- Main Content Column -->
       <div class="attractions-main-col">
 
-        <!-- Welcome Hero Banner -->
-        <div class="portal-hero-card" style="background-image: url('assets/hero-banner.jpg');">
-          <div class="portal-hero-card-content">
-            <div class="portal-hero-resort-tag">Welcome to TourismHub Resort</div>
-            <h2 class="portal-hero-card-title">Discover Unforgettable Experiences</h2>
-            <p class="portal-hero-card-desc">Explore our resort's attractions and upcoming events, from relaxing
-              amenities to special gatherings.</p>
-
-            <div class="portal-hero-search">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <!-- Simple Search Bar -->
+        <div class="attractions-simple-search-bar" style="margin-bottom: 1rem;">
+          <div class="portal-hero-search" style="max-width: 100%; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="attractionsSearchInput" placeholder="Search attractions or events..." style="color: var(--text-main);">
+            <button class="portal-hero-search-btn" id="attractionsSearchBtn" aria-label="Search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
-              <input type="text" id="attractionsSearchInput" placeholder="Search attractions or events...">
-              <button class="portal-hero-search-btn" id="attractionsSearchBtn" aria-label="Search">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </button>
-            </div>
+            </button>
           </div>
         </div>
 

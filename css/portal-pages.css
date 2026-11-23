@@ -3319,6 +3319,111 @@
   left: auto !important;
 }
 
+/* Uniform Navbar Icon Sizing */
+.portal-topbar .sidebar-toggle-btn svg,
+.portal-topbar .portal-notif-btn svg,
+.portal-topbar .nav-admin-dashboard-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.portal-topbar .brand-icon-svg {
+  width: 32px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 520px) {
+  .portal-topbar {
+    gap: 0.4rem !important;
+    padding: 0.55rem 0.65rem !important;
+  }
+
+  .portal-topbar-left {
+    gap: 0.4rem !important;
+  }
+
+  .portal-topbar-right {
+    gap: 0.35rem !important;
+  }
+
+  .portal-topbar .brand-logo {
+    font-size: 0.95rem !important;
+    gap: 0.3rem !important;
+  }
+
+  .portal-topbar .brand-icon-svg {
+    width: 24px;
+    height: 20px;
+  }
+
+  .portal-topbar-right .nav-admin-dashboard-btn,
+  .portal-topbar-right .portal-notif-btn,
+  .portal-topbar-right .theme-toggle-btn,
+  .portal-topbar-right .portal-user-profile img {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .portal-topbar .sidebar-toggle-btn svg,
+  .portal-topbar .portal-notif-btn svg,
+  .portal-topbar .nav-admin-dashboard-btn svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+/* Itinerary & Schedule Page Mobile Responsiveness */
+@media (max-width: 768px) {
+  .schedule-calendar-section {
+    padding: 1rem !important;
+  }
+
+  .schedule-calendar-section-head {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.65rem;
+  }
+
+  .calendar-view-card,
+  .schedule-day-panel {
+    padding: 0.85rem !important;
+  }
+
+  .calendar-day-cell {
+    min-height: 36px !important;
+    font-size: 0.78rem !important;
+    padding: 0.2rem !important;
+  }
+
+  .schedule-event-item {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.6rem;
+  }
+
+  .schedule-event-thumb {
+    width: 100% !important;
+    height: 120px !important;
+  }
+
+  .schedule-event-actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
 /* Image Preload Skeleton & Shimmer Styles */
 .image-preload-wrapper {
   position: relative;
