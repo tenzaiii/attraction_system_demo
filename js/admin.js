@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sub: 'Real-time summary of tourist admissions, active capacities, and alerts.'
     },
     catalog: {
-      title: 'Attraction & Event Cataloging',
+      title: 'Attraction & Event Catalog',
       sub: 'Manage attraction profiles, operating schedules, descriptions, and media.'
     },
     capacity: {

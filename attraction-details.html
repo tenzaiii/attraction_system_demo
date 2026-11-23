@@ -408,7 +408,16 @@
             </div>
           </div>
 
-          <!-- Action Button removed: Ticket booking is for Events -->
+          <!-- Add to Itinerary Button -->
+          <div class="details-action-group">
+            <button type="button" class="btn-book-detail" id="detailsItineraryBtn" onclick="toggleDetailsItinerary()" style="width: 100%; background: var(--primary, #0284c7);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              <span id="detailsItineraryBtnText">Add to Itinerary</span>
+            </button>
+          </div>
 
         </div>
 
@@ -924,15 +933,22 @@
         const counterEl = document.getElementById('carouselCounter');
 
         if (mainImg) {
-          mainImg.style.opacity = '0.75';
-          mainImg.src = slide.url;
-          mainImg.alt = slide.caption;
+          mainImg.decoding = 'async';
+          mainImg.setAttribute('fetchpriority', 'high');
           mainImg.onerror = function () {
+            this.onerror = null;
             this.src = 'assets/no-image.svg';
+            this.style.opacity = '1';
           };
           mainImg.onload = function () {
             mainImg.style.opacity = '1';
           };
+          mainImg.style.opacity = '0.75';
+          mainImg.src = slide.url || 'assets/no-image.svg';
+          mainImg.alt = slide.caption || 'Attraction image';
+          if (mainImg.complete) {
+            mainImg.style.opacity = '1';
+          }
         }
 
         if (captionPill) {
@@ -1157,6 +1173,18 @@
         ).join('');
         groupEl.style.display = 'block';
       }
+
+      window.toggleDetailsItinerary = function () {
+        if (!currentAttraction || !window.TourismHubStore || typeof TourismHubStore.toggleItinerary !== 'function') return;
+        const res = TourismHubStore.toggleItinerary(currentAttraction.id);
+        const txtEl = document.getElementById('detailsItineraryBtnText');
+        if (txtEl) {
+          txtEl.textContent = res.inItinerary ? 'In My Itinerary ✓' : 'Add to Itinerary';
+        }
+        if (typeof window.showPortalToast === 'function') {
+          window.showPortalToast(res.inItinerary ? `Added "${currentAttraction.title}" to your itinerary!` : `Removed "${currentAttraction.title}" from your itinerary.`);
+        }
+      };
 
       window.openDetailsBookingModal = function (targetOverride = null) {
         const clientAuth = TourismHubStore.getClientAuth ? TourismHubStore.getClientAuth() : null;

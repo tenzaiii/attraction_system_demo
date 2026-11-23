@@ -159,7 +159,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const featured = Array.isArray(catalog) && catalog.length > 0
       ? catalog.filter(item => item.status !== 'closed')
       : [];
-    heroLocationSlidesData = featured.length > 0 ? featured : (Array.isArray(catalog) ? catalog : []);
+    const pool = featured.length > 0 ? featured : (Array.isArray(catalog) ? catalog : []);
+    const targetTypes = ['historical', 'spot', 'park', 'museum'];
+    const picked = [];
+    const usedIds = new Set();
+    targetTypes.forEach(t => {
+      const match = pool.find(item => String(item.type || '').toLowerCase() === t && !usedIds.has(item.id));
+      if (match) {
+        picked.push(match);
+        usedIds.add(match.id);
+      }
+    });
+    pool.forEach(item => {
+      if (picked.length < 4 && !usedIds.has(item.id)) {
+        picked.push(item);
+        usedIds.add(item.id);
+      }
+    });
+    heroLocationSlidesData = picked.slice(0, 4);
 
     if (heroLocationSlidesData.length === 0) {
       heroLocationSlidesData = [
@@ -272,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     attractionsGrid.innerHTML = displayList.map(item => `
       <article class="attraction-card" data-id="${item.id}">
         <div class="card-media-wrapper" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
-          <img src="${(item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg'}" alt="${item.title}" class="card-image" loading="lazy" onerror="this.src='assets/no-image.svg'">
+          <img src="${(item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg'}" alt="${item.title}" class="card-image" loading="lazy" decoding="async" onerror="this.src='assets/no-image.svg'">
           <span class="card-badge-floating">${item.badge || 'Featured'}</span>
           <button class="card-wishlist-btn ${savedAttractions.has(item.id) ? 'saved' : ''}" 
                   aria-label="Save ${item.title}" 
@@ -432,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       return `
         <article class="event-banner-slide ${isActive ? 'active' : ''}" data-slide-index="${idx}" data-event-id="${esc(ev.id)}" aria-hidden="${isActive ? 'false' : 'true'}">
-          <img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="event-banner-bg" onerror="this.src='assets/no-image.svg'">
+          <img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="event-banner-bg" loading="lazy" decoding="async" onerror="this.src='assets/no-image.svg'">
           <div class="event-banner-overlay"></div>
           <div class="event-banner-content">
             <div class="event-banner-meta-row">

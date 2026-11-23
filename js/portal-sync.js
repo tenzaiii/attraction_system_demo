@@ -94,7 +94,7 @@
           return `
             <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'spot'}" data-category="${item.category || 'Tourist Spot'}" data-area="${locationStr}" data-title="${item.title}" data-capacity="${capSortVal}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
               <div class="portal-item-media" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
-                <img src="${fallbackImg}" alt="${item.title}" loading="lazy" onerror="this.src='assets/no-image.svg'">
+                <img src="${fallbackImg}" alt="${item.title}" loading="lazy" decoding="async" onerror="this.src='assets/no-image.svg'">
                 <button class="portal-card-wishlist-btn ${isFav ? 'saved' : ''}" 
                         title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
                         onclick="event.stopPropagation(); togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
@@ -122,8 +122,11 @@
                   </div>
                 </div>
               </div>
-              <div class="portal-item-footer">
-                <a href="attraction-details.html?id=${item.id}" class="portal-view-details-btn" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">View Details &gt;</a>
+              <div class="portal-item-footer" style="display: flex; align-items: center; gap: 0.5rem;">
+                <button type="button" class="portal-view-details-btn" style="flex: 0 0 auto; padding: 0.55rem 0.75rem; background: var(--bg-subtle, #f1f5f9); color: var(--text-main, #0f172a); border: 1px solid var(--border, #e2e8f0);" onclick="event.stopPropagation(); togglePortalItinerary('${item.id}', '${item.title.replace(/'/g, "\\'")}', this)">
+                  ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '✓ Itinerary' : '+ Itinerary'}
+                </button>
+                <a href="attraction-details.html?id=${item.id}" class="portal-view-details-btn" style="flex: 1; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">View Details &gt;</a>
               </div>
             </article>
           `;
@@ -134,12 +137,17 @@
       const eventsListContainer = document.querySelector('.upcoming-events-list');
       if (eventsListContainer) {
         if (events.length > 0) {
-          eventsListContainer.innerHTML = events.slice(0, 6).map(ev => {
+          const now = new Date();
+          const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+          const todayEvents = events.filter(ev => ev.eventDate === todayKey);
+          const otherUpcoming = events.filter(ev => ev.eventDate !== todayKey);
+
+          const renderEventRow = (ev, isToday) => {
             const targetId = ev.parentAttractionId || ev.id;
             const parentName = ev.attractionTitle || 'Attraction Event';
             return `
               <div class="upcoming-event-item" style="cursor: pointer;" onclick="window.location.href='attraction-details.html?id=${encodeURIComponent(targetId)}'" title="View ${parentName} & event details">
-                <img src="${(ev.image && !String(ev.image).includes('images.unsplash.com/photo-')) ? ev.image : 'assets/no-image.svg'}" alt="${ev.title}" class="upcoming-event-img" onerror="this.src='assets/no-image.svg'">
+                <img src="${(ev.image && !String(ev.image).includes('images.unsplash.com/photo-')) ? ev.image : 'assets/no-image.svg'}" alt="${ev.title}" loading="lazy" decoding="async" class="upcoming-event-img" onerror="this.src='assets/no-image.svg'">
                 <div class="upcoming-event-details">
                   <span class="upcoming-event-name">${ev.title}</span>
                   <span class="upcoming-event-time">
@@ -147,11 +155,25 @@
                     ${ev.operatingHours || 'Scheduled Event'}
                   </span>
                   <span class="upcoming-event-loc">${parentName} (${ev.location || 'Manila'})</span>
-                  <span class="upcoming-event-badge">Event</span>
+                  <span class="upcoming-event-badge" style="${isToday ? 'background: rgba(16, 185, 129, 0.16); color: #059669;' : ''}">${isToday ? 'Today' : 'Event'}</span>
                 </div>
               </div>
             `;
-          }).join('');
+          };
+
+          let html = '';
+          html += `<div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--primary, #0284c7); margin: 0.25rem 0 0.45rem;">Today's Events</div>`;
+          if (todayEvents.length > 0) {
+            html += todayEvents.map(ev => renderEventRow(ev, true)).join('');
+          } else {
+            html += `<div style="font-size: 0.8rem; color: var(--text-muted); padding: 0.45rem 0 0.75rem;">No events scheduled for today.</div>`;
+          }
+
+          if (otherUpcoming.length > 0) {
+            html += `<div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin: 0.75rem 0 0.45rem; padding-top: 0.65rem; border-top: 1px solid var(--border);">All Upcoming Events</div>`;
+            html += otherUpcoming.slice(0, 6).map(ev => renderEventRow(ev, false)).join('');
+          }
+          eventsListContainer.innerHTML = html;
         } else {
           eventsListContainer.innerHTML = `
             <div style="text-align: center; padding: 1.5rem 0.75rem; color: var(--text-muted); font-size: 0.85rem;">
@@ -520,6 +542,17 @@
     }
 
     // Interactive favorite toggle for portal cards
+    window.togglePortalItinerary = function (id, title, btn) {
+      if (!window.TourismHubStore || typeof TourismHubStore.toggleItinerary !== 'function') return;
+      const res = TourismHubStore.toggleItinerary(id);
+      if (btn) {
+        btn.textContent = res.inItinerary ? '✓ Itinerary' : '+ Itinerary';
+      }
+      if (typeof window.showPortalToast === 'function') {
+        window.showPortalToast(res.inItinerary ? `Added "${title}" to your itinerary!` : `Removed "${title}" from your itinerary.`);
+      }
+    };
+
     window.togglePortalFavorite = function (id, title, btn, evt) {
       if (evt) {
         evt.stopPropagation();

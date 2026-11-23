@@ -15,7 +15,8 @@
     ADMIN_PASSWORDS: 'tourismhub_temp_admin_passwords_v1',
     CLIENT_AUTH: 'tourismhub_temp_client_auth_v1',
     CLIENT_USERS: 'tourismhub_temp_client_users_v1',
-    FAVORITES: 'tourismhub_temp_favorites_v1'
+    FAVORITES: 'tourismhub_temp_favorites_v1',
+    ITINERARY: 'tourismhub_temp_itinerary_v1'
   };
 
   const LEGACY_REMOVED_IDS = new Set(['pahiyas-festival', 'testing-testing', 'bayan-glori']);
@@ -1427,6 +1428,74 @@
         detail: { avatar: avatarUrl, user: updatedUser }
       }));
       return { success: true, avatar: avatarUrl, synced, message };
+    },
+
+    // =========================================================================
+    // ITINERARY MANAGEMENT
+    // =========================================================================
+    getItinerary() {
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allItin = getItem(KEYS.ITINERARY) || {};
+      return Array.isArray(allItin[userKey]) ? allItin[userKey] : [];
+    },
+
+    isInItinerary(attractionId) {
+      if (!attractionId) return false;
+      return this.getItinerary().includes(attractionId);
+    },
+
+    toggleItinerary(attractionId) {
+      if (!attractionId) return { inItinerary: false, itinerary: [] };
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allItin = getItem(KEYS.ITINERARY) || {};
+      let userItin = Array.isArray(allItin[userKey]) ? [...allItin[userKey]] : [];
+
+      const idx = userItin.indexOf(attractionId);
+      let inItinerary = false;
+      if (idx > -1) {
+        userItin.splice(idx, 1);
+        inItinerary = false;
+      } else {
+        userItin.push(attractionId);
+        inItinerary = true;
+      }
+
+      allItin[userKey] = userItin;
+      setItem(KEYS.ITINERARY, allItin);
+      return { inItinerary, itinerary: userItin };
+    },
+
+    removeFromItinerary(attractionId) {
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allItin = getItem(KEYS.ITINERARY) || {};
+      let userItin = Array.isArray(allItin[userKey]) ? [...allItin[userKey]] : [];
+      const idx = userItin.indexOf(attractionId);
+      if (idx > -1) {
+        userItin.splice(idx, 1);
+        allItin[userKey] = userItin;
+        setItem(KEYS.ITINERARY, allItin);
+      }
+      return userItin;
+    },
+
+    moveItineraryItem(attractionId, direction) {
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allItin = getItem(KEYS.ITINERARY) || {};
+      let userItin = Array.isArray(allItin[userKey]) ? [...allItin[userKey]] : [];
+      const idx = userItin.indexOf(attractionId);
+      if (idx === -1) return userItin;
+      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (targetIdx < 0 || targetIdx >= userItin.length) return userItin;
+      const temp = userItin[idx];
+      userItin[idx] = userItin[targetIdx];
+      userItin[targetIdx] = temp;
+      allItin[userKey] = userItin;
+      setItem(KEYS.ITINERARY, allItin);
+      return userItin;
     },
 
     // =========================================================================
