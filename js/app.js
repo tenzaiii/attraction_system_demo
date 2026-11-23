@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     attractionsGrid.innerHTML = displayList.map(item => `
-      <article class="attraction-card" data-id="${item.id}">
+      <article class="attraction-card" data-id="${item.id}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
         <div class="card-media-wrapper image-preload-wrapper" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
           <img src="${(item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg'}" alt="${item.title}" class="card-image is-preloading" loading="lazy" onload="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded');" onerror="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded'); this.src='assets/no-image.svg';">
           <span class="card-badge-floating">${item.badge || 'Featured'}</span>
@@ -309,9 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </svg>
               <span>${item.rating || '4.8'}</span>
               <span class="rating-count">(${item.reviews || 'New'})</span>
-            </div>
-            <div class="card-price-cta" style="display: flex; gap: 0.4rem; align-items: center;">
-              <a href="attraction-details.html?id=${item.id}" class="btn-book-card" style="text-align: center; text-decoration: none;">View Details</a>
             </div>
           </div>
         </div>

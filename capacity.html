@@ -682,7 +682,53 @@
     if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
       TourismHubStore.onSync(() => renderEmbeddedEventsCalendar());
     }
-    window.addEventListener('supabaseSyncComplete', renderEmbeddedEventsCalendar);
+    function renderCapacityItineraryTracker() {
+      const listEl = document.getElementById('capacityItineraryList');
+      if (!listEl || !window.TourismHubStore) return;
+      const itinIds = (typeof TourismHubStore.getItinerary === 'function') ? TourismHubStore.getItinerary() : [];
+      if (itinIds.length === 0) {
+        listEl.innerHTML = '<div class="schedule-day-empty" style="padding: 1.25rem;"><p style="margin: 0;">Your itinerary is empty. Browse attractions and click <strong>Add to Itinerary</strong> to plan your trip.</p></div>';
+        return;
+      }
+      const catalog = (typeof TourismHubStore.getCatalog === 'function') ? TourismHubStore.getCatalog() : [];
+      listEl.innerHTML = itinIds.map((id, idx) => {
+        const item = catalog.find(a => a.id === id);
+        if (!item) return '';
+        const img = item.image || 'assets/no-image.svg';
+        return `
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.85rem; padding: 0.75rem 0.9rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 200px;">
+              <span style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary, #0284c7); color: #fff; font-size: 0.78rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">${idx + 1}</span>
+              <img src="${img}" alt="${item.title}" onerror="this.src='assets/no-image.svg'" style="width: 52px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0;">
+              <div>
+                <a href="attraction-details.html?id=${item.id}" style="font-weight: 700; color: var(--text-main); text-decoration: none; font-size: 0.92rem;">${item.title}</a>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">${item.location || 'Manila'} &bull; ${item.operatingHours || 'Open Daily'}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <button type="button" class="btn-outline-sm" onclick="TourismHubStore.moveItineraryItem('${item.id}', 'up'); renderCapacityItineraryTracker();" ${idx === 0 ? 'disabled' : ''} title="Move Up">&uarr;</button>
+              <button type="button" class="btn-outline-sm" onclick="TourismHubStore.moveItineraryItem('${item.id}', 'down'); renderCapacityItineraryTracker();" ${idx === itinIds.length - 1 ? 'disabled' : ''} title="Move Down">&darr;</button>
+              <button type="button" class="btn-outline-sm" onclick="TourismHubStore.removeFromItinerary('${item.id}'); renderCapacityItineraryTracker();" style="color: #ef4444;" title="Remove">&times;</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    window.renderCapacityItineraryTracker = renderCapacityItineraryTracker;
+
+    window.addEventListener('supabaseSyncComplete', () => {
+      renderEmbeddedEventsCalendar();
+      if (typeof window.renderCapacityItineraryTracker === 'function') window.renderCapacityItineraryTracker();
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof window.renderCapacityItineraryTracker === 'function') window.renderCapacityItineraryTracker();
+    });
+    if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
+      TourismHubStore.onSync(() => {
+        if (typeof window.renderCapacityItineraryTracker === 'function') window.renderCapacityItineraryTracker();
+      });
+    }
+    if (typeof window.renderCapacityItineraryTracker === 'function') window.renderCapacityItineraryTracker();
 
     function sortCapacityTableRows() {
       const tbody = document.getElementById('capacityTableBody');

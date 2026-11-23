@@ -122,12 +122,6 @@
                   </div>
                 </div>
               </div>
-              <div class="portal-item-footer" style="display: flex; align-items: center; gap: 0.5rem;">
-                <button type="button" class="portal-view-details-btn" style="flex: 0 0 auto; padding: 0.55rem 0.85rem; background: ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '#10b981' : 'rgba(2, 132, 199, 0.12)'}; color: ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '#ffffff' : 'var(--primary, #0284c7)'}; border: 1px solid ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '#10b981' : 'rgba(2, 132, 199, 0.35)'}; font-weight: 700;" onclick="event.stopPropagation(); togglePortalItinerary('${item.id}', '${item.title.replace(/'/g, "\\'")}', this)">
-                  ${(typeof TourismHubStore.isInItinerary === 'function' && TourismHubStore.isInItinerary(item.id)) ? '✓ Itinerary' : '+ Itinerary'}
-                </button>
-                <a href="attraction-details.html?id=${item.id}" class="portal-view-details-btn" style="flex: 1; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">View Details &gt;</a>
-              </div>
             </article>
           `;
         }).join('');
