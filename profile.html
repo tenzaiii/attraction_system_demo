@@ -394,23 +394,32 @@
     input:checked + .switch-slider:before {
       transform: translateX(22px);
     }
+    .profile-mobile-tab-select-wrap {
+      display: none;
+      margin-bottom: 0.25rem;
+    }
+    .profile-mobile-tab-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
     @media (max-width: 768px) {
       .profile-workspace-layout {
         grid-template-columns: 1fr !important;
         gap: 1.25rem !important;
       }
       .profile-tabs-nav {
-        flex-direction: row !important;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        gap: 0.45rem !important;
-        padding: 0.5rem !important;
+        display: none !important;
       }
-      .profile-tab-btn {
-        flex-shrink: 0;
-        white-space: nowrap;
-        padding: 0.6rem 0.9rem !important;
-        font-size: 0.84rem !important;
+      .profile-mobile-tab-select-wrap {
+        display: block !important;
       }
       .profile-hero-card {
         flex-direction: column !important;
@@ -683,6 +692,16 @@
       <!-- Workspace Layout: Left Sidebar Tabs + Tab Content -->
       <div class="profile-workspace-layout">
 
+        <!-- Mobile Tab Dropdown Selector -->
+        <div class="profile-mobile-tab-select-wrap">
+          <select id="profileMobileTabSelect" class="profile-mobile-tab-select" aria-label="Select Profile Section" onchange="switchProfileTab(this.value)">
+            <option value="account">Account &amp; Security</option>
+            <option value="favorites">Saved Favorites</option>
+            <option value="passes">My QR Passes</option>
+            <option value="settings">Settings &amp; Preferences</option>
+          </select>
+        </div>
+
         <!-- Left Sidebar Tab Navigation -->
         <aside class="profile-tabs-nav" aria-label="Profile Sections">
           <button type="button" class="profile-tab-btn active" id="tabBtnAccount" onclick="switchProfileTab('account')">
@@ -918,6 +937,8 @@
         document.getElementById('tabBtnAccount')?.classList.add('active');
         document.getElementById('paneAccount')?.classList.add('active');
       }
+      const mobileSel = document.getElementById('profileMobileTabSelect');
+      if (mobileSel && mobileSel.value !== tab) mobileSel.value = tab;
     }
 
     function renderProfileItinerary() {

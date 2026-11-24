@@ -3973,7 +3973,7 @@ html {
 html,
 body {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .navbar .nav-container {
@@ -4191,8 +4191,22 @@ body {
 }
 
 /* Hero Live Search Dropdown */
+.hero-section {
+  overflow: visible !important;
+}
+
+.hero-carousel-slides {
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 20 !important;
+}
+
 .hero-search-wrapper {
   position: relative;
+  z-index: 50;
 }
 
 .hero-search-dropdown {
@@ -4201,7 +4215,7 @@ body {
   top: calc(100% + 0.5rem);
   left: 0;
   right: 0;
-  z-index: 60;
+  z-index: 999 !important;
   background: var(--bg-card, #ffffff);
   border: 1px solid var(--border, #e2e8f0);
   border-radius: 16px;

@@ -3258,16 +3258,16 @@
 
   .portal-filter-tabs {
     width: 100%;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 0.25rem;
-    -webkit-overflow-scrolling: touch;
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+    gap: 0.4rem !important;
+    padding-bottom: 0;
   }
 
   .portal-filter-tab {
     flex-shrink: 0;
-    padding: 0.45rem 0.95rem;
-    font-size: 0.82rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 
   .portal-cards-grid {
@@ -3487,8 +3487,12 @@
   .portal-dropdown-group {
     width: 100%;
     display: grid !important;
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 0.5rem !important;
+  }
+
+  .portal-dropdown-group > :nth-child(3) {
+    grid-column: 1 / -1;
   }
 
   .portal-select {
@@ -3524,8 +3528,8 @@
 
 .itinerary-tracker-split {
   display: grid;
-  grid-template-columns: 1fr 1.25fr;
-  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  gap: 1.15rem;
   align-items: start;
 }
 

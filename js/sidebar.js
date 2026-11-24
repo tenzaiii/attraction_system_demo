@@ -42,12 +42,15 @@
           openSidebar();
         }
         // Show mobile bottom nav only after scrolling down
-  window.addEventListener('scroll', () => {
+  function updateMobileBottomNavVisibility() {
     const bottomNav = document.querySelector('.mobile-bottom-nav');
-    if (bottomNav) {
-      bottomNav.classList.toggle('visible', window.scrollY > 120);
-    }
-  }, { passive: true });
+    if (!bottomNav) return;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    bottomNav.classList.toggle('visible', scrollTop > 80);
+  }
+  window.addEventListener('scroll', updateMobileBottomNavVisibility, { passive: true });
+  document.addEventListener('scroll', updateMobileBottomNavVisibility, { passive: true });
+  updateMobileBottomNavVisibility();
 });
     }
 
