@@ -3577,3 +3577,67 @@
 }
 
 
+
+
+/* ==========================================================================
+   Attraction Details Topbar: True Centered Search (Desktop) & Dropdown (Mobile)
+   ========================================================================== */
+.details-topbar-search-wrap {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(460px, 44vw);
+  z-index: 1200;
+}
+
+.details-mobile-search-btn {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-main);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.details-mobile-search-btn:hover {
+  border-color: var(--primary, #0284c7);
+  color: var(--primary, #0284c7);
+}
+
+@media (max-width: 768px) {
+  .details-mobile-search-btn {
+    display: inline-flex;
+  }
+
+  .details-topbar-search-wrap {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    padding: 0.65rem 1rem;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+    z-index: 1990;
+    box-sizing: border-box;
+  }
+
+  .details-topbar-search-wrap.open {
+    display: block;
+  }
+
+  .details-topbar-search-wrap .portal-search-bar {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}

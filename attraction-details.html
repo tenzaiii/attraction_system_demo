@@ -191,19 +191,29 @@
         </svg>
         <span>TourismHub</span>
       </a>
+    </div>
 
-      <div class="portal-search-bar">
+    <div class="details-topbar-search-wrap" id="detailsTopbarSearchWrap">
+      <div class="portal-search-bar" style="position: relative; width: 100%; margin: 0;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.2"
           stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
         <input type="text" id="headerSearchInput" class="portal-search-input"
-          placeholder="Search attractions, events, or keywords...">
+          placeholder="Search attractions, events, or keywords..." autocomplete="off">
+        <div class="hero-search-dropdown" id="detailsSearchDropdown" role="listbox" aria-label="Attraction search results" style="z-index: 2000;"></div>
       </div>
     </div>
 
     <div class="portal-topbar-right">
+      <!-- Mobile Search Icon Toggle (<= 768px) -->
+      <button type="button" class="details-mobile-search-btn" id="mobileDetailsSearchToggle" aria-label="Search attractions" title="Search attractions">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
       <!-- Admin Dashboard Quick Button (Admin Only) -->
       <a href="admin.html" class="nav-admin-dashboard-btn admin-only-feature" style="display: none;" title="Admin Operator Dashboard">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
