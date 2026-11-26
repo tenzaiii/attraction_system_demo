@@ -948,6 +948,64 @@
     },
 
     /**
+     * Fetch capacity slots grouped by attraction_id from Supabase `capacity_slots` table
+     */
+    async fetchCapacitySlots() {
+      if (!supabaseClient) return null;
+      try {
+        const { data, error } = await supabaseClient
+          .from('capacity_slots')
+          .select('*')
+          .order('id', { ascending: true });
+        if (error) throw error;
+        const grouped = {};
+        (data || []).forEach(row => {
+          const attrId = row.attraction_id || row.attractionId;
+          if (!attrId) return;
+          if (!grouped[attrId]) grouped[attrId] = [];
+          grouped[attrId].push({
+            id: String(row.id),
+            time: row.slot_time || row.time || '09:00 AM - 12:00 PM',
+            booked: Number(row.booked_count ?? row.booked ?? 0),
+            max: Number(row.max_capacity ?? row.max ?? 100),
+            status: row.status || 'open'
+          });
+        });
+        return grouped;
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to fetch capacity_slots:', err.message);
+        return null;
+      }
+    },
+
+    /**
+     * Upsert a capacity slot into Supabase `capacity_slots` table
+     */
+    async upsertCapacitySlot(attractionId, slot) {
+      if (!supabaseClient || !attractionId || !slot || !slot.id) return null;
+      try {
+        const payload = {
+          id: String(slot.id),
+          attraction_id: String(attractionId),
+          slot_time: slot.time || '09:00 AM - 12:00 PM',
+          booked_count: Number(slot.booked || 0),
+          max_capacity: Number(slot.max || 100),
+          status: slot.status || (Number(slot.booked || 0) >= Number(slot.max || 100) ? 'sold-out' : 'open')
+        };
+        const { data, error } = await supabaseClient
+          .from('capacity_slots')
+          .upsert(payload, { onConflict: 'id' })
+          .select()
+          .maybeSingle();
+        if (error) throw error;
+        return { success: true, data };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to upsert capacity slot:', err.message);
+        return { success: false, message: err.message };
+      }
+    },
+
+    /**
      * Subscribe to real-time changes on public catalog, announcements, and passes
      */
     subscribeToChanges(callbacks = {}) {

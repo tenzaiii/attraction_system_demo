@@ -20,9 +20,7 @@
   <link rel="stylesheet" href="css/portal-pages.css">
 
   <script>
-    if (localStorage.getItem('tourismhub_theme') === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
+    if (localStorage.getItem('tourismhub_theme') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.documentElement.style.backgroundColor = '#0b1120'; document.documentElement.style.colorScheme = 'dark'; } try { var _a = localStorage.getItem('tourismhub_temp_admin_auth'); var _c = localStorage.getItem('tourismhub_temp_client_auth'); document.documentElement.setAttribute('data-auth', (_a && _a !== 'null') ? 'admin' : (_c && _c !== 'null') ? 'client' : 'guest'); } catch(e) {}
   </script>
   <link rel="stylesheet" href="css/dark-overrides.css">
 </head>

@@ -1243,14 +1243,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (maxInput === null) return;
     const maxLimit = parseInt(maxInput, 10) || 120;
 
-    if (!capacityScheduleData[attrId]) capacityScheduleData[attrId] = [];
-    capacityScheduleData[attrId].push({
+    const newSlot = {
       id: `${attrId}-${Date.now()}`,
       time: timeStr,
       booked: 0,
       max: maxLimit,
       status: 'open'
-    });
+    };
+
+    if (window.TourismHubStore && typeof TourismHubStore.addSlot === 'function') {
+      capacityScheduleData = TourismHubStore.addSlot(attrId, newSlot);
+    } else {
+      if (!capacityScheduleData[attrId]) capacityScheduleData[attrId] = [];
+      capacityScheduleData[attrId].push(newSlot);
+    }
 
     showToast(`Added schedule slot "${timeStr}"`);
     renderCapacitySlots();

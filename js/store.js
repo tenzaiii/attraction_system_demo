@@ -753,6 +753,16 @@
     saveCapacityData(capacity) {
       setItem(KEYS.CAPACITY, capacity);
     },
+    addSlot(attrId, slot) {
+      const capacity = this.getCapacityData();
+      if (!capacity[attrId]) capacity[attrId] = [];
+      capacity[attrId].push(slot);
+      this.saveCapacityData(capacity);
+      if (window.TourismHubSupabase && typeof TourismHubSupabase.upsertCapacitySlot === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.upsertCapacitySlot(attrId, slot).catch(() => {});
+      }
+      return capacity;
+    },
     updateSlot(attrId, slotId, updates) {
       const capacity = this.getCapacityData();
       if (capacity[attrId]) {
@@ -760,6 +770,9 @@
         if (slot) {
           Object.assign(slot, updates);
           this.saveCapacityData(capacity);
+          if (window.TourismHubSupabase && typeof TourismHubSupabase.upsertCapacitySlot === 'function' && TourismHubSupabase.isReady()) {
+            TourismHubSupabase.upsertCapacitySlot(attrId, slot).catch(() => {});
+          }
         }
       }
       return capacity;
@@ -771,6 +784,9 @@
         if (slot) {
           slot.booked = Math.max(0, slot.booked + delta);
           this.saveCapacityData(capacity);
+          if (window.TourismHubSupabase && typeof TourismHubSupabase.upsertCapacitySlot === 'function' && TourismHubSupabase.isReady()) {
+            TourismHubSupabase.upsertCapacitySlot(attrId, slot).catch(() => {});
+          }
         }
       }
       return capacity;
@@ -1347,6 +1363,23 @@
       return userItin;
     },
 
+    addToItinerary(itemId) {
+      if (!itemId) return { inItinerary: false, itinerary: [] };
+      const activeUser = this.getClientAuth() || this.getAdminAuth();
+      const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
+      const allItin = getItem(KEYS.ITINERARY) || {};
+      let userItin = Array.isArray(allItin[userKey]) ? [...allItin[userKey]] : [];
+      if (!userItin.includes(itemId)) {
+        userItin.push(itemId);
+        allItin[userKey] = userItin;
+        setItem(KEYS.ITINERARY, allItin);
+        if (activeUser && activeUser.id && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
+          TourismHubSupabase.updateUserLists(activeUser.id, { itinerary: userItin }).catch(() => {});
+        }
+      }
+      return { inItinerary: true, itinerary: userItin };
+    },
+
     reorderItinerary(fromIdx, toIdx) {
       const activeUser = this.getClientAuth() || this.getAdminAuth();
       const userKey = activeUser ? (activeUser.email || activeUser.id) : 'guest';
@@ -1434,6 +1467,9 @@
 
       allFavs[userKey] = userFavs;
       setItem(KEYS.FAVORITES, allFavs);
+      if (activeUser && activeUser.id && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.updateUserLists(activeUser.id, { favorites: userFavs }).catch(() => {});
+      }
       return { isFavorite: isFav, favorites: userFavs };
     },
 
@@ -1448,6 +1484,9 @@
         userFavs.splice(idx, 1);
         allFavs[userKey] = userFavs;
         setItem(KEYS.FAVORITES, allFavs);
+        if (activeUser && activeUser.id && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
+          TourismHubSupabase.updateUserLists(activeUser.id, { favorites: userFavs }).catch(() => {});
+        }
       }
       return userFavs;
     },
@@ -1485,6 +1524,16 @@
           const mergedPasses = { ...localPasses, ...remotePasses };
           setItem(KEYS.PASSES, mergedPasses);
           console.log(`⚡ [Store] Passes synchronized (${Object.keys(mergedPasses).length} passes from Supabase & local cache).`);
+        }
+
+        // 3b. Fetch live capacity slots from Supabase
+        if (typeof TourismHubSupabase.fetchCapacitySlots === 'function') {
+          const remoteSlots = await TourismHubSupabase.fetchCapacitySlots();
+          if (remoteSlots && typeof remoteSlots === 'object' && Object.keys(remoteSlots).length > 0) {
+            const localSlots = getItem(KEYS.CAPACITY, DEFAULT_CAPACITY);
+            setItem(KEYS.CAPACITY, { ...localSlots, ...remoteSlots });
+            console.log(`⚡ [Store] Capacity slots synchronized (${Object.keys(remoteSlots).length} attractions from Supabase).`);
+          }
         }
 
         // 4. Real-time subscription to postgres changes

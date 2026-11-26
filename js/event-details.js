@@ -266,20 +266,32 @@
     const partySize = Math.max(1, parseInt(document.getElementById('evBookVisitors').value, 10) || 1);
     const visitorName = document.getElementById('evBookGuestName').value.trim() || (user && user.name) || 'Tourist';
 
+    const randNum = Math.floor(1000 + Math.random() * 9000);
+    const passCode = `PASS-${randNum}-EVT`;
+    const unitPrice = parseInt(tierEl && tierEl.value, 10) || 0;
+    const totalPrice = unitPrice * partySize;
+
     const passPayload = {
+      code: passCode,
+      userId: (user && user.id) || null,
+      bookedByUserId: (user && user.id) || null,
+      bookedByEmail: (user && user.email) || '',
       attractionId: activeEventObj.parentAttractionId || activeEventObj.id,
       attraction: activeEventObj.title || 'Event Pass',
       passType: passType,
       visitorName: visitorName,
+      visitorEmail: (user && user.email) || '',
       touristName: visitorName,
       touristEmail: (user && user.email) || '',
       validDate: validDate,
       slot: activeEventObj.operatingHours || 'Event Access',
-      partySize: partySize
+      partySize: partySize,
+      amount: totalPrice > 0 ? `₱${totalPrice.toLocaleString()}.00` : '₱0.00',
+      status: 'valid'
     };
 
-    if (window.TourismHubStore && typeof TourismHubStore.bookPass === 'function') {
-      TourismHubStore.bookPass(passPayload);
+    if (window.TourismHubStore && typeof TourismHubStore.addPass === 'function') {
+      TourismHubStore.addPass(passPayload);
     }
 
     window.closeEventBookingModal();

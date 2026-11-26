@@ -4270,3 +4270,21 @@ body {
 }
 
 
+
+
+/* ==========================================================================
+   Pre-Paint Auth Hydration (Eliminates Navbar Flash on Page Load)
+   ========================================================================== */
+html[data-auth="admin"] #navSignInLink,
+html[data-auth="client"] #navSignInLink {
+  display: none !important;
+}
+
+html[data-auth="admin"] #userProfileBtn,
+html[data-auth="client"] #userProfileBtn {
+  display: flex !important;
+}
+
+html[data-auth="admin"] .admin-only-feature {
+  display: inline-flex !important;
+}

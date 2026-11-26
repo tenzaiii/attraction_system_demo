@@ -40,9 +40,13 @@
   window.toggleThemeFromDropdown = function (isDark) {
     if (isDark) {
       document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.style.backgroundColor = '#0b1120';
+      document.documentElement.style.colorScheme = 'dark';
       localStorage.setItem('tourismhub_theme', 'dark');
     } else {
       document.documentElement.removeAttribute('data-theme');
+      document.documentElement.style.backgroundColor = '';
+      document.documentElement.style.colorScheme = 'light';
       localStorage.setItem('tourismhub_theme', 'light');
     }
     // Sync any theme toggle checkboxes on current page

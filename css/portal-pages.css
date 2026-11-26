@@ -3787,3 +3787,25 @@ body.has-event-poster-bg .portal-main-wrapper {
   position: relative;
   z-index: 1;
 }
+
+
+/* ==========================================================================
+   Pre-Paint Auth Hydration (Eliminates Navbar Flash on Page Load)
+   ========================================================================== */
+html[data-auth="admin"] #navSignInLink,
+html[data-auth="client"] #navSignInLink {
+  display: none !important;
+}
+
+html[data-auth="admin"] #userProfileBtn,
+html[data-auth="client"] #userProfileBtn {
+  display: flex !important;
+}
+
+html[data-auth="admin"] .admin-only-feature {
+  display: inline-flex !important;
+}
+
+html[data-auth="admin"] li.admin-only-feature {
+  display: list-item !important;
+}
