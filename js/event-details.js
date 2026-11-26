@@ -291,7 +291,10 @@
     };
 
     if (window.TourismHubStore && typeof TourismHubStore.addPass === 'function') {
-      TourismHubStore.addPass(passPayload);
+      const savedPass = TourismHubStore.addPass(passPayload);
+      if (savedPass && savedPass._syncPromise) {
+        await savedPass._syncPromise;
+      }
     }
 
     window.closeEventBookingModal();

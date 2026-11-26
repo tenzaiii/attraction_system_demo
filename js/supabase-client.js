@@ -137,30 +137,50 @@
     async cancelPass(code) {
       if (!supabaseClient || !code) return { success: false };
       try {
+        const cleanCode = String(code).toUpperCase().trim();
         const { error } = await supabaseClient
           .from('passes')
           .update({ status: 'cancelled' })
-          .eq('code', String(code).toUpperCase().trim());
+          .ilike('pass_code', cleanCode);
+        if (error) console.warn('⚠️ [Supabase] cancelPass error:', error.message);
         return { success: !error, message: error ? error.message : 'Pass cancelled.' };
       } catch (e) {
+        console.warn('⚠️ [Supabase] cancelPass exception:', e.message);
         return { success: false, message: e.message };
       }
     },
 
-    async updateUserLists(userId, lists) {
-      if (!supabaseClient || !userId || !lists) return { success: false };
+    async updateUserLists(userIdentifier, lists) {
+      if (!supabaseClient || !userIdentifier || !lists) return { success: false };
       try {
         const payload = {};
         if (Array.isArray(lists.favorites)) payload.favorites = lists.favorites;
         if (Array.isArray(lists.itinerary)) payload.itinerary = lists.itinerary;
         if (Object.keys(payload).length === 0) return { success: true };
-        const { error } = await supabaseClient
-          .from('profiles')
-          .update(payload)
-          .eq('id', userId);
-        return { success: !error };
-      } catch (_) {
-        return { success: false };
+
+        const isObj = typeof userIdentifier === 'object' && userIdentifier !== null;
+        const rawId = isObj ? userIdentifier.id : userIdentifier;
+        const rawEmail = isObj ? userIdentifier.email : (String(userIdentifier).includes('@') ? userIdentifier : '');
+        const isUuid = rawId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(rawId));
+
+        let query = supabaseClient.from('profiles').update(payload);
+        if (isUuid) {
+          query = query.eq('id', String(rawId));
+        } else if (rawEmail) {
+          query = query.ilike('email', String(rawEmail).trim().toLowerCase());
+        } else {
+          return { success: false, message: 'No valid user id or email' };
+        }
+
+        const { error } = await query;
+        if (error) {
+          console.warn('⚠️ [Supabase] updateUserLists error:', error.message);
+          return { success: false, message: error.message };
+        }
+        return { success: true };
+      } catch (err) {
+        console.warn('⚠️ [Supabase] updateUserLists exception:', err.message);
+        return { success: false, message: err.message };
       }
     },
 
@@ -903,11 +923,23 @@
       if (!supabaseClient || !pass) return null;
       try {
         const dbPayload = this.mapPassToDb(pass);
-        const { data, error } = await supabaseClient
+        let { data, error } = await supabaseClient
           .from('passes')
-          .insert([dbPayload])
+          .upsert([dbPayload], { onConflict: 'pass_code' })
           .select()
           .single();
+
+        // If attraction_id fails a foreign-key constraint (e.g. standalone event), retry with attraction_id: null
+        if (error && dbPayload.attraction_id && /foreign key|violates|23503/i.test(error.message || '')) {
+          const retryPayload = { ...dbPayload, attraction_id: null };
+          const retryRes = await supabaseClient
+            .from('passes')
+            .upsert([retryPayload], { onConflict: 'pass_code' })
+            .select()
+            .single();
+          data = retryRes.data;
+          error = retryRes.error;
+        }
 
         if (error) throw error;
         const saved = this.mapPassFromDb(data);

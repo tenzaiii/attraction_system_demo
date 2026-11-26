@@ -887,7 +887,13 @@
 
       // Online Supabase Sync
       if (window.TourismHubSupabase && typeof TourismHubSupabase.insertPass === 'function' && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.insertPass(enrichedPass).catch(err => console.warn('[Store] Supabase addPass sync error:', err));
+        enrichedPass._syncPromise = TourismHubSupabase.insertPass(enrichedPass)
+          .catch(err => {
+            console.warn('[Store] Supabase addPass sync error:', err);
+            return { success: false };
+          });
+      } else {
+        enrichedPass._syncPromise = Promise.resolve({ success: false });
       }
 
       return enrichedPass;
@@ -1313,7 +1319,7 @@
       allItin[userKey] = userItin;
       setItem(KEYS.ITINERARY, allItin);
       if (activeUser && activeUser.id && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.updateUserLists(activeUser.id, { itinerary: userItin }).catch(() => {});
+        TourismHubSupabase.updateUserLists({ id: activeUser.id, email: activeUser.email }, { itinerary: userItin }).catch(() => {});
       }
       return { inItinerary, itinerary: userItin };
     },
@@ -1373,8 +1379,8 @@
         userItin.push(itemId);
         allItin[userKey] = userItin;
         setItem(KEYS.ITINERARY, allItin);
-        if (activeUser && activeUser.id && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
-          TourismHubSupabase.updateUserLists(activeUser.id, { itinerary: userItin }).catch(() => {});
+        if (activeUser && (activeUser.id || activeUser.email) && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
+          TourismHubSupabase.updateUserLists({ id: activeUser.id, email: activeUser.email }, { itinerary: userItin }).catch(() => {});
         }
       }
       return { inItinerary: true, itinerary: userItin };
@@ -1391,7 +1397,7 @@
       allItin[userKey] = userItin;
       setItem(KEYS.ITINERARY, allItin);
       if (activeUser && activeUser.id && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.updateUserLists(activeUser.id, { itinerary: userItin }).catch(() => {});
+        TourismHubSupabase.updateUserLists({ id: activeUser.id, email: activeUser.email }, { itinerary: userItin }).catch(() => {});
       }
       return userItin;
     },
@@ -1406,7 +1412,7 @@
       allVisited[userKey] = [];
       setItem('tourismhub_temp_itinerary_visited_v1', allVisited);
       if (activeUser && activeUser.id && window.TourismHubSupabase && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.updateUserLists(activeUser.id, { itinerary: [] }).catch(() => {});
+        TourismHubSupabase.updateUserLists({ id: activeUser.id, email: activeUser.email }, { itinerary: [] }).catch(() => {});
       }
       return [];
     },
@@ -1467,8 +1473,8 @@
 
       allFavs[userKey] = userFavs;
       setItem(KEYS.FAVORITES, allFavs);
-      if (activeUser && activeUser.id && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
-        TourismHubSupabase.updateUserLists(activeUser.id, { favorites: userFavs }).catch(() => {});
+      if (activeUser && (activeUser.id || activeUser.email) && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
+        TourismHubSupabase.updateUserLists({ id: activeUser.id, email: activeUser.email }, { favorites: userFavs }).catch(() => {});
       }
       return { isFavorite: isFav, favorites: userFavs };
     },
@@ -1484,8 +1490,8 @@
         userFavs.splice(idx, 1);
         allFavs[userKey] = userFavs;
         setItem(KEYS.FAVORITES, allFavs);
-        if (activeUser && activeUser.id && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
-          TourismHubSupabase.updateUserLists(activeUser.id, { favorites: userFavs }).catch(() => {});
+        if (activeUser && (activeUser.id || activeUser.email) && window.TourismHubSupabase && typeof TourismHubSupabase.updateUserLists === 'function' && TourismHubSupabase.isReady()) {
+          TourismHubSupabase.updateUserLists({ id: activeUser.id, email: activeUser.email }, { favorites: userFavs }).catch(() => {});
         }
       }
       return userFavs;
@@ -1533,6 +1539,27 @@
             const localSlots = getItem(KEYS.CAPACITY, DEFAULT_CAPACITY);
             setItem(KEYS.CAPACITY, { ...localSlots, ...remoteSlots });
             console.log(`⚡ [Store] Capacity slots synchronized (${Object.keys(remoteSlots).length} attractions from Supabase).`);
+          }
+        }
+
+        // 3c. Hydrate active user's favorites & itinerary from Supabase profiles
+        const activeUser = this.getClientAuth() || this.getAdminAuth();
+        if (activeUser && activeUser.email && typeof TourismHubSupabase.getProfileByEmail === 'function') {
+          const remoteProfile = await TourismHubSupabase.getProfileByEmail(activeUser.email);
+          if (remoteProfile) {
+            const userKey = activeUser.email || activeUser.id;
+            if (Array.isArray(remoteProfile.favorites)) {
+              const allFavs = getItem(KEYS.FAVORITES) || {};
+              allFavs[userKey] = remoteProfile.favorites;
+              setItem(KEYS.FAVORITES, allFavs);
+              window.dispatchEvent(new CustomEvent('favoritesUpdated'));
+            }
+            if (Array.isArray(remoteProfile.itinerary)) {
+              const allItin = getItem(KEYS.ITINERARY) || {};
+              allItin[userKey] = remoteProfile.itinerary;
+              setItem(KEYS.ITINERARY, allItin);
+            }
+            console.log('⚡ [Store] User Favorites & Itinerary synchronized from Supabase profile.');
           }
         }
 
