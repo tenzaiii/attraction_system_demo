@@ -47,7 +47,7 @@
     document.title = `${ev.title || 'Event Details'} — TourismHub Portal`;
 
     const parentAttr = catalog.find(a => a.id === ev.parentAttractionId) || null;
-    const banner = (ev.images && ev.images[0]) || ev.image || (parentAttr && parentAttr.image) || 'images/hero_bg.png';
+    const banner = (ev.images && ev.images[0]) || ev.image || (parentAttr && parentAttr.image) || 'assets/no-image.svg';
 
     // Apply full-page lightly blurred poster background
     const posterBg = document.getElementById('eventDetailsPosterBg');
@@ -67,7 +67,7 @@
     container.innerHTML = `
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; overflow: hidden;">
         <div style="position: relative; height: 320px; background: #0f172a;">
-          <img src="${banner}" alt="${esc(ev.title)}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='images/hero_bg.png'">
+          <img src="${banner}" alt="${esc(ev.title)}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/no-image.svg'">
           <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,23,42,0.82), rgba(15,23,42,0.12));"></div>
           <div style="position: absolute; bottom: 1.5rem; left: 1.5rem; right: 1.5rem; color: #ffffff;">
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
@@ -129,7 +129,7 @@
     if (relSec && relGrid && related.length) {
       relSec.style.display = 'block';
       relGrid.innerHTML = related.map(item => {
-        const img = (item.images && item.images[0]) || item.image || 'images/hero_bg.png';
+        const img = (item.images && item.images[0]) || item.image || 'assets/no-image.svg';
         const itemDate = formatDate(item);
         const itemAdm = item.admission || 'Free Entry';
         const itemVenue = item.attractionTitle || item.location || 'Featured Venue';
@@ -137,7 +137,7 @@
         const itemUrl = `event-details.html?id=${encodeURIComponent(item.id)}`;
         return `
           <article class="event-catalog-banner" onclick="window.location.href='${itemUrl}'" style="cursor: pointer;">
-            <img src="${img}" alt="${esc(item.title)}" class="event-catalog-banner-img" onerror="this.src='images/hero_bg.png'">
+            <img src="${img}" alt="${esc(item.title)}" class="event-catalog-banner-img" onerror="this.src='assets/no-image.svg'">
             <div class="event-catalog-banner-scrim"></div>
             <div class="event-catalog-banner-top">
               <span style="background: rgba(2, 132, 199, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(itemDate)}</span>
@@ -226,7 +226,7 @@
     const modal = document.getElementById('eventBookingModal');
     if (!modal) return;
 
-    const banner = (ev.images && ev.images[0]) || ev.image || 'images/hero_bg.png';
+    const banner = (ev.images && ev.images[0]) || ev.image || 'assets/no-image.svg';
     const cap = Number(ev.capacityPerSlot) || 100;
     const booked = Number(ev.bookedCount) || 0;
     const remaining = Math.max(0, cap - booked);

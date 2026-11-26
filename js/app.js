@@ -3,50 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 1. Shared Data Store for Attractions ---
   let attractionsData = (window.TourismHubStore && typeof TourismHubStore.getCatalog === 'function')
     ? TourismHubStore.getCatalog()
-    : [
-      {
-        id: 'rizal-monument',
-        title: 'Rizal Monument & Luneta Park',
-        category: 'Historical Site',
-        type: 'historical',
-        location: 'Manila',
-        rating: '4.8',
-        reviews: '1.2k',
-        price: 0,
-        priceLabel: 'Free Entry',
-        image: 'assets/rizal-monument.jpg',
-        badge: 'Iconic Landmark',
-        description: 'The monumental memorial in Luneta Park honoring Dr. José Rizal, national hero of the Philippines.'
-      },
-      {
-        id: 'intramuros-walled-city',
-        title: 'Intramuros & Fort Santiago',
-        category: 'Historical Site',
-        type: 'historical',
-        location: 'Manila',
-        rating: '4.9',
-        reviews: '1.5k',
-        price: 75,
-        priceLabel: 'Entrance ₱75',
-        image: 'assets/hero-banner.jpg',
-        badge: 'Heritage District',
-        description: 'Explore historic stone fortifications, centuries-old churches, and museums inside the Walled City of Manila.'
-      },
-      {
-        id: 'qc-memorial-circle',
-        title: 'Quezon Memorial Circle',
-        category: 'Park & Nature',
-        type: 'park',
-        location: 'Quezon City',
-        rating: '4.7',
-        reviews: '980',
-        price: 0,
-        priceLabel: 'Free Entry',
-        image: 'assets/qc-memorial-circle.jpg',
-        badge: 'National Shrine',
-        description: 'Central civic park, heritage shrine, gardens, and museums located in the heart of Quezon City.'
-      }
-    ];
+    : [];
 
   // User Wishlist
   function getSavedSet() {
@@ -89,12 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroLocationCaptionText = document.getElementById('heroLocationCaptionText');
   const heroLocationCaptionLink = document.getElementById('heroLocationCaptionLink');
   const heroLocationMetaBar = document.getElementById('heroLocationMetaBar');
-  const HERO_FALLBACK_PHOTOS = [
-    'assets/qc-memorial-circle.jpg',
-    'assets/rizal-monument.jpg',
-    'assets/hero-banner.jpg',
-    'assets/white-beach.jpg'
-  ];
+  const HERO_FALLBACK_PHOTOS = ['assets/no-image.svg'];
   let heroLocationSlidesData = [];
   let currentHeroLocationIdx = 0;
   let heroLocationTimer = null;
@@ -179,10 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
     heroLocationSlidesData = picked.slice(0, 4);
 
     if (heroLocationSlidesData.length === 0) {
-      heroLocationSlidesData = [
-        { id: 'qc-memorial-circle', title: 'Quezon Memorial Circle & Park', location: 'Quezon City', image: 'assets/qc-memorial-circle.jpg' },
-        { id: 'rizal-monument', title: 'Rizal Monument & Luneta Park', location: 'Manila', image: 'assets/rizal-monument.jpg' }
-      ];
+      heroLocationCarousel.innerHTML = '';
+      if (heroLocationDots) heroLocationDots.innerHTML = '';
+      return;
     }
 
     if (currentHeroLocationIdx >= heroLocationSlidesData.length) {

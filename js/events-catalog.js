@@ -75,7 +75,7 @@
     }
 
     grid.innerHTML = events.map(ev => {
-      const thumb = (ev.images && ev.images[0]) || ev.image || 'images/hero_bg.png';
+      const thumb = (ev.images && ev.images[0]) || ev.image || 'assets/no-image.svg';
       const dateStr = formatEventDate(ev);
       const timeStr = ev.operatingHours || 'All Day';
       const venue = ev.attractionTitle || ev.location || 'Featured Venue';
@@ -87,7 +87,7 @@
       const evUrl = `event-details.html?id=${encodeURIComponent(ev.id)}`;
       return `
         <article class="event-catalog-banner" onclick="window.location.href='${evUrl}'" style="cursor: pointer;">
-          <img src="${thumb}" alt="${esc(ev.title)}" class="event-catalog-banner-img" onerror="this.src='images/hero_bg.png'">
+          <img src="${thumb}" alt="${esc(ev.title)}" class="event-catalog-banner-img" onerror="this.src='assets/no-image.svg'">
           <div class="event-catalog-banner-scrim"></div>
           <div class="event-catalog-banner-top">
             <span style="background: rgba(2, 132, 199, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(dateStr)}</span>

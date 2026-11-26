@@ -85,12 +85,12 @@
       const favItems = favIds.map(id => catalog.find(c => c.id === id)).filter(Boolean);
 
       listEl.innerHTML = favItems.map(item => {
-        const fallbackImg = item.image || 'assets/hero-banner.jpg';
+        const fallbackImg = item.image || 'assets/no-image.svg';
         return `
           <div class="profile-pass-item" style="display: flex; flex-direction: column; justify-content: space-between;">
             <div>
               <div style="position: relative; border-radius: 8px; overflow: hidden; height: 160px; margin-bottom: 0.85rem;">
-                <img src="${fallbackImg}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/hero-banner.jpg'">
+                <img src="${fallbackImg}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/no-image.svg'">
                 <span class="portal-pill-badge blue" style="position: absolute; top: 10px; left: 10px; backdrop-filter: blur(4px);">${item.category || item.badge || 'Attraction'}</span>
               </div>
               <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">${item.title}</h4>

@@ -172,7 +172,7 @@
       if (!avatarUrl || avatarUrl.includes('photo-1544005313') || avatarUrl.includes('photo-153571387')) {
         avatarUrl = window.TourismHubStore && typeof TourismHubStore.generateInitialsAvatar === 'function'
           ? TourismHubStore.generateInitialsAvatar(user.name)
-          : (avatarUrl || 'assets/hero-banner.jpg');
+          : (avatarUrl || 'assets/no-image.svg');
       }
       const name = user.name || (isAdmin ? 'Operator' : 'Tourist');
       const email = user.email || '';

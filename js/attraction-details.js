@@ -141,12 +141,12 @@
       }
 
       gridEl.innerHTML = eventsList.map(ev => {
-        const img = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'images/hero_bg.png';
+        const img = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'assets/no-image.svg';
         const { schedule, time } = splitScheduleAndTime(ev);
         const eventUrl = `event-details.html?id=${encodeURIComponent(ev.id)}`;
         return `
               <article class="event-catalog-banner" onclick="window.location.href='${eventUrl}'" style="cursor: pointer;">
-                <img src="${esc(img)}" alt="${esc(ev.title)}" class="event-catalog-banner-img" onerror="this.src='images/hero_bg.png'">
+                <img src="${esc(img)}" alt="${esc(ev.title)}" class="event-catalog-banner-img" onerror="this.src='assets/no-image.svg'">
                 <div class="event-catalog-banner-scrim"></div>
                 <div class="event-catalog-banner-top">
                   <span style="background: rgba(2, 132, 199, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(schedule)}</span>
@@ -664,7 +664,7 @@
     const unitPrice = getActiveBookingUnitPrice();
     const admissionText = activeBookingTarget.admission || activeBookingTarget.priceLabel || '';
 
-    if (imgEl) imgEl.src = (Array.isArray(activeBookingTarget.images) && activeBookingTarget.images[0]) || activeBookingTarget.image || 'assets/hero-banner.jpg';
+    if (imgEl) imgEl.src = (Array.isArray(activeBookingTarget.images) && activeBookingTarget.images[0]) || activeBookingTarget.image || 'assets/no-image.svg';
     if (priceEl) priceEl.textContent = admissionText || (unitPrice > 0 ? `₱${unitPrice}` : 'Free (₱0)');
 
     recalculateBookingTotal();
@@ -885,13 +885,13 @@
       }
 
       dropdown.innerHTML = topMatches.map(item => {
-        const thumb = (item.images && item.images[0]) || item.image || 'images/hero_bg.png';
+        const thumb = (item.images && item.images[0]) || item.image || 'assets/no-image.svg';
         const title = item.title || item.name || 'Untitled';
         const isEvent = String(item.type || '').toLowerCase() === 'event';
         const badgeText = isEvent ? 'Event' : (item.category || 'Attraction');
         return `
           <a href="attraction-details.html?id=${encodeURIComponent(item.id)}" class="hero-search-result-item" role="option">
-            <img src="${thumb}" alt="${escHtml(title)}" class="hero-search-result-thumb" onerror="this.src='images/hero_bg.png'">
+            <img src="${thumb}" alt="${escHtml(title)}" class="hero-search-result-thumb" onerror="this.src='assets/no-image.svg'">
             <div class="hero-search-result-meta">
               <div class="hero-search-result-title">${escHtml(title)}</div>
               <div class="hero-search-result-sub">${escHtml(item.location || 'Philippines')}</div>
