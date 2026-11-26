@@ -3641,3 +3641,149 @@
     max-width: 100% !important;
   }
 }
+
+
+/* Hide lower page header subtext globally across portal pages */
+.portal-page-subtext {
+  display: none !important;
+}
+
+
+/* ==========================================================================
+   Center-Align Portal Page Title with Icon & Catalog Mode Switcher Tabs
+   ========================================================================== */
+.portal-title-group {
+  align-items: center !important;
+}
+
+.portal-page-heading {
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.catalog-mode-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  margin-bottom: 0.9rem;
+}
+
+.catalog-mode-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.48rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.catalog-mode-tab:hover {
+  color: var(--text-main);
+}
+
+.catalog-mode-tab.active {
+  background: var(--primary, #0284c7);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.28);
+}
+
+
+/* ==========================================================================
+   Hide Portal Page Title Icons Globally, Event Banners & Poster Backdrop
+   ========================================================================== */
+.portal-title-icon-box {
+  display: none !important;
+}
+
+.events-banner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.35rem;
+}
+
+@media (max-width: 820px) {
+  .events-banner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.event-catalog-banner {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  min-height: 270px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #0f172a;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.event-catalog-banner:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22);
+}
+
+.event-catalog-banner-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.event-catalog-banner:hover .event-catalog-banner-img {
+  transform: scale(1.04);
+}
+
+.event-catalog-banner-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.25) 0%, rgba(15, 23, 42, 0.45) 45%, rgba(15, 23, 42, 0.92) 100%);
+}
+
+.event-catalog-banner-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 1rem 1.15rem 0;
+  flex-wrap: wrap;
+}
+
+.event-catalog-banner-content {
+  position: relative;
+  z-index: 2;
+  padding: 1rem 1.15rem 1.15rem;
+  color: #ffffff;
+}
+
+.event-details-poster-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(5px) brightness(0.62) saturate(1.1);
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+body.has-event-poster-bg .portal-main-wrapper {
+  position: relative;
+  z-index: 1;
+}

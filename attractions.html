@@ -470,10 +470,6 @@
           </div>
           <div>
             <h1 class="portal-page-heading">Attractions &amp; Events</h1>
-            <p class="portal-page-subtext">
-              Manage resort amenities, attractions, and events. Keep your guests
-              informed and engaged.
-            </p>
           </div>
         </div>
       </div>
@@ -482,6 +478,12 @@
       <div class="attractions-portal-grid">
         <!-- Main Content Column -->
         <div class="attractions-main-col">
+          <!-- Catalog Mode Switcher Tabs -->
+          <div class="catalog-mode-tabs" role="tablist" aria-label="Browse Attractions or Events">
+            <a href="attractions.html" class="catalog-mode-tab active" role="tab" aria-selected="true">Attractions</a>
+            <a href="events-catalog.html" class="catalog-mode-tab" role="tab" aria-selected="false">Events</a>
+          </div>
+
           <!-- Simple Search Bar with Live Dropdown -->
           <div class="attractions-simple-search-bar" style="margin-bottom: 1rem;">
               <div class="portal-hero-search" style="max-width: 100%; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);">
@@ -501,24 +503,6 @@
 
           <!-- Filter Controls Bar -->
           <div class="portal-filter-bar">
-            <div class="portal-filter-tabs">
-              <button class="portal-filter-tab active" data-tab-cat="all">
-                All
-              </button>
-              <button class="portal-filter-tab" data-tab-cat="Historical Site">
-                Historical Site
-              </button>
-              <button class="portal-filter-tab" data-tab-cat="Tourist Spot">
-                Tourist Spot
-              </button>
-              <button class="portal-filter-tab" data-tab-cat="Park & Nature">
-                Park &amp; Nature
-              </button>
-              <button class="portal-filter-tab" data-tab-cat="Museum & Gallery">
-                Museum &amp; Gallery
-              </button>
-            </div>
-
             <div class="portal-dropdown-group">
               <select
                 class="portal-select"

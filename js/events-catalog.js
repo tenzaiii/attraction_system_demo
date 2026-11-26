@@ -84,42 +84,26 @@
       const booked = Number(ev.bookedCount) || 0;
       const fillPct = Math.min(100, Math.round((booked / Math.max(1, cap)) * 100));
 
+      const evUrl = `event-details.html?id=${encodeURIComponent(ev.id)}`;
       return `
-        <article class="attraction-card" style="display: flex; flex-direction: column;">
-          <a href="event-details.html?id=${encodeURIComponent(ev.id)}" style="text-decoration: none; color: inherit; display: block;">
-            <div class="card-image-wrap">
-              <img src="${thumb}" alt="${esc(ev.title)}" class="card-img" onerror="this.src='images/hero_bg.png'">
-              <span class="card-badge">${esc(dateStr)}</span>
-            </div>
-          </a>
-          <div class="card-body" style="display: flex; flex-direction: column; flex: 1;">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: var(--primary, #0284c7);">${esc(venue)}</span>
-              <span style="font-size: 0.75rem; font-weight: 700; color: #10b981;">${esc(admission)}</span>
-            </div>
-            <h3 class="card-title" style="margin-bottom: 0.35rem;">
-              <a href="event-details.html?id=${encodeURIComponent(ev.id)}" style="text-decoration: none; color: inherit;">${esc(ev.title)}</a>
-            </h3>
-            <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0 0 0.75rem; line-height: 1.45; flex: 1;">
-              ${esc((ev.description || 'Join this special scheduled tourism event.').slice(0, 110))}${(ev.description || '').length > 110 ? '...' : ''}
+        <article class="event-catalog-banner" onclick="window.location.href='${evUrl}'" style="cursor: pointer;">
+          <img src="${thumb}" alt="${esc(ev.title)}" class="event-catalog-banner-img" onerror="this.src='images/hero_bg.png'">
+          <div class="event-catalog-banner-scrim"></div>
+          <div class="event-catalog-banner-top">
+            <span style="background: rgba(2, 132, 199, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(dateStr)}</span>
+            <span style="background: rgba(16, 185, 129, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(admission)}</span>
+          </div>
+          <div class="event-catalog-banner-content">
+            <div style="font-size: 0.78rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.25rem;">${esc(venue)} &bull; ${esc(timeStr)}</div>
+            <h3 style="margin: 0 0 0.35rem; font-size: 1.2rem; font-weight: 800; line-height: 1.25; color: #ffffff;">${esc(ev.title)}</h3>
+            <p style="margin: 0 0 0.85rem; font-size: 0.82rem; color: rgba(255, 255, 255, 0.86); line-height: 1.45;">
+              ${esc((ev.description || 'Join this special scheduled tourism event.').slice(0, 105))}${(ev.description || '').length > 105 ? '...' : ''}
             </p>
-            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.6rem;">
-              <strong>Schedule:</strong> ${esc(timeStr)}
-            </div>
-            <div style="margin-bottom: 0.85rem;">
-              <div style="display: flex; justify-content: space-between; font-size: 0.74rem; color: var(--text-muted); margin-bottom: 0.25rem;">
-                <span>Capacity</span>
-                <span>${Math.max(0, cap - booked)} / ${cap} slots left</span>
-              </div>
-              <div style="height: 6px; background: var(--border); border-radius: 999px; overflow: hidden;">
-                <div style="height: 100%; width: ${fillPct}%; background: #0284c7; border-radius: 999px;"></div>
-              </div>
-            </div>
-            <div style="display: flex; gap: 0.5rem;">
-              <a href="event-details.html?id=${encodeURIComponent(ev.id)}" class="btn-primary-blue" style="flex: 1; justify-content: center; text-decoration: none; font-size: 0.82rem; padding: 0.55rem 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <a href="${evUrl}" onclick="event.stopPropagation();" class="btn-primary-blue" style="text-decoration: none; font-size: 0.8rem; padding: 0.5rem 1rem; border-radius: 999px;">
                 View Details
               </a>
-              ${ev.parentAttractionId ? `<button type="button" class="btn-outline-sm" onclick="window.addEventVenueToItinerary('${esc(ev.parentAttractionId)}', '${esc(ev.title)}')" title="Add host venue to My Itinerary">+ Itinerary</button>` : ''}
+              <button type="button" onclick="event.stopPropagation(); window.addEventVenueToItinerary('${esc(ev.id)}', '${esc(ev.title)}')" style="padding: 0.5rem 0.9rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); background: rgba(15,23,42,0.55); color: #ffffff; font-size: 0.8rem; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px);">+ Itinerary</button>
             </div>
           </div>
         </article>

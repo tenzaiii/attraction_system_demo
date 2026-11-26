@@ -1385,3 +1385,43 @@ document.addEventListener('DOMContentLoaded', () => {
   renderMyTickets();
 
 });
+
+
+/* ==========================================================================
+   Navbar Active Tab Switching & Scroll-Spy (Homepage)
+   ========================================================================== */
+(function initHomepageNavActiveState() {
+  const navLinks = Array.from(document.querySelectorAll('.nav-link[href^="#"]'));
+  if (!navLinks.length) return;
+
+  function setActiveLink(targetLink) {
+    navLinks.forEach(link => link.classList.toggle('active', link === targetLink));
+  }
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      setActiveLink(link);
+    });
+  });
+
+  const sections = navLinks
+    .map(link => {
+      const id = link.getAttribute('href').slice(1);
+      const el = id ? document.getElementById(id) : null;
+      return el ? { link, el } : null;
+    })
+    .filter(Boolean);
+
+  if (sections.length) {
+    window.addEventListener('scroll', () => {
+      const scrollPos = window.scrollY + 140;
+      let current = sections[0];
+      for (const item of sections) {
+        if (item.el.offsetTop <= scrollPos) {
+          current = item;
+        }
+      }
+      if (current) setActiveLink(current.link);
+    }, { passive: true });
+  }
+})();

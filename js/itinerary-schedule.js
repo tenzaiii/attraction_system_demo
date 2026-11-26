@@ -231,20 +231,51 @@ if (window.TourismHubStore && typeof TourismHubStore.onSync === 'function') {
 }
 let draggedItineraryIdx = null;
 
+function resolveItineraryStop(id, catalog, events) {
+  const attr = catalog.find(a => a.id === id);
+  if (attr) {
+    return {
+      id: attr.id,
+      title: attr.title || attr.name || 'Attraction',
+      mapTarget: attr.title || attr.name || 'Manila',
+      location: attr.location || 'Manila',
+      image: (attr.images && attr.images[0]) || attr.image || 'assets/no-image.svg',
+      isEvent: false
+    };
+  }
+  const ev = events.find(e => e.id === id);
+  if (ev) {
+    const parentAttr = ev.parentAttractionId ? catalog.find(a => a.id === ev.parentAttractionId) : null;
+    const venueName = (parentAttr && (parentAttr.title || parentAttr.name)) || ev.attractionTitle || ev.location || 'Manila';
+    const loc = (parentAttr && parentAttr.location) || ev.location || 'Manila';
+    return {
+      id: ev.id,
+      title: ev.title || 'Event',
+      mapTarget: venueName,
+      location: `${venueName} • ${loc}`,
+      mapLocation: loc,
+      image: (ev.images && ev.images[0]) || ev.image || (parentAttr && parentAttr.image) || 'assets/no-image.svg',
+      isEvent: true
+    };
+  }
+  return null;
+}
+
 window.openItineraryGoogleMaps = function () {
   if (!window.TourismHubStore) return;
   const itinIds = TourismHubStore.getItinerary ? TourismHubStore.getItinerary() : [];
   const catalog = TourismHubStore.getCatalog ? TourismHubStore.getCatalog() : [];
-  const stops = itinIds.map(id => catalog.find(a => a.id === id)).filter(Boolean);
+  const events = TourismHubStore.getEvents ? TourismHubStore.getEvents() : [];
+  const stops = itinIds.map(id => resolveItineraryStop(id, catalog, events)).filter(Boolean);
   if (stops.length === 0) return;
-  const waypoints = stops.map(s => encodeURIComponent(`${s.title}, ${s.location || 'Manila'}, Philippines`));
+  const waypoints = stops.map(s => encodeURIComponent(`${s.mapTarget}, ${s.mapLocation || s.location || 'Manila'}, Philippines`));
   const url = `https://www.google.com/maps/dir/${waypoints.join('/')}`;
   window.open(url, '_blank', 'noopener,noreferrer');
 };
 
-window.confirmClearItinerary = function () {
+window.confirmClearItinerary = async function () {
   if (!window.TourismHubStore || typeof TourismHubStore.clearItinerary !== 'function') return;
-  if (!confirm('Clear all stops from your itinerary?')) return;
+  if (!(await TourismHubDialog.confirm('Clear all stops from your itinerary?', { title: 'Clear Itinerary', confirmText: 'Clear All', danger: true }))) return;
   TourismHubStore.clearItinerary();
   renderCapacityItineraryTracker();
 };
@@ -285,15 +316,16 @@ function renderCapacityItineraryTracker() {
   if (progFill) progFill.style.width = `${pct}%`;
 
   const catalog = (typeof TourismHubStore.getCatalog === 'function') ? TourismHubStore.getCatalog() : [];
-  const resolvedStops = itinIds.map(id => catalog.find(a => a.id === id)).filter(Boolean);
+  const events = (typeof TourismHubStore.getEvents === 'function') ? TourismHubStore.getEvents() : [];
+  const resolvedStops = itinIds.map(id => resolveItineraryStop(id, catalog, events)).filter(Boolean);
   if (mapWrap && mapIframe && resolvedStops.length > 0) {
     let embedUrl = '';
     if (resolvedStops.length === 1) {
-      const q = encodeURIComponent(`${resolvedStops[0].title}, ${resolvedStops[0].location || 'Manila'}, Philippines`);
+      const q = encodeURIComponent(`${resolvedStops[0].mapTarget}, ${resolvedStops[0].mapLocation || resolvedStops[0].location || 'Manila'}, Philippines`);
       embedUrl = `https://maps.google.com/maps?q=${q}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
     } else {
-      const saddr = encodeURIComponent(`${resolvedStops[0].title}, ${resolvedStops[0].location || 'Manila'}, Philippines`);
-      const daddrParts = resolvedStops.slice(1).map(s => encodeURIComponent(`${s.title}, ${s.location || 'Manila'}, Philippines`));
+      const saddr = encodeURIComponent(`${resolvedStops[0].mapTarget}, ${resolvedStops[0].mapLocation || resolvedStops[0].location || 'Manila'}, Philippines`);
+      const daddrParts = resolvedStops.slice(1).map(s => encodeURIComponent(`${s.mapTarget}, ${s.mapLocation || s.location || 'Manila'}, Philippines`));
       embedUrl = `https://maps.google.com/maps?saddr=${saddr}&daddr=${daddrParts.join('+to:')}&output=embed`;
     }
     if (mapIframe.dataset.lastUrl !== embedUrl) {
@@ -303,7 +335,7 @@ function renderCapacityItineraryTracker() {
     mapWrap.style.display = 'block';
   }
   listEl.innerHTML = itinIds.map((id, idx) => {
-    const item = catalog.find(a => a.id === id);
+    const item = resolveItineraryStop(id, catalog, events);
     if (!item) return '';
     const img = item.image || 'assets/no-image.svg';
     const isVisited = visitedIds.includes(id);

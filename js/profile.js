@@ -144,7 +144,7 @@
 
     function saveSetting(key, val) {
       localStorage.setItem('tourismhub_setting_' + key, val);
-      alert('Preference updated successfully!');
+      TourismHubDialog.alert('Preference updated successfully!', { title: 'Settings Saved' });
     }
 
     const photoCropState = {
@@ -163,7 +163,7 @@
       if (window.showPortalToast) {
         window.showPortalToast(message, warning ? 'warning' : 'success');
       } else {
-        alert(message);
+        TourismHubDialog.alert(message, { title: warning ? 'Warning' : 'Notice' });
       }
     }
 
@@ -460,9 +460,9 @@
       }
 
       // QR Code Zoom & Download Helpers
-      window.cancelProfilePass = function (code) {
+      window.cancelProfilePass = async function (code) {
         if (!window.TourismHubStore || typeof TourismHubStore.cancelPass !== 'function') return;
-        if (!confirm(`Are you sure you want to cancel pass ${code}?`)) return;
+        if (!(await TourismHubDialog.confirm(`Are you sure you want to cancel pass ${code}?`, { title: 'Cancel Pass', confirmText: 'Cancel Pass', danger: true }))) return;
         const res = TourismHubStore.cancelPass(code);
         if (res && res.success) {
           if (typeof window.showPortalToast === 'function') window.showPortalToast(`Pass ${code} has been cancelled.`);
@@ -576,18 +576,16 @@
                 </div>
               </div>
 
-              <div style="display: flex; gap: 0.5rem;">
-                <button type="button" onclick="openQrZoomModal('${p.code}', '${safeAttr}', '${safeVisitor}')" style="flex: 1; padding: 0.6rem 0.75rem; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; font-weight: 700; font-size: 0.82rem; color: var(--text-main); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
-                  Zoom QR
-                </button>
-                ${(p.status !== 'cancelled' && p.status !== 'checked_in') ? `<button type="button" onclick="cancelProfilePass('${p.code}')" style="padding: 0.6rem 0.75rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; font-weight: 700; font-size: 0.82rem; color: #ef4444; cursor: pointer;">Cancel Pass</button>` : ''}
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              <div style="display: flex; gap: 0.5rem; align-items: stretch; width: 100%; box-sizing: border-box;">
+                <button type="button" onclick="openQrZoomModal('${p.code}', '${safeAttr}', '${safeVisitor}')" style="flex: 1; min-width: 0; padding: 0.55rem 0.65rem; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; font-weight: 700; font-size: 0.8rem; color: var(--text-main); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; white-space: nowrap;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
                   <span>Zoom QR</span>
                 </button>
-                <button type="button" onclick="downloadPassQr('${p.code}', '${safeAttr}')" class="btn-primary-blue" style="flex: 1; padding: 0.6rem 0.75rem; border: none; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <button type="button" onclick="downloadPassQr('${p.code}', '${safeAttr}')" class="btn-primary-blue" style="flex: 1; min-width: 0; padding: 0.55rem 0.65rem; border: none; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; white-space: nowrap;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   <span>Download QR</span>
                 </button>
+                ${(p.status !== 'cancelled' && p.status !== 'checked_in') ? `<button type="button" onclick="cancelProfilePass('${p.code}')" title="Cancel Pass" aria-label="Cancel Pass" style="flex: 0 0 38px; width: 38px; padding: 0; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; color: #ef4444; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>` : ''}
               </div>
             </div>
           `;

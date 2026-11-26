@@ -1522,7 +1522,7 @@ body {
    ========================================================================== */
 .dispatch-layout-grid {
   display: grid;
-  grid-template-columns: 1fr 1.35fr;
+  grid-template-columns: 1fr;
   gap: 2rem;
 }
 

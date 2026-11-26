@@ -106,6 +106,13 @@
               </div>
               <div class="portal-item-body">
                 <h3 class="portal-item-title" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View details">${item.title}</h3>
+                <div class="card-rating" style="margin: 0.25rem 0 0.5rem;">
+                  <svg class="star-icon" viewBox="0 0 24 24">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                  </svg>
+                  <span>${item.rating || '4.8'}</span>
+                  <span class="rating-count">(${item.reviews || '120'})</span>
+                </div>
                 <p class="portal-item-desc">${item.description || 'Explore verified visitor spots with real-time capacity monitoring.'}</p>
                 <div class="portal-item-meta-list">
                   <div class="portal-item-meta-row">
@@ -115,10 +122,6 @@
                   <div class="portal-item-meta-row">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     <span>${hoursStr}</span>
-                  </div>
-                  <div class="portal-item-meta-row">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    <span>Capacity: ${capText}${linkedEvents.length > 0 ? ` • ${linkedEvents.length} Event${linkedEvents.length > 1 ? 's' : ''}` : ''}</span>
                   </div>
                 </div>
               </div>

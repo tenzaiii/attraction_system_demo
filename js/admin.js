@@ -792,8 +792,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Delete attraction
-  window.deleteAttraction = function(id, name) {
-    if (confirm(`Are you sure you want to archive / delete "${name}" and any scheduled events inside it?`)) {
+  window.deleteAttraction = async function(id, name) {
+    if (await TourismHubDialog.confirm(`Are you sure you want to archive / delete "${name}" and any scheduled events inside it?`, { title: 'Delete Attraction', confirmText: 'Delete', danger: true })) {
       if (window.TourismHubStore) {
         TourismHubStore.deleteAttraction(id);
         catalogData = TourismHubStore.getCatalog();
@@ -1048,8 +1048,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateOverviewStats();
   });
 
-  window.deleteAdminEvent = function(id, title) {
-    if (confirm(`Delete scheduled event "${title}"?`)) {
+  window.deleteAdminEvent = async function(id, title) {
+    if (await TourismHubDialog.confirm(`Delete scheduled event "${title}"?`, { title: 'Delete Event', confirmText: 'Delete', danger: true })) {
       if (window.TourismHubStore) {
         TourismHubStore.deleteEvent(id);
         eventsData = TourismHubStore.getEvents();
@@ -1311,11 +1311,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Add new time-slot prompt
-  window.addSlotForAttraction = function(attrId) {
-    const timeStr = prompt('Enter new slot time (e.g. 05:00 PM - 07:00 PM):');
+  window.addSlotForAttraction = async function(attrId) {
+    const timeStr = await TourismHubDialog.prompt('Enter new slot time (e.g. 05:00 PM - 07:00 PM):', { title: 'Add Time Slot', placeholder: '05:00 PM - 07:00 PM', confirmText: 'Next' });
     if (!timeStr) return;
 
-    const maxLimit = parseInt(prompt('Enter maximum visitor capacity limit for this slot:', '120')) || 120;
+    const maxInput = await TourismHubDialog.prompt('Enter maximum visitor capacity limit for this slot:', { title: 'Slot Capacity Limit', defaultValue: '120', inputType: 'number', confirmText: 'Add Slot' });
+    if (maxInput === null) return;
+    const maxLimit = parseInt(maxInput, 10) || 120;
 
     if (!capacityScheduleData[attrId]) capacityScheduleData[attrId] = [];
     capacityScheduleData[attrId].push({
@@ -1332,12 +1334,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Adjust slot maximum limit
-  window.adjustSlotCapacity = function(attrId, slotId, currentBooked, currentMax) {
-    const newMax = prompt(`Update maximum allowable capacity limit (Current: ${currentMax}, Booked: ${currentBooked}):`, currentMax);
+  window.adjustSlotCapacity = async function(attrId, slotId, currentBooked, currentMax) {
+    const newMax = await TourismHubDialog.prompt(`Update maximum allowable capacity limit (Current: ${currentMax}, Booked: ${currentBooked}):`, { title: 'Update Capacity Limit', defaultValue: String(currentMax), inputType: 'number', confirmText: 'Update' });
     if (!newMax) return;
-    const maxVal = parseInt(newMax);
+    const maxVal = parseInt(newMax, 10);
     if (isNaN(maxVal) || maxVal < currentBooked) {
-      alert(`Invalid limit. New limit cannot be less than currently booked visitors (${currentBooked}).`);
+      await TourismHubDialog.alert(`Invalid limit. New limit cannot be less than currently booked visitors (${currentBooked}).`, { title: 'Invalid Capacity Limit' });
       return;
     }
 
@@ -1355,11 +1357,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Simulate a visitor entry
-  window.simulateWalkIn = function(attrId, slotId) {
+  window.simulateWalkIn = async function(attrId, slotId) {
     const slot = capacityScheduleData[attrId]?.find(s => s.id === slotId);
     if (!slot) return;
     if (slot.booked >= slot.max) {
-      alert('Cannot add entry. This time-slot is at maximum allowable capacity to prevent overcrowding.');
+      await TourismHubDialog.alert('Cannot add entry. This time-slot is at maximum allowable capacity to prevent overcrowding.', { title: 'Slot Full' });
       return;
     }
 
@@ -1500,7 +1502,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rawCode = (customCode || scanInput?.value || '').trim();
     const code = extractAdminPassCode(rawCode);
     if (!code) {
-      alert('Please enter or scan a valid QR Tourist Pass code.');
+      await TourismHubDialog.alert('Please enter or scan a valid QR Tourist Pass code.', { title: 'Invalid Pass Code' });
       return;
     }
 
@@ -1992,7 +1994,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const priority = document.querySelector('input[name="dispatchPriority"]:checked')?.value || 'normal';
 
     if (!title || !text) {
-      alert('Please fill out all required announcement fields.');
+      TourismHubDialog.alert('Please fill out all required announcement fields.', { title: 'Missing Fields' });
       return;
     }
 

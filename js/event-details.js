@@ -48,6 +48,13 @@
 
     const parentAttr = catalog.find(a => a.id === ev.parentAttractionId) || null;
     const banner = (ev.images && ev.images[0]) || ev.image || (parentAttr && parentAttr.image) || 'images/hero_bg.png';
+
+    // Apply full-page lightly blurred poster background
+    const posterBg = document.getElementById('eventDetailsPosterBg');
+    if (posterBg) {
+      posterBg.style.backgroundImage = `url('${banner.replace(/'/g, "\\'")}')`;
+      document.body.classList.add('has-event-poster-bg');
+    }
     const venueName = ev.attractionTitle || (parentAttr && (parentAttr.title || parentAttr.name)) || ev.location || 'Featured Venue';
     const locationStr = ev.location || (parentAttr && parentAttr.location) || 'Philippines';
     const admission = ev.admission || 'Free Entry';
@@ -106,7 +113,7 @@
                 Book Event Pass
               </button>
               <div style="display: flex; gap: 0.6rem;">
-                ${ev.parentAttractionId ? `<button type="button" class="btn-outline-sm" style="flex: 1; justify-content: center;" onclick="window.handleAddEventItinerary('${esc(ev.parentAttractionId)}', '${esc(ev.title)}')">+ Add to Itinerary</button>` : ''}
+                <button type="button" class="btn-outline-sm" style="flex: 1; justify-content: center;" onclick="window.handleAddEventItinerary('${esc(ev.id)}', '${esc(ev.title)}')">+ Add to Itinerary</button>
                 <button type="button" class="btn-outline-sm" style="flex: 1; justify-content: center;" onclick="window.handleShareEvent()">Share Event</button>
               </div>
             </div>
@@ -115,40 +122,173 @@
       </div>
     `;
 
-    // Related events
-    const related = events.filter(item => String(item.id) !== String(ev.id)).slice(0, 3);
+    // Related events (matching events-catalog banner cards)
+    const related = events.filter(item => String(item.id) !== String(ev.id)).slice(0, 4);
     const relSec = document.getElementById('relatedEventsSection');
     const relGrid = document.getElementById('relatedEventsGrid');
     if (relSec && relGrid && related.length) {
       relSec.style.display = 'block';
       relGrid.innerHTML = related.map(item => {
         const img = (item.images && item.images[0]) || item.image || 'images/hero_bg.png';
+        const itemDate = formatDate(item);
+        const itemAdm = item.admission || 'Free Entry';
+        const itemVenue = item.attractionTitle || item.location || 'Featured Venue';
+        const itemTime = item.operatingHours || 'All Day';
+        const itemUrl = `event-details.html?id=${encodeURIComponent(item.id)}`;
         return `
-          <article class="attraction-card">
-            <a href="event-details.html?id=${encodeURIComponent(item.id)}" style="text-decoration: none; color: inherit;">
-              <div class="card-image-wrap">
-                <img src="${img}" alt="${esc(item.title)}" class="card-img" onerror="this.src='images/hero_bg.png'">
-                <span class="card-badge">${esc(item.date || item.operatingHours || 'Event')}</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">${esc(item.title)}</h3>
-                <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0.25rem 0 0;">${esc(item.attractionTitle || item.location || 'Featured Venue')}</p>
-              </div>
-            </a>
+          <article class="event-catalog-banner" onclick="window.location.href='${itemUrl}'" style="cursor: pointer;">
+            <img src="${img}" alt="${esc(item.title)}" class="event-catalog-banner-img" onerror="this.src='images/hero_bg.png'">
+            <div class="event-catalog-banner-scrim"></div>
+            <div class="event-catalog-banner-top">
+              <span style="background: rgba(2, 132, 199, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(itemDate)}</span>
+              <span style="background: rgba(16, 185, 129, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(itemAdm)}</span>
+            </div>
+            <div class="event-catalog-banner-content">
+              <div style="font-size: 0.78rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.25rem;">${esc(itemVenue)} &bull; ${esc(itemTime)}</div>
+              <h3 style="margin: 0 0 0.65rem; font-size: 1.15rem; font-weight: 800; line-height: 1.25; color: #ffffff;">${esc(item.title)}</h3>
+              <a href="${itemUrl}" onclick="event.stopPropagation();" class="btn-primary-blue" style="text-decoration: none; font-size: 0.8rem; padding: 0.48rem 0.95rem; border-radius: 999px; display: inline-flex;">
+                View Details
+              </a>
+            </div>
           </article>
         `;
       }).join('');
     }
   }
 
-  window.handleBookEventPass = function (targetAttractionId) {
-    const isLoggedIn = Boolean(localStorage.getItem('tourismhub_temp_session') || localStorage.getItem('tourismhub_user'));
-    if (!isLoggedIn) {
+  let activeEventObj = null;
+
+  function parseEventTiers(admissionStr) {
+    const raw = String(admissionStr || 'Free Entry').trim();
+    const parts = raw.split('/').map(s => s.trim()).filter(Boolean);
+    const tiers = parts.map(part => {
+      const m = part.match(/(?:₱|PHP|P)\s*([\d,]+)/i);
+      const price = m ? parseInt(m[1].replace(/,/g, ''), 10) : 0;
+      const label = part.replace(/(?:₱|PHP|P)\s*[\d,]+/i, '').replace(/[-—:]+$/, '').trim() || (price > 0 ? 'Standard Ticket' : 'Free Entry');
+      return { label, price, display: price > 0 ? `${label} — ₱${price.toLocaleString()}` : `${label} — Free` };
+    });
+    return tiers.length ? tiers : [{ label: 'Free Entry', price: 0, display: 'Free Entry — Free' }];
+  }
+
+  function getActiveUser() {
+    if (window.TourismHubStore) {
+      const admin = typeof TourismHubStore.getAdminAuth === 'function' ? TourismHubStore.getAdminAuth() : null;
+      const client = typeof TourismHubStore.getClientAuth === 'function' ? TourismHubStore.getClientAuth() : null;
+      if (admin || client) return admin || client;
+    }
+    try {
+      const raw = localStorage.getItem('tourismhub_temp_admin_auth') || localStorage.getItem('tourismhub_temp_client_auth') || localStorage.getItem('tourismhub_temp_session') || localStorage.getItem('tourismhub_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  window.updateEventBookingTotal = function () {
+    const tierEl = document.getElementById('evBookTier');
+    const visitorsEl = document.getElementById('evBookVisitors');
+    const unitEl = document.getElementById('evBookUnitRate');
+    const totalEl = document.getElementById('evBookTotalPrice');
+    if (!tierEl || !visitorsEl || !unitEl || !totalEl) return;
+
+    const unitPrice = parseInt(tierEl.value, 10) || 0;
+    const qty = Math.max(1, parseInt(visitorsEl.value, 10) || 1);
+    const total = unitPrice * qty;
+
+    unitEl.textContent = unitPrice > 0 ? `₱${unitPrice.toLocaleString()}` : 'Free';
+    totalEl.textContent = total > 0 ? `₱${total.toLocaleString()}` : 'Free';
+  };
+
+  window.closeEventBookingModal = function () {
+    const modal = document.getElementById('eventBookingModal');
+    if (modal) {
+      modal.classList.remove('active');
+      modal.style.display = 'none';
+    }
+  };
+
+  window.handleBookEventPass = function () {
+    const user = getActiveUser();
+    if (!user) {
       const returnUrl = encodeURIComponent(window.location.pathname.split('/').pop() + window.location.search);
       window.location.href = `login.html?redirect=${returnUrl}`;
       return;
     }
-    window.location.href = `attraction-details.html?id=${encodeURIComponent(targetAttractionId)}`;
+
+    const events = (window.TourismHubStore && typeof TourismHubStore.getEvents === 'function')
+      ? TourismHubStore.getEvents()
+      : [];
+    const reqId = getRequestedEventId();
+    activeEventObj = events.find(e => String(e.id) === String(reqId)) || events[0];
+    if (!activeEventObj) return;
+
+    const ev = activeEventObj;
+    const modal = document.getElementById('eventBookingModal');
+    if (!modal) return;
+
+    const banner = (ev.images && ev.images[0]) || ev.image || 'images/hero_bg.png';
+    const cap = Number(ev.capacityPerSlot) || 100;
+    const booked = Number(ev.bookedCount) || 0;
+    const remaining = Math.max(0, cap - booked);
+    const fillPct = Math.min(100, Math.round((booked / Math.max(1, cap)) * 100));
+
+    document.getElementById('evBookModalTitle').textContent = `Book Tickets: ${ev.title || 'Event'}`;
+    document.getElementById('evBookPoster').src = banner;
+    document.getElementById('evBookDesc').textContent = ev.description || 'Reserve your verified digital QR pass for this event.';
+    document.getElementById('evBookDateText').textContent = formatDate(ev);
+    document.getElementById('evBookTimeText').textContent = ev.operatingHours || 'All Day';
+    document.getElementById('evBookLocationText').textContent = ev.location || ev.attractionTitle || 'Manila';
+    document.getElementById('evBookSlotsText').textContent = `${remaining} / ${cap} left`;
+    document.getElementById('evBookSlotsFill').style.width = `${fillPct}%`;
+
+    const tierEl = document.getElementById('evBookTier');
+    const tiers = parseEventTiers(ev.admission);
+    tierEl.innerHTML = tiers.map(t => `<option value="${t.price}" data-label="${esc(t.label)}">${esc(t.display)}</option>`).join('');
+
+    const dateEl = document.getElementById('evBookDate');
+    dateEl.value = ev.date || ev.eventDate || new Date().toISOString().slice(0, 10);
+    document.getElementById('evBookVisitors').value = 1;
+    document.getElementById('evBookGuestName').value = user.name || user.fullName || '';
+
+    window.updateEventBookingTotal();
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+  };
+
+  window.submitEventBookingForm = async function (e) {
+    e.preventDefault();
+    if (!activeEventObj) return;
+    const user = getActiveUser();
+    const tierEl = document.getElementById('evBookTier');
+    const selectedOpt = tierEl && tierEl.options[tierEl.selectedIndex];
+    const passType = (selectedOpt && selectedOpt.dataset.label) || 'Event Pass';
+    const validDate = document.getElementById('evBookDate').value;
+    const partySize = Math.max(1, parseInt(document.getElementById('evBookVisitors').value, 10) || 1);
+    const visitorName = document.getElementById('evBookGuestName').value.trim() || (user && user.name) || 'Tourist';
+
+    const passPayload = {
+      attractionId: activeEventObj.parentAttractionId || activeEventObj.id,
+      attraction: activeEventObj.title || 'Event Pass',
+      passType: passType,
+      visitorName: visitorName,
+      touristName: visitorName,
+      touristEmail: (user && user.email) || '',
+      validDate: validDate,
+      slot: activeEventObj.operatingHours || 'Event Access',
+      partySize: partySize
+    };
+
+    if (window.TourismHubStore && typeof TourismHubStore.bookPass === 'function') {
+      TourismHubStore.bookPass(passPayload);
+    }
+
+    window.closeEventBookingModal();
+    if (window.TourismHubDialog && typeof TourismHubDialog.alert === 'function') {
+      await TourismHubDialog.alert(`Your QR pass for "${activeEventObj.title}" (${partySize} guest${partySize > 1 ? 's' : ''}) has been generated and saved to your Profile!`, { title: 'Pass Confirmed', okText: 'View My Passes' });
+      window.location.href = 'profile.html#passes';
+    } else {
+      window.location.href = 'profile.html#passes';
+    }
   };
 
   window.handleAddEventItinerary = function (attractionId, title) {

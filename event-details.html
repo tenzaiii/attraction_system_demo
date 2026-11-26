@@ -102,10 +102,13 @@
     </div>
   </header>
 
+  <!-- Full-Page Poster Background -->
+  <div class="event-details-poster-bg" id="eventDetailsPosterBg" aria-hidden="true"></div>
+
   <!-- Main Content -->
   <main class="portal-main-wrapper">
     <div style="margin-bottom: 1rem;">
-      <a href="events-catalog.html" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.86rem; font-weight: 700; color: var(--primary, #0284c7); text-decoration: none;">
+      <a href="events-catalog.html" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.86rem; font-weight: 700; color: #ffffff; background: rgba(15, 23, 42, 0.6); padding: 0.4rem 0.85rem; border-radius: 999px; backdrop-filter: blur(6px); text-decoration: none;">
         &larr; Back to Upcoming Events
       </a>
     </div>
@@ -114,11 +117,80 @@
       <!-- Populated dynamically via js/event-details.js -->
     </div>
 
-    <section id="relatedEventsSection" style="margin-top: 2.25rem; display: none;">
-      <h2 class="schedule-section-heading" style="margin-bottom: 1rem;">More Upcoming Events</h2>
-      <div class="attractions-grid" id="relatedEventsGrid"></div>
+    <section id="relatedEventsSection" style="margin-top: 1.75rem; display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 1.5rem;">
+      <h2 class="schedule-section-heading" style="margin: 0 0 1rem;">More Upcoming Events</h2>
+      <div class="events-banner-grid" id="relatedEventsGrid"></div>
     </section>
   </main>
+
+  <!-- 2-Column Event Ticket Booking Modal -->
+  <div class="modal-overlay" id="eventBookingModal" role="dialog" aria-modal="true" style="display: none;">
+    <div class="modal-dialog" style="max-width: 780px; width: 94%; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); border-radius: 18px; overflow: hidden;">
+      <div class="modal-header" style="padding: 1.15rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="modal-title" id="evBookModalTitle" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">Book Tickets</h3>
+        <button type="button" class="modal-close" onclick="window.closeEventBookingModal()" aria-label="Close modal" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+      </div>
+      <form id="eventBookingForm" onsubmit="window.submitEventBookingForm(event)" style="padding: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <!-- Left Column: Event Poster, Description & Slot Availability -->
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          <div style="border-radius: 12px; overflow: hidden; height: 210px; background: #0f172a;">
+            <img id="evBookPoster" src="images/hero_bg.png" alt="Event Poster" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <p id="evBookDesc" style="margin: 0; font-size: 0.85rem; line-height: 1.55; color: var(--text-muted);"></p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; font-size: 0.82rem; color: var(--text-muted);">
+            <div><strong style="color: var(--text-main);">Schedule:</strong> <span id="evBookDateText"></span></div>
+            <div><strong style="color: var(--text-main);">Time:</strong> <span id="evBookTimeText"></span></div>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">
+            <strong style="color: var(--text-main);">Location:</strong> <span id="evBookLocationText"></span>
+          </div>
+          <div style="margin-top: 0.2rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.3rem;">
+              <span>Available Slots</span>
+              <span id="evBookSlotsText">0 / 0 left</span>
+            </div>
+            <div style="height: 6px; background: var(--border); border-radius: 999px; overflow: hidden;">
+              <div id="evBookSlotsFill" style="height: 100%; width: 0%; background: #0284c7; border-radius: 999px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Booking Form & Live Total -->
+        <div style="display: flex; flex-direction: column; gap: 0.9rem;">
+          <div>
+            <label for="evBookTier" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Ticket Fee Tier</label>
+            <select id="evBookTier" onchange="window.updateEventBookingTotal()" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-page); color: var(--text-main); font-family: inherit; font-size: 0.88rem;"></select>
+          </div>
+          <div>
+            <label for="evBookDate" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Visit Date</label>
+            <input type="date" id="evBookDate" required style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-page); color: var(--text-main); font-family: inherit; font-size: 0.88rem; box-sizing: border-box;">
+          </div>
+          <div>
+            <label for="evBookVisitors" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Number of Visitors</label>
+            <input type="number" id="evBookVisitors" min="1" max="20" value="1" required oninput="window.updateEventBookingTotal()" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-page); color: var(--text-main); font-family: inherit; font-size: 0.88rem; box-sizing: border-box;">
+          </div>
+          <div>
+            <label for="evBookGuestName" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Primary Guest Name</label>
+            <input type="text" id="evBookGuestName" required placeholder="Full Name" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-page); color: var(--text-main); font-family: inherit; font-size: 0.88rem; box-sizing: border-box;">
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 0.85rem; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+              <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Ticket Rate</div>
+              <div id="evBookUnitRate" style="font-size: 1.1rem; font-weight: 800; color: #0284c7;">Free</div>
+              <div style="font-size: 0.74rem; color: #10b981; margin-top: 0.15rem;">&#10003; Free cancellation up to 24h</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 0.76rem; color: var(--text-muted);">Total Price:</div>
+              <div id="evBookTotalPrice" style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">Free</div>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary-blue" style="width: 100%; justify-content: center; padding: 0.78rem 1rem; border-radius: 999px; font-weight: 800; font-size: 0.92rem;">
+            Confirm &amp; Generate Pass
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Supabase CDN Client & Config -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

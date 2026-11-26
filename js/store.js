@@ -2011,3 +2011,122 @@
   }
 
 })(window);
+
+
+/* ==========================================================================
+   Global On-Theme Modal Dialog Helper (Replaces native alert/confirm/prompt)
+   ========================================================================== */
+(function () {
+  if (window.TourismHubDialog) return;
+
+  function ensureDialogOverlay() {
+    let overlay = document.getElementById('tourismHubDialogOverlay');
+    if (overlay) return overlay;
+
+    overlay = document.createElement('div');
+    overlay.id = 'tourismHubDialogOverlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(15,23,42,0.62);backdrop-filter:blur(4px);';
+    overlay.innerHTML = `
+      <div id="thDialogBox" style="width:100%;max-width:420px;background:var(--bg-card,#ffffff);color:var(--text-main,#0f172a);border:1px solid var(--border,#e2e8f0);border-radius:16px;box-shadow:0 24px 48px rgba(0,0,0,0.28);overflow:hidden;font-family:inherit;">
+        <div style="padding:1.15rem 1.35rem 0.75rem;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;border-bottom:1px solid var(--border,#e2e8f0);">
+          <h3 id="thDialogTitle" style="margin:0;font-size:1.05rem;font-weight:800;color:var(--text-main,#0f172a);">Notice</h3>
+          <button type="button" id="thDialogCloseX" aria-label="Close" style="background:none;border:none;color:var(--text-muted,#64748b);font-size:1.4rem;line-height:1;cursor:pointer;padding:0.1rem 0.25rem;">&times;</button>
+        </div>
+        <div style="padding:1.15rem 1.35rem;">
+          <p id="thDialogMessage" style="margin:0;font-size:0.92rem;line-height:1.55;color:var(--text-muted,#475569);white-space:pre-line;"></p>
+          <input id="thDialogInput" type="text" style="display:none;width:100%;margin-top:0.9rem;padding:0.65rem 0.85rem;border:1px solid var(--border,#cbd5e1);border-radius:10px;background:var(--bg-page,#f8fafc);color:var(--text-main,#0f172a);font-family:inherit;font-size:0.92rem;box-sizing:border-box;" />
+        </div>
+        <div style="padding:0.85rem 1.35rem 1.15rem;display:flex;justify-content:flex-end;gap:0.6rem;">
+          <button type="button" id="thDialogCancelBtn" style="padding:0.55rem 1.05rem;border-radius:10px;border:1px solid var(--border,#cbd5e1);background:var(--bg-page,#f8fafc);color:var(--text-main,#0f172a);font-weight:700;font-size:0.86rem;cursor:pointer;font-family:inherit;">Cancel</button>
+          <button type="button" id="thDialogConfirmBtn" style="padding:0.55rem 1.15rem;border-radius:10px;border:none;background:#0284c7;color:#ffffff;font-weight:700;font-size:0.86rem;cursor:pointer;font-family:inherit;">OK</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function openDialog(mode, message, opts) {
+    const options = opts || {};
+    return new Promise((resolve) => {
+      const overlay = ensureDialogOverlay();
+      const titleEl = overlay.querySelector('#thDialogTitle');
+      const msgEl = overlay.querySelector('#thDialogMessage');
+      const inputEl = overlay.querySelector('#thDialogInput');
+      const cancelBtn = overlay.querySelector('#thDialogCancelBtn');
+      const confirmBtn = overlay.querySelector('#thDialogConfirmBtn');
+      const closeX = overlay.querySelector('#thDialogCloseX');
+
+      titleEl.textContent = options.title || (mode === 'confirm' ? 'Confirm Action' : mode === 'prompt' ? 'Enter Value' : 'Notice');
+      msgEl.textContent = String(message || '');
+
+      if (mode === 'prompt') {
+        inputEl.style.display = 'block';
+        inputEl.type = options.inputType || 'text';
+        inputEl.value = options.defaultValue !== undefined ? String(options.defaultValue) : '';
+        inputEl.placeholder = options.placeholder || '';
+      } else {
+        inputEl.style.display = 'none';
+        inputEl.value = '';
+      }
+
+      cancelBtn.style.display = mode === 'alert' ? 'none' : 'inline-flex';
+      cancelBtn.textContent = options.cancelText || 'Cancel';
+      confirmBtn.textContent = options.confirmText || (mode === 'alert' ? (options.okText || 'OK') : 'Confirm');
+      confirmBtn.style.background = options.danger ? '#ef4444' : '#0284c7';
+
+      let settled = false;
+      function cleanup(val) {
+        if (settled) return;
+        settled = true;
+        overlay.style.display = 'none';
+        document.removeEventListener('keydown', onKeyDown);
+        overlay.removeEventListener('click', onBackdropClick);
+        cancelBtn.onclick = null;
+        confirmBtn.onclick = null;
+        closeX.onclick = null;
+        resolve(val);
+      }
+
+      function onKeyDown(e) {
+        if (e.key === 'Escape') {
+          cleanup(mode === 'confirm' ? false : mode === 'prompt' ? null : undefined);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          cleanup(mode === 'confirm' ? true : mode === 'prompt' ? inputEl.value : undefined);
+        }
+      }
+
+      function onBackdropClick(e) {
+        if (e.target === overlay) {
+          cleanup(mode === 'confirm' ? false : mode === 'prompt' ? null : undefined);
+        }
+      }
+
+      cancelBtn.onclick = () => cleanup(mode === 'confirm' ? false : null);
+      closeX.onclick = () => cleanup(mode === 'confirm' ? false : mode === 'prompt' ? null : undefined);
+      confirmBtn.onclick = () => cleanup(mode === 'confirm' ? true : mode === 'prompt' ? inputEl.value : undefined);
+
+      overlay.style.display = 'flex';
+      document.addEventListener('keydown', onKeyDown);
+      overlay.addEventListener('click', onBackdropClick);
+
+      setTimeout(() => {
+        if (mode === 'prompt') {
+          inputEl.focus();
+          inputEl.select();
+        } else {
+          confirmBtn.focus();
+        }
+      }, 20);
+    });
+  }
+
+  window.TourismHubDialog = {
+    alert: (message, options) => openDialog('alert', message, options),
+    confirm: (message, options) => openDialog('confirm', message, options),
+    prompt: (message, options) => openDialog('prompt', message, options)
+  };
+})();

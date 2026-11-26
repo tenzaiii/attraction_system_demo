@@ -141,23 +141,23 @@
       }
 
       gridEl.innerHTML = eventsList.map(ev => {
-        const img = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'assets/no-image.svg';
+        const img = (Array.isArray(ev.images) && ev.images[0]) || ev.image || 'images/hero_bg.png';
         const { schedule, time } = splitScheduleAndTime(ev);
+        const eventUrl = `event-details.html?id=${encodeURIComponent(ev.id)}`;
         return `
-              <article class="event-clickable-card" onclick="openEventBookingModal('${esc(ev.id)}')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); transition: transform 0.2s ease, box-shadow 0.2s ease;">
-                <div style="position: relative; height: 150px; background: var(--bg-page); overflow: hidden;">
-                  <img src="${esc(img)}" alt="${esc(ev.title)}" onerror="this.src='assets/no-image.svg'" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                  <span style="position: absolute; top: 10px; left: 10px; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; background: var(--primary, #2563eb); color: #ffffff;">Event</span>
+              <article class="event-catalog-banner" onclick="window.location.href='${eventUrl}'" style="cursor: pointer;">
+                <img src="${esc(img)}" alt="${esc(ev.title)}" class="event-catalog-banner-img" onerror="this.src='images/hero_bg.png'">
+                <div class="event-catalog-banner-scrim"></div>
+                <div class="event-catalog-banner-top">
+                  <span style="background: rgba(2, 132, 199, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(schedule)}</span>
+                  <span style="background: rgba(16, 185, 129, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(ev.admission || 'Free Entry')}</span>
                 </div>
-                <div style="padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.45rem; flex: 1;">
-                  <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-main);">${esc(ev.title)}</h3>
-                  <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.45;">${esc(ev.description || 'Special scheduled event at this attraction.')}</p>
-                  <div style="margin-top: auto; padding-top: 0.65rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; color: var(--text-muted);">
-                    <div><strong>Schedule:</strong> ${esc(schedule)}</div>
-                    <div><strong>Time:</strong> ${esc(time)}</div>
-                    <div><strong>Location:</strong> ${esc(ev.location || 'Manila')}</div>
-                    <div><strong>Admission:</strong> ${esc(ev.admission || 'Free')} &bull; <strong>Slots:</strong> ${esc(ev.capacityPerSlot || 50)}</div>
-                    <button type="button" style="margin-top: 0.5rem; width: 100%; padding: 0.5rem 0.9rem; font-size: 0.82rem; font-weight: 700; border-radius: 8px; border: none; background: var(--primary, #2563eb); color: #ffffff; cursor: pointer;" onclick="event.stopPropagation(); openEventBookingModal('${esc(ev.id)}')">Book Tickets</button>
+                <div class="event-catalog-banner-content">
+                  <div style="font-size: 0.78rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.25rem;">${esc(ev.location || 'Featured Venue')} &bull; ${esc(time)}</div>
+                  <h3 style="margin: 0 0 0.35rem; font-size: 1.15rem; font-weight: 800; line-height: 1.25; color: #ffffff;">${esc(ev.title)}</h3>
+                  <p style="margin: 0 0 0.8rem; font-size: 0.82rem; color: rgba(255, 255, 255, 0.86); line-height: 1.45;">${esc((ev.description || 'Special scheduled event at this attraction.').slice(0, 100))}${(ev.description || '').length > 100 ? '...' : ''}</p>
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <a href="${eventUrl}" onclick="event.stopPropagation();" class="btn-primary-blue" style="text-decoration: none; font-size: 0.8rem; padding: 0.48rem 0.95rem; border-radius: 999px;">View Event Details</a>
                   </div>
                 </div>
               </article>
