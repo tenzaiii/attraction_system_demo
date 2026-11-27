@@ -149,7 +149,7 @@
 
         <!-- 4. QR Scanner -->
         <li class="sidebar-menu-item">
-          <a href="scanner.html" class="sidebar-menu-link" data-nav="scanner" title="QR Scanner">
+          <a href="passes.html" class="sidebar-menu-link" data-nav="passes" title="My QR Passes">
             <span class="sidebar-item-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
                 stroke-linejoin="round">
@@ -160,7 +160,7 @@
                 <line x1="4" y1="12" x2="20" y2="12"></line>
               </svg>
             </span>
-            <span class="sidebar-item-text">QR Scanner</span>
+            <span class="sidebar-item-text">My QR Passes</span>
           </a>
         </li>
 
@@ -313,7 +313,7 @@
             <div class="settings-group-card">
               <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">Account Profile Metadata</h3>
               
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem;">
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
                 <div style="padding: 0.65rem 0;">
                   <small style="color: var(--text-muted);">Registered Name</small>
                   <div style="font-weight: 700; color: var(--text-main);" id="accName">Maria Santos</div>
@@ -325,6 +325,20 @@
                 <div style="padding: 0.65rem 0;">
                   <small style="color: var(--text-muted);">City</small>
                   <div style="font-weight: 700; color: var(--text-main);" id="accCity">Manila</div>
+                </div>
+                <div style="padding: 0.65rem 0;">
+                  <small style="color: var(--text-muted);">Digital ID</small>
+                  <div style="font-weight: 700; color: var(--primary, #0284c7); font-family: monospace; letter-spacing: 0.03em;" id="accDigitalId">TH-00000000</div>
+                </div>
+                <div style="padding: 0.65rem 0;">
+                  <small style="color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Travel Style</small>
+                  <select id="accTravelStyle" aria-label="Travel Style" style="width: 100%; max-width: 240px; padding: 0.42rem 0.65rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-page); color: var(--text-main); font-weight: 700; font-size: 0.88rem; font-family: inherit;">
+                    <option value="Heritage & Culture">Heritage &amp; Culture</option>
+                    <option value="Nature & Parks">Nature &amp; Parks</option>
+                    <option value="Art & Museums">Art &amp; Museums</option>
+                    <option value="Festivals & Events">Festivals &amp; Events</option>
+                    <option value="Family Explorer">Family Explorer</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -464,7 +478,7 @@
           <h4 class="footer-column-title">Account &amp; Tools</h4>
           <ul class="footer-links-list">
             <li class="footer-link-item"><a href="profile.html">My Profile &amp; Passes</a></li>
-            <li class="footer-link-item"><a href="scanner.html">QR Pass Scanner</a></li>
+            <li class="footer-link-item"><a href="passes.html">My QR Passes</a></li>
             <li class="footer-link-item"><a href="notifications.html">Public Advisories</a></li>
             <li class="footer-link-item"><a href="login.html">Sign In / Register</a></li>
           </ul>
@@ -480,7 +494,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>© 2026 TourismHub. All rights reserved.</p>
+        <p>ï¿½ 2026 TourismHub. All rights reserved.</p>
       </div>
 
     </div>

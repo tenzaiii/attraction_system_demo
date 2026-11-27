@@ -3977,9 +3977,12 @@ body {
 }
 
 .navbar .nav-container {
-  padding-left: clamp(0.75rem, 3vw, 2rem);
-  padding-right: clamp(0.75rem, 3vw, 2rem);
-  gap: clamp(0.45rem, 1.5vw, 1.25rem);
+  max-width: 100% !important;
+  width: 100%;
+  margin: 0;
+  padding-left: clamp(0.75rem, 3vw, 1.75rem);
+  padding-right: clamp(0.75rem, 3vw, 1.75rem);
+  gap: clamp(0.5rem, 2vw, 1.5rem);
 }
 
 .brand-logo {
@@ -4287,4 +4290,39 @@ html[data-auth="client"] #userProfileBtn {
 
 html[data-auth="admin"] .admin-only-feature {
   display: inline-flex !important;
+}
+
+
+/* ==========================================================================
+   Homepage Navbar Color & Padding Parity with Portal Topbar (.portal-topbar)
+   ========================================================================== */
+.navbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--border) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+[data-theme="dark"] .navbar {
+  background-color: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text-main) !important;
+}
+
+.navbar .nav-container {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: clamp(0.65rem, 2vw, 1rem) clamp(0.75rem, 3vw, 1.75rem) !important;
+  gap: clamp(0.5rem, 2vw, 1.5rem) !important;
+}
+
+@media (max-width: 520px) {
+  .navbar .nav-container {
+    gap: 0.4rem !important;
+    padding: 0.55rem 0.65rem !important;
+  }
 }

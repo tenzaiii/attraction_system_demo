@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TourismHub My QR Passes - View, enlarge, download, and manage all your digital QR attraction and event passes.">
+  <title>My QR Passes — TourismHub Portal</title>
+
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'%3E%3Cpolygon points='12,2 24,28 0,28' fill='%2310b981'/%3E%3Cpolygon points='26,8 38,28 14,28' fill='%230284c7'/%3E%3C/svg%3E">
+
+  <script>
+    if (localStorage.getItem('tourismhub_theme') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.documentElement.style.backgroundColor = '#0b1120'; document.documentElement.style.colorScheme = 'dark'; } try { var _a = localStorage.getItem('tourismhub_temp_admin_auth'); var _c = localStorage.getItem('tourismhub_temp_client_auth'); document.documentElement.setAttribute('data-auth', (_a && _a !== 'null') ? 'admin' : (_c && _c !== 'null') ? 'client' : 'guest'); } catch(e) {}
+  </script>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/portal-pages.css">
+  <link rel="stylesheet" href="css/dark-overrides.css">
+</head>
+
+<body>
+
+  <!-- Collapsible Side Navigation Bar -->
+  <aside class="side-navigation" id="sideNav" aria-label="Portal Navigation">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <svg class="sidebar-logo-icon" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <polygon points="12,4 23,32 1,32" fill="#10B981" />
+          <polygon points="28,10 41,32 15,32" fill="#0284C7" />
+          <polygon points="12,4 16,13 8,13" fill="#ffffff" />
+          <polygon points="28,10 32,18 24,18" fill="#ffffff" />
+        </svg>
+        <span class="sidebar-logo-text">TourismHub</span>
+      </a>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Collapse Sidebar" title="Collapse / Expand Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-menu-wrapper" aria-label="Sidebar Menu">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="index.html" class="sidebar-menu-link" data-nav="dashboard" title="Home"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg></span><span class="sidebar-item-text">Home</span></a></li>
+        <li class="sidebar-menu-item"><a href="attractions.html" class="sidebar-menu-link" data-nav="attractions" title="Attractions & Events"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 10h3v7H4zM10.5 5h3v12h-3zm6.5 7h3v5h-3zM2 22h20v-2H2v2zM12 1L2 6v2h20V6L12 1z" /></svg></span><span class="sidebar-item-text">Attractions & Events</span></a></li>
+        <li class="sidebar-menu-item"><a href="capacity.html" class="sidebar-menu-link" data-nav="capacity" title="Itinerary & Schedule"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span><span class="sidebar-item-text">Itinerary & Schedule</span></a></li>
+        <li class="sidebar-menu-item"><a href="passes.html" class="sidebar-menu-link active" data-nav="passes" title="My QR Passes"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3"></path><path d="M16 4h3a1 1 0 0 1 1 1v3"></path><path d="M20 16v3a1 1 0 0 1-1 1h-3"></path><path d="M8 20H5a1 1 0 0 1-1-1v-3"></path><line x1="4" y1="12" x2="20" y2="12"></line></svg></span><span class="sidebar-item-text">My QR Passes</span></a></li>
+        <li class="sidebar-menu-item"><a href="notifications.html" class="sidebar-menu-link" data-nav="notifications" title="Notifications"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" /></svg></span><span class="sidebar-item-text">Notifications</span><span class="sidebar-item-badge-dot"></span></a></li>
+        <li class="sidebar-menu-item"><a href="profile.html" class="sidebar-menu-link" data-nav="profile" title="My Profile & Passes"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span><span class="sidebar-item-text">Profile</span></a></li>
+        <li class="sidebar-menu-item"><a href="about.html" class="sidebar-menu-link" data-nav="about" title="About TourismHub"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></span><span class="sidebar-item-text">About</span></a></li>
+        <li class="sidebar-menu-item admin-only-feature" style="display: none;"><a href="admin.html" class="sidebar-menu-link" data-nav="admin-dashboard" title="Admin Operator Dashboard"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></span><span class="sidebar-item-text">Admin Dashboard</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Top Header Bar -->
+  <header class="portal-topbar">
+    <div class="portal-topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Open Sidebar Navigation">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <a href="index.html" class="brand-logo" aria-label="TourismHub Home" style="text-decoration: none;">
+        <svg class="brand-icon-svg" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <polygon points="12,4 23,32 1,32" fill="#10B981" />
+          <polygon points="28,10 41,32 15,32" fill="#0284C7" />
+        </svg>
+        <span>TourismHub</span>
+      </a>
+    </div>
+
+    <div class="portal-topbar-right">
+      <a href="admin.html" class="nav-admin-dashboard-btn admin-only-feature" style="display: none;" title="Admin Operator Dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+      </a>
+      <button class="portal-notif-btn topbar-theme-toggle-btn" id="globalDarkModeBtn" onclick="toggleGlobalTheme()" aria-label="Toggle Theme" title="Toggle Theme">
+        <svg class="theme-btn-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="theme-btn-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a href="notifications.html" class="portal-notif-btn" aria-label="Notifications" title="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span class="sidebar-item-badge-dot" style="position: absolute; top: 8px; right: 8px;"></span>
+      </a>
+      <div class="user-profile-wrapper">
+        <div class="portal-user-profile" id="userProfileBtn" title="Account / Options" style="display: none; cursor: pointer;">
+          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'128'%20height%3D'128'%20viewBox%3D'0%200%20128%20128'%3E%3Crect%20width%3D'128'%20height%3D'128'%20rx%3D'64'%20fill%3D'%230284c7'%2F%3E%3Ctext%20x%3D'64'%20y%3D'73'%20font-family%3D'sans-serif'%20font-size%3D'44'%20font-weight%3D'500'%20fill%3D'%23ffffff'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%3EU%3C%2Ftext%3E%3C%2Fsvg%3E"
+            alt="Tourist Profile" class="portal-avatar-img" style="background: var(--bg-subtle);">
+        </div>
+      </div>
+      <a href="login.html" class="auth-signin-link" id="navSignInLink" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.84rem; font-weight: 600; color: #0284c7; text-decoration: none; padding: 0.42rem 0.85rem; border: 1.5px solid #0284c7; border-radius: 9999px; transition: all 0.2s;" title="Tourist Portal Sign In & Registration">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>Sign In</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="portal-main-wrapper">
+    <div class="portal-section-header">
+      <div class="portal-title-group">
+        <div>
+          <h1 class="portal-page-heading">My QR Passes</h1>
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a href="events-catalog.html" class="btn-primary-blue" style="text-decoration: none; font-size: 0.84rem; padding: 0.55rem 1rem; border-radius: 999px;">+ Book Event Pass</a>
+      </div>
+    </div>
+
+    <!-- Status Filter Tabs -->
+    <div class="catalog-mode-tabs" id="passesStatusTabs" role="tablist" aria-label="Filter QR passes by status" style="margin-bottom: 1.25rem;">
+      <button type="button" class="catalog-mode-tab active" data-pass-status="all" style="border: none; background: transparent; cursor: pointer;">All (<span id="countAllPasses">0</span>)</button>
+      <button type="button" class="catalog-mode-tab" data-pass-status="valid" style="border: none; background: transparent; cursor: pointer;">Valid</button>
+      <button type="button" class="catalog-mode-tab" data-pass-status="checked_in" style="border: none; background: transparent; cursor: pointer;">Checked In</button>
+      <button type="button" class="catalog-mode-tab" data-pass-status="cancelled" style="border: none; background: transparent; cursor: pointer;">Cancelled</button>
+    </div>
+
+    <!-- Passes Grid -->
+    <div id="myQrPassesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem;">
+      <!-- Populated dynamically via js/passes.js -->
+    </div>
+  </main>
+
+  <!-- QR Code Zoom Modal -->
+  <div class="modal-overlay" id="qrZoomModal" role="dialog" aria-modal="true" style="display: none;">
+    <div class="modal-dialog" style="max-width: 380px; width: 92%; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; text-align: center;">
+      <div class="modal-header" style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="modal-title" id="zoomModalTitle" style="margin: 0; font-size: 1rem; font-weight: 800;">Digital QR Pass</h3>
+        <button type="button" class="modal-close" onclick="window.closeQrZoomModal()" aria-label="Close" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+      </div>
+      <div style="padding: 1.5rem;">
+        <div style="background: #ffffff; padding: 14px; border-radius: 12px; display: inline-block; border: 1px solid var(--border); margin-bottom: 1rem;">
+          <img id="zoomModalQrImg" src="" alt="Enlarged QR Code" width="220" height="220" style="display: block;" />
+        </div>
+        <div id="zoomModalCode" style="font-size: 1.15rem; font-weight: 800; color: var(--primary, #0284c7); letter-spacing: 0.05em;"></div>
+        <div id="zoomModalVisitor" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo">
+            <svg class="brand-icon-svg" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <polygon points="12,4 23,32 1,32" fill="#10B981" />
+              <polygon points="28,10 41,32 15,32" fill="#0284C7" />
+            </svg>
+            <span>TourismHub</span>
+          </a>
+          <p class="footer-desc">Discover attractions, browse upcoming events, build your trip itinerary, and manage digital QR passes.</p>
+        </div>
+        <div class="footer-column">
+          <h4 class="footer-column-title">Explore</h4>
+          <ul class="footer-links-list">
+            <li class="footer-link-item"><a href="attractions.html">Attractions</a></li>
+            <li class="footer-link-item"><a href="events-catalog.html">Upcoming Events</a></li>
+            <li class="footer-link-item"><a href="events.html">Events Calendar</a></li>
+            <li class="footer-link-item"><a href="capacity.html">My Itinerary</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4 class="footer-column-title">Account &amp; Tools</h4>
+          <ul class="footer-links-list">
+            <li class="footer-link-item"><a href="profile.html">My Profile &amp; Passes</a></li>
+            <li class="footer-link-item"><a href="passes.html">My QR Passes</a></li>
+            <li class="footer-link-item"><a href="notifications.html">Public Advisories</a></li>
+            <li class="footer-link-item"><a href="login.html">Sign In / Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4 class="footer-column-title">Information</h4>
+          <ul class="footer-links-list">
+            <li class="footer-link-item"><a href="about.html">About TourismHub</a></li>
+            <li class="footer-link-item"><a href="index.html#faq">Frequently Asked Questions</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 TourismHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/profile-dropdown.js"></script>
+  <script src="js/portal-sync.js"></script>
+  <script src="js/passes.js"></script>
+</body>
+
+</html>

@@ -429,6 +429,25 @@
       const heroCountryEl = document.getElementById('heroCountry');
       if (heroCountryEl) heroCountryEl.textContent = user.city || 'Manila';
 
+      const digitalIdEl = document.getElementById('accDigitalId');
+      if (digitalIdEl) {
+        const rawId = String(user.id || user.email || 'TOURIST').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        digitalIdEl.textContent = `TH-${rawId.slice(0, 8).padEnd(8, '0')}`;
+      }
+
+      const travelStyleEl = document.getElementById('accTravelStyle');
+      if (travelStyleEl) {
+        const styleKey = `tourismhub_travel_style_${user.email || user.id || 'guest'}`;
+        const savedStyle = localStorage.getItem(styleKey) || user.travelStyle || 'Heritage & Culture';
+        travelStyleEl.value = savedStyle;
+        travelStyleEl.addEventListener('change', () => {
+          localStorage.setItem(styleKey, travelStyleEl.value);
+          if (typeof window.showPortalToast === 'function') {
+            window.showPortalToast(`Travel Style updated to ${travelStyleEl.value}`);
+          }
+        });
+      }
+
       // Populate System Version in Settings Tab
       const versionBadgeEl = document.getElementById('settingsSystemVersionBadge');
       if (versionBadgeEl && typeof TourismHubStore.getSystemVersion === 'function') {
