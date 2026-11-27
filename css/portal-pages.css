@@ -3809,3 +3809,15 @@ html[data-auth="admin"] .admin-only-feature {
 html[data-auth="admin"] li.admin-only-feature {
   display: list-item !important;
 }
+
+
+/* Ensure site-footer sits cleanly above poster backgrounds & clears floating bottom nav */
+.site-footer {
+  position: relative;
+  z-index: 2;
+  margin-top: 2.5rem;
+}
+
+body:has(.itinerary-bottom-nav) .site-footer {
+  padding-bottom: 5.5rem;
+}
