@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
       <article class="catalog-item-card" data-id="${item.id}">
         <div class="catalog-media-header">
-          <img src="${itemImg}" alt="${item.title}" class="catalog-img" onerror="this.src='assets/no-image.svg'">
+          <img src="${itemImg}" alt="${item.title}" class="catalog-img" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
           <span class="catalog-status-badge ${item.status}">${item.status}</span>
           <span class="catalog-category-tag">${item.category}</span>
         </div>
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = photosArr[0];
     grid.innerHTML = `
       <div style="position: relative; border-radius: 8px; overflow: hidden; height: 84px; border: 1.5px solid #0284c7; background: #0f172a;" title="Primary Cover Photo">
-        <img src="${url}" alt="Cover Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/no-image.svg'">
+        <img src="${url}" alt="Cover Preview" style="width: 100%; height: 100%; object-fit: cover;" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
         <span style="position: absolute; bottom: 2px; left: 2px; right: 2px; background: rgba(2, 132, 199, 0.95); color: #fff; font-size: 0.62rem; font-weight: 700; text-align: center; border-radius: 4px; padding: 1px;">Cover</span>
         <button type="button" onclick="${removeFnName}()" title="Remove photo" style="position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.7); color: #fff; border: none; font-size: 14px; font-weight: 700; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
       </div>
@@ -762,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
       <article class="catalog-item-card" data-id="${ev.id}">
         <div class="catalog-media-header">
-          <img src="${evImg}" alt="${ev.title}" class="catalog-img" onerror="this.src='assets/no-image.svg'">
+          <img src="${evImg}" alt="${ev.title}" class="catalog-img" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
           <span class="catalog-status-badge active">event</span>
           <span class="catalog-category-tag">${parentName}</span>
         </div>

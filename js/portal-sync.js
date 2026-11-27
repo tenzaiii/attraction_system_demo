@@ -62,6 +62,24 @@
         }
       }
 
+      // Populate area / location filter dropdown dynamically
+      const areaSelect = document.getElementById('areaSelect');
+      if (areaSelect) {
+        const curVal = areaSelect.value;
+        const locationsSet = new Set();
+        catalog.forEach(item => {
+          if (item.location) {
+            const parts = String(item.location).split(',').map(s => s.trim());
+            parts.forEach(p => { if (p && p.length > 2) locationsSet.add(p); });
+          }
+        });
+        const sortedLocs = Array.from(locationsSet).sort();
+        areaSelect.innerHTML = `<option value="all">All Locations</option>` + sortedLocs.map(loc => `<option value="${loc}">${loc}</option>`).join('');
+        if (curVal && (curVal === 'all' || sortedLocs.includes(curVal))) {
+          areaSelect.value = curVal;
+        }
+      }
+
       // Render Attractions Grid
       if (catalog.length === 0) {
         grid.innerHTML = `
@@ -94,7 +112,7 @@
           return `
             <article class="portal-item-card" data-id="${item.id}" data-type="${item.type || 'spot'}" data-category="${item.category || 'Tourist Spot'}" data-area="${locationStr}" data-title="${item.title}" data-capacity="${capSortVal}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
               <div class="portal-item-media image-preload-wrapper" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
-                <img src="${fallbackImg}" alt="${item.title}" class="is-preloading" loading="lazy" onload="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded');" onerror="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded'); this.src='assets/no-image.svg';">
+                <img src="${fallbackImg}" alt="${item.title}" class="is-preloading" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded');" onerror="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded'); this.src='assets/no-image.svg';">
                 <button class="portal-card-wishlist-btn ${isFav ? 'saved' : ''}" 
                         title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
                         onclick="event.stopPropagation(); togglePortalFavorite('${item.id}', '${item.title.replace(/'/g, "\\'")}', this, event)">
@@ -144,7 +162,7 @@
             const parentName = ev.attractionTitle || 'Attraction Event';
             return `
               <div class="upcoming-event-item" style="cursor: pointer;" onclick="window.location.href='attraction-details.html?id=${encodeURIComponent(targetId)}'" title="View ${parentName} & event details">
-                <img src="${(ev.image && !String(ev.image).includes('images.unsplash.com/photo-')) ? ev.image : 'assets/no-image.svg'}" alt="${ev.title}" loading="lazy" decoding="async" class="upcoming-event-img" onerror="this.src='assets/no-image.svg'">
+                <img src="${(ev.image && !String(ev.image).includes('images.unsplash.com/photo-')) ? ev.image : 'assets/no-image.svg'}" alt="${ev.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="upcoming-event-img" onerror="this.src='assets/no-image.svg'">
                 <div class="upcoming-event-details">
                   <span class="upcoming-event-name">${ev.title}</span>
                   <span class="upcoming-event-time">

@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     attractionsGrid.innerHTML = displayList.map(item => `
       <article class="attraction-card" data-id="${item.id}" style="cursor: pointer;" onclick="if (!event.target.closest('button') && !event.target.closest('a')) window.location.href='attraction-details.html?id=${item.id}'">
         <div class="card-media-wrapper image-preload-wrapper" onclick="window.location.href='attraction-details.html?id=${item.id}'" style="cursor: pointer;" title="View ${item.title} details">
-          <img src="${(item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg'}" alt="${item.title}" class="card-image is-preloading" loading="lazy" onload="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded');" onerror="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded'); this.src='assets/no-image.svg';">
+          <img src="${(item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg'}" alt="${item.title}" class="card-image is-preloading" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded');" onerror="this.classList.remove('is-preloading'); this.classList.add('is-loaded'); this.parentElement.classList.add('img-loaded'); this.src='assets/no-image.svg';">
           <span class="card-badge-floating">${item.badge || 'Featured'}</span>
           <button class="card-wishlist-btn ${savedAttractions.has(item.id) ? 'saved' : ''}" 
                   aria-label="Save ${item.title}" 
@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       return `
         <article class="event-banner-slide ${isActive ? 'active' : ''}" data-slide-index="${idx}" data-event-id="${esc(ev.id)}" aria-hidden="${isActive ? 'false' : 'true'}">
-          <img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="event-banner-bg" onerror="this.src='assets/no-image.svg'">
+          <img src="${esc(safeImg)}" alt="${esc(ev.title)}" class="event-banner-bg" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
           <div class="event-banner-overlay"></div>
           <div class="event-banner-content">
             <div class="event-banner-meta-row">
@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = (item.image && !String(item.image).includes('images.unsplash.com/photo-')) ? item.image : 'assets/no-image.svg';
         return `
           <a href="attraction-details.html?id=${encodeURIComponent(item._targetId)}" class="hero-search-result-item" role="option">
-            <img src="${img}" alt="${item.title}" class="hero-search-result-thumb" onerror="this.src='assets/no-image.svg'">
+            <img src="${img}" alt="${item.title}" class="hero-search-result-thumb" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
             <div style="min-width: 0;">
               <div style="font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</div>
               <div class="hero-search-result-meta">${item.location || 'Manila'} &bull; ${item.category || item._kind}</div>
@@ -900,6 +900,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalImg) {
       modalImg.src = (itemImg && !String(itemImg).includes('images.unsplash.com/photo-')) ? itemImg : 'assets/no-image.svg';
       modalImg.onerror = function () { this.src = 'assets/no-image.svg'; };
+      modalImg.referrerPolicy = 'no-referrer';
     }
     if (modalPrice) modalPrice.textContent = attraction.admission || attraction.priceLabel || (numericPrice > 0 ? `₱${numericPrice}` : 'Free (₱0)');
     if (bookingAttractionInput) bookingAttractionInput.value = attraction.id;

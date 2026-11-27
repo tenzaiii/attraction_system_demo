@@ -85,6 +85,25 @@
     },
 
     /**
+     * Fetch all registered profiles from Supabase `profiles` table
+     */
+    async fetchProfiles() {
+      if (!supabaseClient) return null;
+      try {
+        const { data, error } = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+        return Array.isArray(data) ? data : [];
+      } catch (err) {
+        console.warn('⚠️ [Supabase] Failed to fetch profiles:', err.message);
+        return null;
+      }
+    },
+
+    /**
      * Authenticate user credentials against Supabase `profiles` table
      */
     async loginUser(email, password) {

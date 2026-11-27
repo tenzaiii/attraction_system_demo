@@ -1470,7 +1470,7 @@
             cat === "all" ||
             cardCat === cat.toLowerCase() ||
             cardType === cat.toLowerCase();
-          const matchesArea = area === "all" || cardArea === area.toLowerCase();
+          const matchesArea = area === "all" || cardArea === area.toLowerCase() || cardArea.includes(area.toLowerCase());
 
           card.style.display =
             matchesQuery && matchesTab && matchesCat && matchesArea

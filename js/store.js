@@ -131,11 +131,15 @@
   }
 
   function normalizeLocation(loc) {
-    const s = String(loc || '').toLowerCase();
+    if (!loc || typeof loc !== 'string') return 'Manila';
+    const s = loc.toLowerCase().trim();
     if (s.includes('quezon city') || s.includes('q.c.') || /\bqc\b/.test(s) || s.includes('diliman') || s.includes('bayan')) {
       return 'Quezon City';
     }
-    return 'Manila';
+    if (s.includes('manila') || s.includes('intramuros') || s.includes('luneta') || s.includes('ermita')) {
+      return 'Manila';
+    }
+    return loc.trim();
   }
 
   function mapCategoryToType(category, fallbackType) {
@@ -311,46 +315,66 @@
     }
   ];
 
-  // Default Seed Client / Tourist Accounts
+  // Default Seed Client / Tourist Accounts (Synchronized with Supabase profiles)
   const DEFAULT_CLIENT_USERS = [
     {
-      id: '39c673f7-433a-4259-9569-8deb1904688f',
-      name: 'Maria Santos',
-      email: 'maria.santos@email.com',
+      id: '79fffdf3-6b46-4b31-8b8a-ec80bb5f9949',
+      name: 'Raijin',
+      email: 'raimatsu30@gmail.com',
       password: 'tourist123',
+      city: 'Manila',
       country: 'Philippines',
-      phone: null,
+      badge: 'Verified Tourist',
+      avatar: ''
+    },
+    {
+      id: '55cf1c55-a5bd-4007-9b65-020c3f4f2993',
+      name: 'Klein',
+      email: 'fernandezklein321@gmail.com',
+      password: 'tourist123',
+      city: 'Manila',
+      country: 'Philippines',
+      badge: 'Verified Tourist',
+      avatar: ''
+    },
+    {
+      id: '3f1b8b54-b067-496f-bcf6-141d537a292f',
+      name: 'steven fernandez',
+      email: 'fernandezklein123@gmail.com',
+      password: 'tourist123',
+      city: 'Manila',
+      country: 'Philippines',
       badge: 'Verified Resident Tourist',
       avatar: ''
     },
     {
-      id: '06038a82-9062-430b-a3b6-d848e0e06e30',
-      name: 'Alex Tan',
-      email: 'alex.tan@visitor.sg',
+      id: 'a2767010-899a-4bcb-8929-0aea7451d2b3',
+      name: 'carter carig',
+      email: 'cartercarig@gmail.com',
       password: 'tourist123',
+      city: 'Manila',
       country: 'Philippines',
-      phone: null,
+      badge: 'Verified Tourist',
+      avatar: ''
+    },
+    {
+      id: '2e0ba847-9b3a-44c5-8c35-7ad8f6c3150e',
+      name: 'Charlie Kirk',
+      email: 'xtiangzmen@gmail.com',
+      password: 'tourist123',
+      city: 'Manila',
+      country: 'Philippines',
       badge: 'International Explorer',
       avatar: ''
     },
     {
-      id: '87313fe7-603f-413d-b98d-2cd18003fbe0',
-      name: 'aaa',
-      email: 'aaa@email.com',
-      password: 'aaa123',
-      country: 'aaaa',
-      phone: '1231312',
-      badge: 'New Tourist Member',
-      avatar: ''
-    },
-    {
-      id: '1672fe3b-2b7e-4c1a-a41d-0f407ff35d2f',
-      name: 'JB JACOB',
-      email: 'jacob@email.com',
-      password: 'jacob123',
-      country: 'Planet Namek',
-      phone: '',
-      badge: 'New Tourist Member',
+      id: '40ba35b8-257a-4a6e-914e-f18f738699a1',
+      name: 'ace',
+      email: 'acecorpuz0429@gmail.com',
+      password: 'tourist123',
+      city: 'Manila',
+      country: 'Philippines',
+      badge: 'Verified Tourist',
       avatar: ''
     }
   ];
@@ -1560,6 +1584,28 @@
               setItem(KEYS.ITINERARY, allItin);
             }
             console.log('⚡ [Store] User Favorites & Itinerary synchronized from Supabase profile.');
+          }
+        }
+
+        // 3d. Fetch live tourist user profiles from Supabase
+        if (typeof TourismHubSupabase.fetchProfiles === 'function') {
+          const remoteProfiles = await TourismHubSupabase.fetchProfiles();
+          if (Array.isArray(remoteProfiles) && remoteProfiles.length > 0) {
+            const mappedUsers = remoteProfiles.map(p => ({
+              id: p.id,
+              name: p.name || 'Tourist Member',
+              email: p.email || '',
+              password: p.password_hash || 'tourist123',
+              role: p.role || 'tourist',
+              roleKey: p.role_key || 'tourist',
+              city: p.city || 'Manila',
+              country: p.country || 'Philippines',
+              digitalId: p.digital_id || '',
+              badge: p.badge || (p.role_key === 'admin' ? 'Chief Operator' : 'Verified Tourist'),
+              avatar: p.avatar && !String(p.avatar).includes('images.unsplash.com/photo-') ? p.avatar : ''
+            }));
+            setItem(KEYS.CLIENT_USERS, mappedUsers);
+            console.log(`⚡ [Store] Profiles synchronized (${mappedUsers.length} users from Supabase).`);
           }
         }
 
