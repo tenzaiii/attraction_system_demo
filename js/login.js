@@ -126,6 +126,14 @@ async function submitUnifiedLogin(email, password) {
     const res = await TourismHubStore.clientLogin(cleanEmail, cleanPassword);
     setLoading(btn, false);
     if (res && res.success) {
+      if (res.user && (res.user.roleKey === 'admin' || res.user.role === 'admin' || (res.user.role || '').toLowerCase().includes('admin') || (res.user.role || '').toLowerCase().includes('ops'))) {
+        TourismHubStore.setAdminAuth(res.user);
+        showNotice(`Operator clearance verified! Welcome, ${res.user.name}. Entering Admin Portal...`, 'success');
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 500);
+        return;
+      }
       showNotice(`Welcome back, ${res.user.name}! Entering Tourist Portal...`, 'success');
       setTimeout(() => {
         window.location.href = getReturnUrl();
@@ -279,31 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     }
-  }
-
-  // Populate quick demo card avatars dynamically using stored uploaded photo or non-bold initials
-  if (window.TourismHubStore && TourismHubStore.generateInitialsAvatar) {
-    const allStoredUsers = [
-      ...(TourismHubStore.getClientUsers ? TourismHubStore.getClientUsers() : []),
-      ...(TourismHubStore.getAdminUsers ? TourismHubStore.getAdminUsers() : [])
-    ];
-    document.querySelectorAll('.quick-account-card').forEach(card => {
-      const nameEl = card.querySelector('.quick-user-name');
-      const avatarEl = card.querySelector('.quick-user-avatar');
-      if (nameEl && avatarEl) {
-        const displayName = nameEl.textContent.trim();
-        const onclickAttr = card.getAttribute('onclick') || '';
-        const emailMatch = onclickAttr.match(/['"]([^'"]+@[^'"]+)['"]/);
-        const cardEmail = emailMatch ? emailMatch[1].toLowerCase() : '';
-        const matched = allStoredUsers.find(u =>
-          (cardEmail && (u.email || '').toLowerCase() === cardEmail) ||
-          (u.name || '').trim().toLowerCase() === displayName.toLowerCase()
-        );
-        avatarEl.src = matched && TourismHubStore.getUserAvatar
-          ? TourismHubStore.getUserAvatar(matched)
-          : TourismHubStore.generateInitialsAvatar(displayName);
-      }
-    });
   }
 
   // Attach submit listeners

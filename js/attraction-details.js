@@ -146,7 +146,7 @@
         const eventUrl = `event-details.html?id=${encodeURIComponent(ev.id)}`;
         return `
               <article class="event-catalog-banner" onclick="window.location.href='${eventUrl}'" style="cursor: pointer;">
-                <img src="${esc(img)}" alt="${esc(ev.title)}" class="event-catalog-banner-img" onerror="this.src='assets/no-image.svg'">
+                <img src="${esc(img)}" alt="${esc(ev.title)}" class="event-catalog-banner-img" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
                 <div class="event-catalog-banner-scrim"></div>
                 <div class="event-catalog-banner-top">
                   <span style="background: rgba(2, 132, 199, 0.92); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 999px; backdrop-filter: blur(6px);">${esc(schedule)}</span>
@@ -334,6 +334,7 @@
     if (mainImg) {
       mainImg.decoding = 'async';
       mainImg.setAttribute('fetchpriority', 'high');
+      mainImg.referrerPolicy = 'no-referrer';
       mainImg.onerror = function () {
         this.onerror = null;
         this.src = 'assets/no-image.svg';
@@ -386,7 +387,7 @@
           <button type="button" class="carousel-thumb-btn ${idx === currentSlideIndex ? 'active' : ''}" 
                   data-index="${idx}"
                   onclick="jumpToSlide(${idx})" aria-label="Go to slide ${idx + 1}: ${slide.caption}">
-            <img src="${slide.url}" alt="${slide.caption}" loading="lazy" onerror="this.src='assets/no-image.svg'">
+            <img src="${slide.url}" alt="${slide.caption}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
           </button>
         `).join('');
   }
@@ -513,7 +514,7 @@
       return `
             <article class="other-loc-card" data-id="${item.id}" style="cursor: pointer; flex: 0 0 260px; scroll-snap-align: start;" onclick="if (!event.target.closest('button')) window.location.href='attraction-details.html?id=${item.id}'">
               <div class="other-loc-media">
-                <img src="${safeImg}" alt="${item.title}" class="other-loc-img" loading="lazy" onerror="this.src='assets/no-image.svg'">
+                <img src="${safeImg}" alt="${item.title}" class="other-loc-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
                 <span class="other-loc-badge">${item.badge || item.category || 'Featured'}</span>
                 <button type="button" class="other-loc-fav-btn ${isFav ? 'saved' : ''}" 
                         title="${isFav ? 'Remove from favorites' : 'Save to favorites'}"
@@ -664,7 +665,7 @@
     const unitPrice = getActiveBookingUnitPrice();
     const admissionText = activeBookingTarget.admission || activeBookingTarget.priceLabel || '';
 
-    if (imgEl) imgEl.src = (Array.isArray(activeBookingTarget.images) && activeBookingTarget.images[0]) || activeBookingTarget.image || 'assets/no-image.svg';
+    if (imgEl) { imgEl.src = (Array.isArray(activeBookingTarget.images) && activeBookingTarget.images[0]) || activeBookingTarget.image || 'assets/no-image.svg'; imgEl.referrerPolicy = 'no-referrer'; }
     if (priceEl) priceEl.textContent = admissionText || (unitPrice > 0 ? `₱${unitPrice}` : 'Free (₱0)');
 
     recalculateBookingTotal();
@@ -891,7 +892,7 @@
         const badgeText = isEvent ? 'Event' : (item.category || 'Attraction');
         return `
           <a href="attraction-details.html?id=${encodeURIComponent(item.id)}" class="hero-search-result-item" role="option">
-            <img src="${thumb}" alt="${escHtml(title)}" class="hero-search-result-thumb" onerror="this.src='assets/no-image.svg'">
+            <img src="${thumb}" alt="${escHtml(title)}" class="hero-search-result-thumb" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
             <div class="hero-search-result-meta">
               <div class="hero-search-result-title">${escHtml(title)}</div>
               <div class="hero-search-result-sub">${escHtml(item.location || 'Philippines')}</div>

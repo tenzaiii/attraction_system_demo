@@ -351,7 +351,7 @@ function renderCapacityItineraryTracker() {
             <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 200px;">
               <input type="checkbox" ${isVisited ? 'checked' : ''} onchange="TourismHubStore.toggleItineraryVisited('${item.id}'); renderCapacityItineraryTracker();" title="Mark as visited" style="width: 17px; height: 17px; accent-color: #10b981; cursor: pointer; flex-shrink: 0;">
               <span style="width: 26px; height: 26px; border-radius: 50%; background: ${isVisited ? '#10b981' : 'var(--primary, #0284c7)'}; color: #fff; font-size: 0.78rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">${isVisited ? '✓' : idx + 1}</span>
-              <img src="${img}" alt="${item.title}" onerror="this.src='assets/no-image.svg'" style="width: 52px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0; opacity: ${isVisited ? '0.65' : '1'};">
+              <img src="${img}" alt="${item.title}" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'" style="width: 52px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0; opacity: ${isVisited ? '0.65' : '1'};">
               <div>
                 <a href="attraction-details.html?id=${item.id}" style="font-weight: 700; color: var(--text-main); text-decoration: ${isVisited ? 'line-through' : 'none'}; opacity: ${isVisited ? '0.7' : '1'}; font-size: 0.92rem;">${item.title}</a>
                 <div style="font-size: 0.78rem; color: var(--text-muted);">${item.location || 'Manila'} &bull; ${item.operatingHours || 'Open Daily'}</div>

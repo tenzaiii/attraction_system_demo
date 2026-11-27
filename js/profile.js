@@ -43,7 +43,7 @@
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.85rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); flex-wrap: wrap;">
             <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 200px;">
               <span style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary, #0284c7); color: #fff; font-size: 0.78rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">${idx + 1}</span>
-              <img src="${img}" alt="${item.title}" loading="lazy" decoding="async" onerror="this.src='assets/no-image.svg'" style="width: 54px; height: 42px; object-fit: cover; border-radius: 6px; flex-shrink: 0;">
+              <img src="${img}" alt="${item.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'" style="width: 54px; height: 42px; object-fit: cover; border-radius: 6px; flex-shrink: 0;">
               <div>
                 <a href="attraction-details.html?id=${item.id}" style="font-weight: 700; color: var(--text-main); text-decoration: none; font-size: 0.92rem;">${item.title}</a>
                 <div style="font-size: 0.78rem; color: var(--text-muted);">${item.location || 'Manila'} &bull; ${item.operatingHours || 'Open Daily'}</div>
@@ -90,7 +90,7 @@
           <div class="profile-pass-item" style="display: flex; flex-direction: column; justify-content: space-between;">
             <div>
               <div style="position: relative; border-radius: 8px; overflow: hidden; height: 160px; margin-bottom: 0.85rem;">
-                <img src="${fallbackImg}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/no-image.svg'">
+                <img src="${fallbackImg}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;" referrerpolicy="no-referrer" onerror="this.src='assets/no-image.svg'">
                 <span class="portal-pill-badge blue" style="position: absolute; top: 10px; left: 10px; backdrop-filter: blur(4px);">${item.category || item.badge || 'Attraction'}</span>
               </div>
               <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">${item.title}</h4>
